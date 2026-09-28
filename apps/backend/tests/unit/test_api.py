@@ -47,3 +47,13 @@ def test_openapi_documents_readiness_with_examples(app: FastAPI) -> None:
     readyz = schema["paths"]["/readyz"]["get"]["responses"]
     assert {"200", "503"} <= set(readyz)
     assert schema["components"]["schemas"]["Readiness"]["examples"]
+
+
+async def test_healthy_probes_are_logged_at_debug_and_failures_at_info(
+    client: httpx.AsyncClient, caplog: pytest.LogCaptureFixture
+) -> None:
+    caplog.set_level("DEBUG", logger="pickwise.access")
+    await client.get("/healthz")
+    await client.get("/does-not-exist")
+    levels = {r.levelname for r in caplog.records if r.name == "pickwise.access"}
+    assert levels == {"DEBUG", "INFO"}

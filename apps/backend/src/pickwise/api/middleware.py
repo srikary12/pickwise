@@ -17,6 +17,9 @@ _SAFE_REQUEST_ID = re.compile(r"^[A-Za-z0-9._-]{1,128}$")
 
 log = get_logger("pickwise.access")
 
+# Container healthchecks hit these constantly; log them only when they fail.
+PROBE_PATHS = frozenset({"/healthz", "/readyz"})
+
 
 def _incoming_request_id(scope: Scope) -> str | None:
     wanted = REQUEST_ID_HEADER.lower().encode()
@@ -54,7 +57,8 @@ class RequestContextMiddleware:
             await self.app(scope, receive, send_with_request_id)
         finally:
             # Path only, never the query string: it can carry tokens or PII.
-            log.info(
+            quiet = scope["path"] in PROBE_PATHS and status_code < 400
+            (log.debug if quiet else log.info)(
                 "request",
                 method=scope["method"],
                 path=scope["path"],

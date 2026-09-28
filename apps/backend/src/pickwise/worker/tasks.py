@@ -7,8 +7,8 @@ from pickwise.worker.app import app
 log = get_logger(__name__)
 
 
-@app.periodic(cron="* * * * *", periodic_id="heartbeat")
+@app.periodic(cron="*/5 * * * *", periodic_id="heartbeat")
 @app.task(name="pickwise.heartbeat", queue="default", queueing_lock="heartbeat")
 async def heartbeat(timestamp: int) -> None:
     """No-op: shows the periodic deferrer and a worker are both alive."""
-    log.info("heartbeat", scheduled_at=timestamp)
+    log.debug("heartbeat", scheduled_at=timestamp)

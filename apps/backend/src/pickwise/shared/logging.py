@@ -5,10 +5,27 @@ Log ids only: never PII, resume text, salary figures or tokens (CLAUDE.md rule 1
 Request-scoped values (request_id) are bound through structlog contextvars.
 """
 
+import json
 import logging
 import sys
+from typing import Any
 
 import structlog
+
+# Put the fields people scan for first; everything else follows in call order.
+_LEADING_KEYS = ("timestamp", "level", "logger", "event", "request_id")
+
+
+def _leading_keys_first(
+    _logger: Any, _method: str, event_dict: structlog.types.EventDict
+) -> structlog.types.EventDict:
+    ordered = {k: event_dict.pop(k) for k in _LEADING_KEYS if k in event_dict}
+    ordered.update(event_dict)
+    return ordered
+
+
+def _dumps(obj: Any, **kwargs: Any) -> str:
+    return json.dumps(obj, ensure_ascii=False, **kwargs)
 
 
 def configure_logging(level: str = "INFO") -> None:
@@ -35,7 +52,8 @@ def configure_logging(level: str = "INFO") -> None:
         foreign_pre_chain=shared_processors,
         processors=[
             structlog.stdlib.ProcessorFormatter.remove_processors_meta,
-            structlog.processors.JSONRenderer(),
+            _leading_keys_first,
+            structlog.processors.JSONRenderer(serializer=_dumps),
         ],
     )
     handler = logging.StreamHandler(sys.stdout)

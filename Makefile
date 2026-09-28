@@ -18,6 +18,9 @@ UV := uv run --project apps/backend --frozen
 RUFF_CFG := --config apps/backend/pyproject.toml
 
 WAIT_TIMEOUT ?= 600
+# When `up` fails, a one-shot service usually says why; show its last lines.
+SHOW_ONESHOT_LOGS = echo "--- last log lines of the setup containers ---" >&2; \
+	$(DEV) logs --no-log-prefix --tail 5 migrate s3-init seed-demo >&2
 define PRINT_URLS
 	@printf '\n  web       http://localhost:3000\n  API docs  http://localhost:8000/docs\n  Mailpit   http://localhost:8025\n\n'
 endef
@@ -41,14 +44,14 @@ env: .env tools-image ## Create .env and generate any missing dev secrets
 # --- dev stack --------------------------------------------------------------
 .PHONY: dev
 dev: env ## Build and start the whole stack (stub scanner), wait until healthy
-	SCANNER=stub $(DEV) up -d --build --remove-orphans
+	SCANNER=stub $(DEV) up -d --build --remove-orphans || { $(SHOW_ONESHOT_LOGS); exit 1; }
 	sh infra/scripts/wait-healthy.sh $(WAIT_TIMEOUT) $(DEV)
 	@echo "Pickwise is up:"
 	$(PRINT_URLS)
 
 .PHONY: dev-full
 dev-full: env ## Same as dev, plus real ClamAV (SCANNER=clamav)
-	SCANNER=clamav $(DEV) --profile full up -d --build --remove-orphans
+	SCANNER=clamav $(DEV) --profile full up -d --build --remove-orphans || { $(SHOW_ONESHOT_LOGS); exit 1; }
 	sh infra/scripts/wait-healthy.sh 1200 $(DEV) --profile full
 	@echo "Pickwise is up (real ClamAV):"
 	$(PRINT_URLS)

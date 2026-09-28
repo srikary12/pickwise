@@ -142,10 +142,12 @@ services:
         - python
         - -c
         - import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=3)
-      interval: 5s
+      # Probe fast while starting, then every 30s so probes don't flood the logs.
+      interval: 30s
+      start_interval: 2s
       timeout: 5s
-      retries: 20
-      start_period: 30s
+      retries: 3
+      start_period: 60s
     restart: unless-stopped
 
   worker:
@@ -163,10 +165,11 @@ services:
         required: false
     healthcheck:
       test: ["CMD", "pickwise", "worker", "health"]
-      interval: 10s
+      interval: 30s
+      start_interval: 3s
       timeout: 10s
-      retries: 12
-      start_period: 30s
+      retries: 3
+      start_period: 60s
     restart: unless-stopped
 
   web:
@@ -183,11 +186,12 @@ services:
         - CMD
         - node
         - -e
-        - 'fetch("http://127.0.0.1:3000/").then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))'
-      interval: 5s
+        - 'fetch("http://127.0.0.1:3000/healthz").then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))'
+      interval: 30s
+      start_interval: 3s
       timeout: 10s
-      retries: 30
-      start_period: 60s
+      retries: 3
+      start_period: 120s
     restart: unless-stopped
 
   # Runs make targets that would otherwise need host tooling. Never started by `up`.
