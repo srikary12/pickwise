@@ -18,6 +18,7 @@ dependencies = [
     "structlog>=26.1.0",
     "aioboto3>=15.5.0",
     "typer>=0.27.2",
+    "pyyaml>=6.0.3",
 ]
 
 [project.scripts]
@@ -33,6 +34,7 @@ dev = [
     "hypothesis>=6.168.3",
     "import-linter>=2.15",
     "httpx>=0.28.1",
+    "types-pyyaml>=6.0.12.20260906",
 ]
 
 [build-system]

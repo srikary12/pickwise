@@ -1,0 +1,168 @@
+# PII classification: the single source of truth (CLAUDE.md rule 13, ADR 0005).
+#
+# Levels: public | internal | confidential | restricted. Columns not listed are internal.
+#   confidential: personal or sensitive data, permission-gated, redacted in audit diffs
+#   restricted:   secrets and identity numbers, encrypted or hashed at the application level
+#   public:       intentionally published (listed so reviews see it was a decision)
+#
+# Migrations turn every confidential/restricted entry into a column comment
+# ('@pii confidential' / '@pii restricted') for tables that exist. A test diffs this
+# file against the database in both directions, and `make docs-pii` renders it into
+# docs/DATA_MODEL.md. Entries for tables that later phases create are checked once
+# those tables exist.
+#
+# Format: "<schema>.<table>": { <column>: <level> }
+
+version: 1
+
+tables:
+  # --- platform (Phase 1) ------------------------------------------------------
+  platform.tenant_keys:
+    wrapped_key: restricted
+  platform.users:
+    email: confidential
+    display_name: confidential
+    password_hash: restricted
+    mfa_totp_secret_enc: restricted
+  platform.platform_keys:
+    wrapped_key: restricted
+  platform.auth_tokens:
+    token_hash: restricted
+    email: confidential
+  platform.mfa_recovery_codes:
+    code_hash: restricted
+  platform.signup_requests:
+    email: confidential
+  platform.user_identities:
+    subject: confidential
+  platform.sessions:
+    token_hash: restricted
+    ip: confidential
+    user_agent: confidential
+  platform.tenant_sso_configs:
+    client_secret_enc: restricted
+  platform.api_keys:
+    key_hash: restricted
+  platform.files:
+    original_name: confidential
+  platform.approval_tasks:
+    comment: confidential
+  platform.notifications:
+    title: confidential
+    body: confidential
+  platform.email_outbox:
+    to_address: confidential
+    payload: confidential
+  platform.outbox_events:
+    payload: confidential
+  platform.webhook_endpoints:
+    secret_enc: restricted
+  platform.idempotency_keys:
+    response_body: confidential
+  platform.privacy_notices:
+    body_md: public
+  platform.consents:
+    evidence: confidential
+  platform.data_subject_requests:
+    notes: confidential
+
+  # --- audit (Phase 1) ---------------------------------------------------------
+  audit.events:
+    changes: confidential
+    ip: confidential
+    user_agent: confidential
+
+  # --- core (Phase 5) ----------------------------------------------------------
+  core.employees:
+    personal_email: confidential
+    personal_phone: confidential
+  core.employee_personal:
+    date_of_birth: confidential
+    gender: confidential
+    marital_status: confidential
+    blood_group: confidential
+    nationality: confidential
+    father_or_spouse_name: confidential
+    is_person_with_disability: confidential
+  core.employee_addresses:
+    line1: confidential
+    line2: confidential
+    city: confidential
+    state_code: confidential
+    pincode: confidential
+    country_code: confidential
+  core.emergency_contacts:
+    name: confidential
+    relationship: confidential
+    phone: confidential
+    email: confidential
+  core.dependents:
+    name: confidential
+    relationship: confidential
+    date_of_birth: confidential
+    gender: confidential
+  core.nominations:
+    share_percent: confidential
+  core.identity_documents:
+    value_enc: restricted
+    value_bidx: restricted
+    value_last4: confidential
+    name_as_per_doc: confidential
+    issued_on: confidential
+    expires_on: confidential
+  core.bank_accounts:
+    account_number_enc: restricted
+    account_bidx: restricted
+    account_last4: confidential
+    account_holder_name: confidential
+    ifsc: confidential
+    bank_name: confidential
+  core.separations:
+    reason_notes: confidential
+
+  # --- leave (Phase 6) ---------------------------------------------------------
+  leave.requests:
+    reason: confidential
+
+  # --- payroll (Phases 8-9) ----------------------------------------------------
+  payroll.employee_compensations:
+    annual_ctc: confidential
+    overrides: confidential
+  payroll.tax_declaration_items:
+    metadata: restricted
+  payroll.previous_employment_income:
+    employer_name: confidential
+    employer_tan: confidential
+    gross_salary: confidential
+    exemptions: confidential
+    pf: confidential
+    pt: confidential
+    tds: confidential
+  payroll.run_employees:
+    snapshot: confidential
+    gross_earnings: confidential
+    total_deductions: confidential
+    employer_contributions: confidential
+    net_pay: confidential
+    tax_projection: confidential
+  payroll.run_lines:
+    amount: confidential
+    taxable_amount: confidential
+    base_amount: confidential
+    trace: confidential
+
+  # --- recruit (Phases 10-11) --------------------------------------------------
+  recruit.candidate_pii:
+    full_name: confidential
+    email: confidential
+    phone_e164: confidential
+    linkedin_url: confidential
+    location_text: confidential
+  recruit.resume_extracts:
+    raw_text: confidential
+  recruit.offers:
+    annual_ctc: confidential
+    compensation_breakdown: confidential
+    decline_reason: confidential
+  recruit.demographic_responses:
+    responses: confidential

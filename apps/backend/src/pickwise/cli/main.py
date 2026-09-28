@@ -15,6 +15,7 @@ import typer
 
 from pickwise.cli import db as db_cli
 from pickwise.platform.scanning import ScannerError, build_scanner, eicar_bytes, iter_bytes
+from pickwise.shared import pii
 from pickwise.shared.logging import configure_logging, get_logger
 from pickwise.shared.settings import BootstrapSettings, ScannerKind, Settings, get_settings
 
@@ -23,10 +24,12 @@ db_app = typer.Typer(no_args_is_help=True, help="Database bootstrap, migrations 
 demo_app = typer.Typer(no_args_is_help=True, help="Demo data (development and test only).")
 openapi_app = typer.Typer(no_args_is_help=True, help="OpenAPI schema.")
 worker_app = typer.Typer(no_args_is_help=True, help="Worker utilities.")
+docs_app = typer.Typer(no_args_is_help=True, help="Generated documentation.")
 app.add_typer(db_app, name="db")
 app.add_typer(demo_app, name="demo")
 app.add_typer(openapi_app, name="openapi")
 app.add_typer(worker_app, name="worker")
+app.add_typer(docs_app, name="docs")
 
 log = get_logger("pickwise.cli")
 
@@ -149,6 +152,23 @@ def worker_health(
         return
     if not row or not row[0]:
         _fail("worker unhealthy: no recent heartbeat")
+
+
+@docs_app.command("pii")
+def docs_pii(
+    doc: Annotated[Path, typer.Option(help="Document with the generated-section markers")] = Path(
+        "docs/DATA_MODEL.md"
+    ),
+) -> None:
+    """Regenerate the PII classification section of DATA_MODEL.md from the YAML."""
+    columns = pii.load()
+    if not doc.exists():
+        _fail(f"{doc} not found (the design docs are kept locally, outside git)")
+    updated = pii.replace_generated_section(
+        doc.read_text(encoding="utf-8"), pii.render_markdown(columns)
+    )
+    doc.write_text(updated, encoding="utf-8")
+    typer.echo(f"wrote {len(columns)} classified columns into {doc}")
 
 
 def main() -> None:

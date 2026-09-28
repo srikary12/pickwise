@@ -158,8 +158,8 @@ openapi-check: openapi ## Fail if the generated client is out of date
 	@git diff --exit-code -- packages/api-client || (echo "api-client is stale: run make openapi and commit" && exit 1)
 
 .PHONY: docs-pii
-docs-pii: ## Regenerate the PII section of DATA_MODEL.md (arrives in Phase 1)
-	@echo "docs-pii: db/pii_classification.yaml arrives in Phase 1; nothing to generate yet"
+docs-pii: deps ## Regenerate the PII section of docs/DATA_MODEL.md from db/pii_classification.yaml
+	$(TOOLS_RUN) $(UV) pickwise docs pii --doc docs/DATA_MODEL.md
 
 # --- scanning ---------------------------------------------------------------
 .PHONY: scan-check
