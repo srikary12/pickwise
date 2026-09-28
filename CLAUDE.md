@@ -26,6 +26,7 @@ pickwise/
 │   │   ├── src/pickwise/
 │   │   │   ├── api/             # FastAPI app factory, routers, middleware, deps
 │   │   │   ├── worker/          # procrastinate app, task registry, periodic jobs
+│   │   │   ├── cli/             # the `pickwise` command (db migrate/seed, demo seed, openapi, scan-check)
 │   │   │   ├── platform/        # tenancy, auth, rbac, scopes, files, crypto, approvals, notifications, outbox, provisioning, erasure, privacy
 │   │   │   ├── core/            # org + employees
 │   │   │   ├── leave/
@@ -67,7 +68,7 @@ Each domain package (`platform`, `core`, `leave`, …) has the same internal sha
 - A module may call the `service` of a module to its left. Information that flows the other way goes through outbox events. For example, leave's per-days-worked accrual consumes the payload of the `attendance.period_locked` event instead of importing attendance.
 - One module never imports another module's `repository` or `models`.
 - `payroll.engine` imports nothing from the app except `shared.money` and `shared.dates`.
-- `api/` and `worker/` are composition roots: they wire every module together, so they sit outside the import-linter layers. Nothing imports them.
+- `api/`, `worker/` and `cli/` are composition roots: they wire every module together, so they sit outside the import-linter layers. Nothing imports them.
 
 **Extension points (registries).** When a module on the left needs behaviour that a module further right provides, the left module defines a registry and the right module registers into it at startup. Never break the import direction to get at it. The registries are:
 
