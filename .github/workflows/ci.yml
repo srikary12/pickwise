@@ -1,0 +1,103 @@
+# CI runs the same make targets as contributors do: everything happens in
+# Docker, so the runner needs only Docker, make and git. No job calls the live
+# Jev API. Actions are pinned by commit SHA.
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOCKER_BUILDKIT: "1"
+
+jobs:
+  lint-typecheck:
+    name: lint + typecheck + openapi drift
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Cache uv, pnpm and pre-commit
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            .cache/uv
+            .cache/pnpm-store
+          key: tools-${{ runner.os }}-${{ hashFiles('apps/backend/uv.lock', 'pnpm-lock.yaml') }}
+          restore-keys: tools-${{ runner.os }}-
+      - run: make lint
+      - run: make typecheck
+      - run: make openapi-check
+
+  test:
+    name: backend + database tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - run: make test
+
+  web-build:
+    name: web production build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            .cache/uv
+            .cache/pnpm-store
+          key: tools-${{ runner.os }}-${{ hashFiles('apps/backend/uv.lock', 'pnpm-lock.yaml') }}
+          restore-keys: tools-${{ runner.os }}-
+      - run: make web-build
+
+  docker-prod:
+    name: prod image builds
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+      - name: backend (prod target)
+        run: docker buildx build --target prod -f infra/docker/backend.Dockerfile -t pickwise-backend:ci --load .
+      - name: web (prod target)
+        run: docker buildx build --target prod -f infra/docker/web.Dockerfile -t pickwise-web:ci --load .
+      - name: backend prod image refuses the stub scanner in production
+        run: |
+          if docker run --rm -e PICKWISE_ENV=production -e SCANNER=stub pickwise-backend:ci \
+               python -c "from pickwise.api.app import create_app; create_app()"; then
+            echo "expected startup to fail"; exit 1
+          fi
+      - name: compose.prod.yml is valid
+        run: |
+          cp .env.example .env
+          sed -i 's/^\([A-Z_]*\(PASSWORD\|SECRET\|KEK\|KEY_ID\|ACCESS_KEY\)\)=$/\1=ci/' .env
+          PICKWISE_VERSION=ci PICKWISE_DOMAIN=example.com PICKWISE_API_DOMAIN=api.example.com SMTP_HOST=smtp \
+            docker compose --env-file .env --project-directory . \
+            -f infra/compose/compose.yml -f infra/compose/compose.prod.yml config -q
+
+  scan-check:
+    name: real ClamAV scan-check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      CLAMAV_DB_PATH: ${{ github.workspace }}/.cache/clamav
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Cache ClamAV signatures
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .cache/clamav
+          key: clamav-${{ github.run_id }}
+          restore-keys: clamav-
+      - run: mkdir -p .cache/clamav && chmod 0777 .cache/clamav
+      - run: make scan-check
