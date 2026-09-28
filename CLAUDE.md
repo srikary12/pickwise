@@ -136,14 +136,16 @@ Until the module that registers into a registry exists, tests use stub registrat
    **Policies `TO pickwise_ops` apply only when the current role has that role's privileges, and INHERIT FALSE withholds them.** So `ops_session()` must run `SET LOCAL ROLE pickwise_ops` inside its transaction. That is the only way ops code sees across tenants. `ops_session()` is callable only from `@ops_task` worker tasks or `@ops_command` CLI entry points, and an AST test enforces this. A test proves `pickwise_worker` and `pickwise_maint` see zero rows without context until they `SET LOCAL ROLE`, and that no role has `rolbypassrls`.
    - The `migrate` container verifies every login user can connect with the credentials in `.env`, and fails with "role passwords don't match this database volume: run `make reset`" if not.
 4a. **SECURITY DEFINER functions** (owned by `pickwise_owner`, EXECUTE granted to `pickwise_app`, `search_path` pinned) are the only way the app reads across tenants. They run as the owner, so `owner_all` applies. They are narrow, return ids and flags only, and are audited:
-   - `platform.list_memberships_for_user(user_id)`: login and the tenant switcher, before any tenant context exists
+   - `platform.list_memberships_for_user(user_id)`: login and the tenant switcher, before any tenant context exists. It also returns the tenant slug and name, the one exception to "ids and flags only" (the switcher must label tenants)
    - `platform.resolve_invite(token_hash)`
    - `platform.resolve_api_key(key_hash)`, `platform.resolve_device_key(key_hash)`: authenticate integrations and biometric devices before the tenant is known
    - `platform.resolve_tenant_by_slug(slug)`: the public careers page
    - `platform.resolve_sso_by_domain(domain)`: SSO discovery at login
    - `audit.log_platform_event(...)`: events with no tenant, e.g. a failed login for an unknown email
+   - `platform.ensure_monthly_partitions(parent, …)`: EXECUTE to `pickwise_ops` only, not the app. Creating a partition requires owning the parent, and it reads no tenant data (ADR 0003)
    Adding a new one requires an ADR. There is no global lookup table.
 4b. **Ops procedures are SECURITY INVOKER.** `platform.purge_tenant(tenant_id)` and `audit.scrub_subject(entity_table, entity_id)` have EXECUTE granted to `pickwise_ops` only and are called after `SET LOCAL ROLE pickwise_ops`, so `current_user` is `pickwise_ops` inside them.
+   - Migrations never hand-write RLS or grants. They call the SQL helpers from revision 0001: `platform.apply_tenant_policies(schema)`, `platform.make_append_only(table)`, `platform.register_global_table(table, privileges)` and `audit.attach(table)`, via `db/migrations/helpers.py`. Table comments carry the markers `@global` / `@append_only` that these helpers and the catalog tests read.
 5. **An RLS test exists for every tenant table.** CI generates the list from the catalog, so a new table without its policies fails the build. It also requires the policies on every child partition, and no `pickwise_app` grants on any child.
 
 ### Data correctness

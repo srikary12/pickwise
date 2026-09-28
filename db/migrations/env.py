@@ -7,12 +7,17 @@ every object is owned by the owner role (CLAUDE.md rule 4). They use psycopg
 """
 
 import os
+import sys
+from pathlib import Path
 
 import psycopg
 from alembic import context
 from sqlalchemy import create_engine, pool, text
 
 VERSION_TABLE_SCHEMA = "public"
+
+# Revisions import db/migrations/helpers.py as `helpers`.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 
 def _url() -> str:
