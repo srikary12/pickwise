@@ -1,0 +1,106 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Development overlay: hot reload, bind mounts, ports on localhost only, Mailpit
+# and the demo seed. Used by `make dev` / `make dev-full`.
+
+x-backend-dev: &backend-dev
+  context: .
+  dockerfile: infra/docker/backend.Dockerfile
+  target: dev
+
+x-backend-mounts: &backend-mounts
+  - ./apps/backend/src:/app/apps/backend/src:ro
+  - ./apps/backend/alembic.ini:/app/apps/backend/alembic.ini:ro
+  - ./db:/app/db:ro
+
+services:
+  postgres:
+    ports:
+      - "127.0.0.1:${POSTGRES_HOST_PORT:-5432}:5432"
+
+  migrate:
+    build: *backend-dev
+    image: pickwise-backend:dev
+    volumes: *backend-mounts
+
+  seed-demo:
+    build: *backend-dev
+    image: pickwise-backend:dev
+    command: ["pickwise", "demo", "seed"]
+    environment:
+      PICKWISE_ENV: ${PICKWISE_ENV:-development}
+      DATABASE_HOST: postgres
+      DATABASE_NAME: pickwise
+      # Creating tenants is ops work: the seeder runs as pickwise_maint (@ops_command).
+      DATABASE_USER: pickwise_maint
+      DATABASE_PASSWORD: ${PG_MAINT_PASSWORD}
+    volumes: *backend-mounts
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: "no"
+
+  s3:
+    ports:
+      # Browsers reach presigned URLs here.
+      - "127.0.0.1:8333:8333"
+
+  mailpit:
+    image: axllent/mailpit:v1.31.3@sha256:ed9b00c609e77e99c79b93f1178255ebc271868920f2c69a8d166bd5634ed10d
+    ports:
+      - "127.0.0.1:8025:8025"
+      - "127.0.0.1:1025:1025"
+    healthcheck:
+      test: ["CMD", "/mailpit", "readyz"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  api:
+    build: *backend-dev
+    image: pickwise-backend:dev
+    command:
+      - uvicorn
+      - pickwise.api.app:create_app
+      - --factory
+      - --host=0.0.0.0
+      - --port=8000
+      - --reload
+      - --reload-dir=/app/apps/backend/src
+    environment:
+      SMTP_HOST: mailpit
+      SMTP_PORT: "1025"
+    volumes: *backend-mounts
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      seed-demo:
+        condition: service_completed_successfully
+
+  worker:
+    build: *backend-dev
+    image: pickwise-backend:dev
+    command:
+      - watchfiles
+      - --filter=python
+      - python -m pickwise.worker
+      - /app/apps/backend/src
+    environment:
+      SMTP_HOST: mailpit
+      SMTP_PORT: "1025"
+    volumes: *backend-mounts
+
+  web:
+    build:
+      context: .
+      dockerfile: infra/docker/web.Dockerfile
+      target: dev
+    image: pickwise-web:dev
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    volumes:
+      - .:/repo
+    ports:
+      - "127.0.0.1:3000:3000"
+    healthcheck:
+      # First start installs dependencies and compiles the page.
+      start_period: 300s

@@ -1,0 +1,91 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Production overlay for small self-hosted installs: prebuilt images, Caddy with
+# automatic TLS, the real ClamAV scanner, no bind mounts and never any demo data.
+# Set PICKWISE_VERSION, PICKWISE_DOMAIN, PICKWISE_API_DOMAIN and SMTP_* in .env.
+
+services:
+  postgres:
+    ports: !reset []
+
+  migrate:
+    image: ghcr.io/srikary12/pickwise-backend:${PICKWISE_VERSION:?set PICKWISE_VERSION}
+    build: !reset null
+    environment:
+      PICKWISE_ENV: production
+
+  clamav:
+    profiles: !reset []
+
+  api:
+    image: ghcr.io/srikary12/pickwise-backend:${PICKWISE_VERSION:?set PICKWISE_VERSION}
+    build: !reset null
+    environment:
+      PICKWISE_ENV: production
+      SCANNER: clamav
+      SMTP_HOST: ${SMTP_HOST:?set SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT:-587}
+    depends_on:
+      clamav:
+        condition: service_healthy
+        required: true
+
+  worker:
+    image: ghcr.io/srikary12/pickwise-backend:${PICKWISE_VERSION:?set PICKWISE_VERSION}
+    build: !reset null
+    environment:
+      PICKWISE_ENV: production
+      SCANNER: clamav
+      SMTP_HOST: ${SMTP_HOST:?set SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT:-587}
+    depends_on:
+      clamav:
+        condition: service_healthy
+        required: true
+
+  web:
+    image: ghcr.io/srikary12/pickwise-web:${PICKWISE_VERSION:?set PICKWISE_VERSION}
+    build: !reset null
+
+  s3-init:
+    image: ghcr.io/srikary12/pickwise-tools:${PICKWISE_VERSION:?set PICKWISE_VERSION}
+    build: !reset null
+    environment:
+      WEB_ORIGIN: https://${PICKWISE_DOMAIN:?set PICKWISE_DOMAIN}
+
+  caddy:
+    image: caddy:2.11.4-alpine@sha256:6aeddd44c3078b0f9a35206472a11420648a79c184603ef95957d0a20044cb2b
+    environment:
+      PICKWISE_DOMAIN: ${PICKWISE_DOMAIN}
+      PICKWISE_API_DOMAIN: ${PICKWISE_API_DOMAIN:?set PICKWISE_API_DOMAIN}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    configs:
+      - source: caddyfile
+        target: /etc/caddy/Caddyfile
+    volumes:
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      web:
+        condition: service_healthy
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+configs:
+  caddyfile:
+    content: |
+      {$$PICKWISE_DOMAIN} {
+        encode zstd gzip
+        reverse_proxy web:3000
+      }
+      {$$PICKWISE_API_DOMAIN} {
+        encode zstd gzip
+        reverse_proxy api:8000
+      }
+
+volumes:
+  caddy-data:
+  caddy-config:
