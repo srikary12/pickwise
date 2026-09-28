@@ -1,0 +1,11 @@
+.cache/
+node_modules/
+.next/
+dist/
+pnpm-lock.yaml
+packages/api-client/openapi.json
+packages/api-client/src/schema.d.ts
+apps/backend/
+db/
+docs/
+*.md

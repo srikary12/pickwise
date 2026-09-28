@@ -1,0 +1,156 @@
+{
+  "components": {
+    "schemas": {
+      "CheckStatus": {
+        "enum": [
+          "ok",
+          "fail"
+        ],
+        "title": "CheckStatus",
+        "type": "string"
+      },
+      "DependencyCheck": {
+        "properties": {
+          "latency_ms": {
+            "description": "Time the check took, in milliseconds",
+            "title": "Latency Ms",
+            "type": "number"
+          },
+          "status": {
+            "$ref": "#/components/schemas/CheckStatus"
+          }
+        },
+        "required": [
+          "status",
+          "latency_ms"
+        ],
+        "title": "DependencyCheck",
+        "type": "object"
+      },
+      "Liveness": {
+        "examples": [
+          {
+            "status": "ok"
+          }
+        ],
+        "properties": {
+          "status": {
+            "const": "ok",
+            "default": "ok",
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "title": "Liveness",
+        "type": "object"
+      },
+      "Readiness": {
+        "examples": [
+          {
+            "checks": {
+              "database": {
+                "latency_ms": 2.1,
+                "status": "ok"
+              },
+              "object_storage": {
+                "latency_ms": 8.4,
+                "status": "ok"
+              }
+            },
+            "environment": "development",
+            "scanner": "stub",
+            "status": "ok"
+          }
+        ],
+        "properties": {
+          "checks": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/DependencyCheck"
+            },
+            "title": "Checks",
+            "type": "object"
+          },
+          "environment": {
+            "title": "Environment",
+            "type": "string"
+          },
+          "scanner": {
+            "description": "Active virus scanner: `stub` (dev only) or `clamav`",
+            "title": "Scanner",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/CheckStatus"
+          }
+        },
+        "required": [
+          "status",
+          "environment",
+          "scanner",
+          "checks"
+        ],
+        "title": "Readiness",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "Pickwise API",
+    "version": "0.0.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/healthz": {
+      "get": {
+        "operationId": "healthz_healthz_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Liveness"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Liveness probe",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/readyz": {
+      "get": {
+        "operationId": "readyz_readyz_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Readiness"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Readiness"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "summary": "Readiness probe (database and object storage)",
+        "tags": [
+          "health"
+        ]
+      }
+    }
+  }
+}
