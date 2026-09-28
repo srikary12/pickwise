@@ -12,6 +12,7 @@ import psycopg
 from alembic import command
 from alembic.config import Config
 
+from pickwise.platform.permissions import CATALOG
 from pickwise.shared.logging import get_logger
 from pickwise.shared.settings import BootstrapSettings, Settings
 
@@ -175,15 +176,37 @@ SEED_STEPS: tuple[tuple[str, str], ...] = (
 )
 
 
+def sync_permissions(conn: psycopg.Connection[tuple[object, ...]]) -> None:
+    """Make platform.permissions match the catalog in code (upsert, then delete the rest)."""
+    codes = [p.code for p in CATALOG]
+    with conn.transaction():
+        for p in CATALOG:
+            conn.execute(
+                "INSERT INTO platform.permissions (code, module, description, is_sensitive) "
+                "VALUES (%s, %s, %s, %s) ON CONFLICT (code) DO UPDATE SET "
+                "module = EXCLUDED.module, description = EXCLUDED.description, "
+                "is_sensitive = EXCLUDED.is_sensitive",
+                (p.code, p.module, p.description, p.is_sensitive),
+            )
+        removed = conn.execute(
+            "DELETE FROM platform.permissions WHERE NOT (code = ANY(%s))", (codes,)
+        ).rowcount
+    log.info("permission catalog synced", permissions=len(codes), removed=removed)
+
+
 def seed_reference_data(conn: psycopg.Connection[tuple[object, ...]]) -> list[str]:
+    seeders = {"platform.permissions": sync_permissions}
     ran: list[str] = []
     for label, table in SEED_STEPS:
         exists = conn.execute("SELECT to_regclass(%s) IS NOT NULL", (table,)).fetchone()
         if not exists or not exists[0]:
             log.info("seed skipped: table not present yet", step=label, table=table)
             continue
-        # The seeders themselves arrive with their tables (Phases 1-2 and 8).
-        raise BootstrapError(f"{table} exists but no seeder is registered for {label}")
+        seeder = seeders.get(table)
+        if seeder is None:
+            raise BootstrapError(f"{table} exists but no seeder is registered for {label}")
+        seeder(conn)
+        ran.append(label)
     return ran
 
 

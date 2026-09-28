@@ -14,8 +14,10 @@ import psycopg
 import typer
 
 from pickwise.cli import db as db_cli
+from pickwise.platform.partitions import ensure_partitions
 from pickwise.platform.scanning import ScannerError, build_scanner, eicar_bytes, iter_bytes
 from pickwise.shared import pii
+from pickwise.shared.db import Database, ops_command
 from pickwise.shared.logging import configure_logging, get_logger
 from pickwise.shared.settings import BootstrapSettings, ScannerKind, Settings, get_settings
 
@@ -77,18 +79,35 @@ def db_seed() -> None:
         db_cli.seed_reference_data(conn)
 
 
+@db_app.command("ensure-partitions")
+@ops_command
+def db_ensure_partitions() -> None:
+    """Create missing monthly partitions now (the worker also does this daily).
+
+    Run as pickwise_maint (DATABASE_USER=pickwise_maint).
+    """
+
+    async def run() -> dict[str, int]:
+        database = Database.from_settings(get_settings())
+        try:
+            async with database.ops_session() as session:
+                return await ensure_partitions(session)
+        finally:
+            await database.dispose()
+
+    for table, created in asyncio.run(run()).items():
+        typer.echo(f"{table}: {created} partition(s) created")
+
+
 @demo_app.command("seed")
 def demo_seed() -> None:
     """Create the demo tenants (acme, globex). Never runs in production."""
     settings = get_settings()
     if settings.is_production:
         _fail("demo data is never seeded when PICKWISE_ENV=production")
-    with psycopg.connect(settings.psycopg_conninfo()) as conn:
-        row = conn.execute("SELECT to_regclass('platform.tenants') IS NOT NULL").fetchone()
-    if not row or not row[0]:
-        typer.echo("demo seed skipped: platform.tenants doesn't exist yet (arrives in Phase 1)")
-        return
-    _fail("platform.tenants exists but the demo seeder hasn't been written yet")
+    # Demo tenants are created through tenant provisioning (keys, roles, hooks),
+    # which arrives in Phase 2.
+    typer.echo("demo seed skipped: tenant provisioning arrives in Phase 2")
 
 
 @openapi_app.command("export")

@@ -15,8 +15,11 @@ are global, so anything in them is visible across tenants. A test inspects every
 registered task.
 """
 
+from functools import lru_cache
+
 import procrastinate
 
+from pickwise.shared.db import Database
 from pickwise.shared.settings import Settings, get_settings
 
 QUEUE_SCHEMA = "queue"
@@ -38,3 +41,9 @@ app = procrastinate.App(
     connector=build_connector(get_settings()),
     import_paths=["pickwise.worker.tasks"],
 )
+
+
+@lru_cache(maxsize=1)
+def get_database() -> Database:
+    """The worker's database handle (created on first use, inside the worker's loop)."""
+    return Database.from_settings(get_settings())
