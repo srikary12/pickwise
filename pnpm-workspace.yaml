@@ -1,0 +1,10 @@
+packages:
+  - apps/web
+  - packages/*
+allowBuilds:
+  unrs-resolver: false
+
+# openapi-typescript 7.x declares typescript ^5 but works with the workspace's 6.x.
+peerDependencyRules:
+  allowedVersions:
+    openapi-typescript>typescript: "6"

@@ -1,2 +1,38 @@
+# Design docs and ADRs are kept local by the owner's choice.
 docs/BUILD_PLAN.md
 docs/DATA_MODEL.md
+docs/REVIEW_RESOLUTIONS.md
+docs/decisions/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# Caches (tools container keeps uv/pnpm/pre-commit caches and the tools venv here)
+.cache/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+.venv/
+
+# JS
+node_modules/
+.next/
+.turbo/
+dist/
+*.tsbuildinfo
+next-env.d.ts
+playwright-report/
+test-results/
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
+*.swp

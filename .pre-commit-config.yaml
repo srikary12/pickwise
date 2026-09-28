@@ -1,0 +1,42 @@
+# Runs inside the tools container (make hooks). Local hooks use the pinned tool
+# versions from uv.lock / pnpm-lock.yaml, so results match `make lint`.
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: end-of-file-fixer
+        exclude: ^db/migrations/vendor/
+      - id: trailing-whitespace
+        exclude: ^db/migrations/vendor/
+      - id: check-yaml
+        args: [--unsafe]
+      - id: check-toml
+      - id: check-json
+        exclude: ^apps/web/tsconfig\.json$|^packages/.*/tsconfig\.json$|^tsconfig\.base\.json$
+      - id: check-merge-conflict
+      - id: detect-private-key
+      - id: check-added-large-files
+        args: [--maxkb=512]
+  - repo: local
+    hooks:
+      - id: spdx
+        name: SPDX license headers
+        entry: sh infra/scripts/check-spdx.sh
+        language: system
+        files: (\.(py|ts|tsx|js|mjs|cjs|css|sql|sh|mako)|Dockerfile|^Makefile)$
+      - id: ruff
+        name: ruff
+        entry: uv run --project apps/backend --frozen ruff check --config apps/backend/pyproject.toml --fix
+        language: system
+        types: [python]
+      - id: ruff-format
+        name: ruff format
+        entry: uv run --project apps/backend --frozen ruff format --config apps/backend/pyproject.toml
+        language: system
+        types: [python]
+      - id: prettier
+        name: prettier
+        entry: pnpm exec prettier --write --ignore-unknown
+        language: system
+        files: ^(apps/web|packages)/
+        types_or: [ts, tsx, javascript, css, json, yaml]
