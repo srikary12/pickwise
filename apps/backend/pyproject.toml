@@ -58,8 +58,9 @@ select = ["E", "W", "F", "I", "B", "UP", "S", "BLE", "C4", "SIM", "RUF", "ASYNC"
 ignore = ["S101"]  # assert is fine in tests; production code uses explicit raises
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["S105", "S106"]
-"../../db/tests/**" = ["S105", "S106"]
+# Tests build SQL from catalog-derived table names and contain long SQL literals.
+# "**/tests/**" matches apps/backend/tests and db/tests whichever directory ruff runs from.
+"**/tests/**" = ["S105", "S106", "S608", "E501"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["pickwise"]
