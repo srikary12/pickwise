@@ -53,6 +53,22 @@ EXPECTED_MEMBERSHIPS = frozenset(
 )
 
 
+# db/bootstrap/00_roles.sql sets these per login user (ALTER ROLE … SET).
+EXPECTED_ROLE_SETTINGS: dict[str, dict[str, str]] = {
+    "pickwise_api": {"statement_timeout": "30s", "idle_in_transaction_session_timeout": "60s"},
+    "pickwise_worker": {
+        "statement_timeout": "10min",
+        "idle_in_transaction_session_timeout": "60s",
+    },
+    "pickwise_maint": {"statement_timeout": "0", "idle_in_transaction_session_timeout": "10min"},
+    "pickwise_migrator": {
+        "role": "pickwise_owner",
+        "statement_timeout": "0",
+        "idle_in_transaction_session_timeout": "10min",
+    },
+}
+
+
 class BootstrapError(RuntimeError):
     pass
 
@@ -124,6 +140,24 @@ def verify_role_model(conn: psycopg.Connection[tuple[object, ...]]) -> None:
         problems.append(f"missing or wrong membership: {missing}")
     for extra in sorted(actual - EXPECTED_MEMBERSHIPS, key=str):
         problems.append(f"unexpected membership: {extra}")
+
+    setting_rows = conn.execute(
+        "SELECT r.rolname, unnest(s.setconfig) FROM pg_db_role_setting s "
+        "JOIN pg_roles r ON r.oid = s.setrole WHERE s.setdatabase = 0 "
+        "AND r.rolname LIKE 'pickwise\\_%'"
+    ).fetchall()
+    actual_settings: dict[str, dict[str, str]] = {}
+    for role, setting in setting_rows:
+        key, _, value = str(setting).partition("=")
+        actual_settings.setdefault(str(role), {})[key] = value
+    for role, expected in EXPECTED_ROLE_SETTINGS.items():
+        for key, value in expected.items():
+            got = actual_settings.get(role, {}).get(key)
+            if got != value:
+                problems.append(
+                    f"{role} has {key}={got!r}, expected {value!r} "
+                    "(an older database volume: run `make reset`)"
+                )
 
     if problems:
         raise BootstrapError("database role model is wrong:\n  - " + "\n  - ".join(problems))
