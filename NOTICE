@@ -1,0 +1,16 @@
+Pickwise
+Copyright (c) 2026 Srikar Yelamanchili
+
+Licensed under the GNU Affero General Public License, version 3 only
+(AGPL-3.0-only). See the LICENSE file for the full text.
+
+Commercial licences are available from the copyright holder for organisations
+that cannot accept the AGPL. Contributions are accepted under the Contributor
+License Agreement in .github/CLA.md (individuals) and .github/CCLA.md
+(corporations).
+
+This product includes third-party software:
+
+- procrastinate (MIT License, Copyright (c) 2019-2021, PeopleDoc).
+  Its database schema is vendored in db/migrations/vendor/; see
+  db/migrations/vendor/procrastinate-LICENSE.txt.
