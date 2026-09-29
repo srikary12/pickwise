@@ -33,4 +33,5 @@ def downgrade() -> None:
     op.execute("DROP TABLE platform.rate_limit_buckets")
     op.execute("DROP TABLE platform.platform_email_outbox")
     op.execute("ALTER TABLE platform.email_outbox DROP COLUMN payload_enc")
+    op.execute("ALTER TABLE platform.sessions DROP COLUMN sso_tenant_id")
     op.execute("ALTER TABLE platform.users DROP COLUMN mfa_last_used_step")

@@ -685,6 +685,12 @@ async def switch_tenant(
     session: SessionRecord,
     tenant_id: uuid.UUID,
 ) -> SignedIn:
+    if session.sso_tenant_id is not None and session.sso_tenant_id != tenant_id:
+        raise ForbiddenError(
+            "You signed in with your organisation's single sign-on, which only covers that "
+            "organisation. Sign in again to switch.",
+            code="sso_session_pinned",
+        )
     membership = await membership_in(db, session.user_id, tenant_id, client)
     if membership is None:
         raise ForbiddenError("You don't have access to that organisation.", code="no_membership")

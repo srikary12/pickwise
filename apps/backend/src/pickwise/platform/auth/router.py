@@ -2,12 +2,15 @@
 """Authentication and current-user endpoints (/v1/auth, /v1/me, /v1/session)."""
 
 import secrets
+import uuid
 from typing import Annotated
 
-from fastapi import APIRouter, BackgroundTasks, Depends, Request, Response, status
+import httpx
+from fastapi import APIRouter, BackgroundTasks, Depends, Query, Request, Response, status
+from fastapi.responses import RedirectResponse
 
 from pickwise.platform import ratelimit
-from pickwise.platform.auth import service
+from pickwise.platform.auth import service, sso
 from pickwise.platform.auth.dependencies import (
     DB,
     AuthContext,
@@ -34,6 +37,8 @@ from pickwise.platform.auth.schemas import (
     RecoveryCodes,
     ResetPasswordRequest,
     SessionState,
+    SsoDiscovery,
+    SsoOption,
     SwitchTenantRequest,
     TenantSummary,
     TokenRequest,
@@ -377,3 +382,90 @@ async def switch_tenant(
     signed = await service.switch_tenant(db, settings, client, auth.session, body.tenant_id)
     _set_session_cookie(response, settings, signed)
     return await _state_after(db, settings, client, signed)
+
+
+# --- single sign-on -----------------------------------------------------------------------
+
+
+def get_http_client(request: Request) -> httpx.AsyncClient:
+    http: httpx.AsyncClient = request.app.state.http_client
+    return http
+
+
+@router.get("/auth/sso/discover", response_model=SsoDiscovery, dependencies=[Depends(public)])
+async def sso_discover(
+    email: Annotated[str, Query(max_length=254)],
+    db: DB,
+    settings: SettingsDep,
+    client: ClientDep,
+    side: SideDep,
+) -> SsoDiscovery:
+    """Which single sign-on options cover this email's domain (ids only)."""
+    await _limit(side, settings, ratelimit.LOOKUP_PER_IP, client.ip or "unknown")
+    options = await sso.discover(db, email)
+    return SsoDiscovery(
+        options=[
+            SsoOption(tenant_id=o.tenant_id, sso_config_id=o.sso_config_id, enforced=o.enforce_sso)
+            for o in options
+        ]
+    )
+
+
+@router.get(
+    "/auth/sso/start",
+    status_code=status.HTTP_303_SEE_OTHER,
+    dependencies=[Depends(public)],
+    response_class=RedirectResponse,
+)
+async def sso_start(
+    tenant_id: uuid.UUID,
+    sso_config_id: uuid.UUID,
+    db: DB,
+    settings: SettingsDep,
+    client: ClientDep,
+    side: SideDep,
+    http: Annotated[httpx.AsyncClient, Depends(get_http_client)],
+    login_hint: Annotated[str | None, Query(max_length=254)] = None,
+) -> RedirectResponse:
+    await _limit(side, settings, ratelimit.LOOKUP_PER_IP, client.ip or "unknown")
+    config = await sso.load_config(db, client, tenant_id, sso_config_id)
+    started = await sso.start(settings, http, config, login_hint)
+    response = RedirectResponse(started.authorization_url, status_code=status.HTTP_303_SEE_OTHER)
+    response.set_cookie(
+        sso.STATE_COOKIE,
+        started.state_cookie,
+        max_age=sso.STATE_TTL_SECONDS,
+        httponly=True,
+        secure=settings.secure_cookies,
+        samesite="lax",
+        path="/",
+    )
+    return response
+
+
+@router.get(
+    "/auth/sso/callback",
+    status_code=status.HTTP_303_SEE_OTHER,
+    dependencies=[Depends(public)],
+    response_class=RedirectResponse,
+)
+async def sso_callback(
+    request: Request,
+    code: Annotated[str, Query(max_length=2048)],
+    state: Annotated[str, Query(max_length=256)],
+    db: DB,
+    settings: SettingsDep,
+    kek: KekDep,
+    client: ClientDep,
+    http: Annotated[httpx.AsyncClient, Depends(get_http_client)],
+) -> RedirectResponse:
+    payload = sso.read_state(settings, request.cookies.get(sso.STATE_COOKIE), state)
+    signed = await sso.complete(db, settings, kek, http, client, payload, code)
+    response = RedirectResponse(
+        f"{settings.public_base_url}/", status_code=status.HTTP_303_SEE_OTHER
+    )
+    _set_session_cookie(response, settings, signed)
+    response.delete_cookie(
+        sso.STATE_COOKIE, path="/", secure=settings.secure_cookies, httponly=True, samesite="lax"
+    )
+    return response

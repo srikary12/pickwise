@@ -139,4 +139,16 @@ class SwitchTenantRequest(BaseModel):
     tenant_id: uuid.UUID
 
 
+class SsoOption(BaseModel):
+    tenant_id: uuid.UUID
+    sso_config_id: uuid.UUID
+    enforced: bool = Field(
+        description="Password sign-in is disabled for this organisation's members"
+    )
+
+
+class SsoDiscovery(BaseModel):
+    options: list[SsoOption]
+
+
 SessionState.model_rebuild()

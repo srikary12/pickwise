@@ -28,6 +28,8 @@ class SessionRecord:
     active_tenant_id: uuid.UUID | None
     mfa_verified: bool
     created_at: datetime
+    # Set when the session came from a tenant's SSO: it may only act in that tenant.
+    sso_tenant_id: uuid.UUID | None = None
 
 
 def session_cookie_name(settings: Settings) -> str:
@@ -49,16 +51,18 @@ async def create_session(
     mfa_verified: bool,
     ip: str | None,
     user_agent: str | None,
+    sso_tenant_id: uuid.UUID | None = None,
 ) -> tuple[str, SessionRecord]:
     token = new_token()
     row = (
         await db.execute(
             text(
                 "INSERT INTO platform.sessions "
-                "(user_id, active_tenant_id, token_hash, mfa_verified, ip, user_agent, expires_at) "
+                "(user_id, active_tenant_id, token_hash, mfa_verified, ip, user_agent, expires_at, "
+                " sso_tenant_id) "
                 "VALUES (:u, :t, :h, :mfa, CAST(:ip AS inet), :ua, "
-                "        now() + make_interval(hours => :hours)) "
-                "RETURNING id, user_id, active_tenant_id, mfa_verified, created_at"
+                "        now() + make_interval(hours => :hours), :sso) "
+                "RETURNING id, user_id, active_tenant_id, mfa_verified, created_at, sso_tenant_id"
             ),
             {
                 "u": user_id,
@@ -68,6 +72,7 @@ async def create_session(
                 "ip": ip,
                 "ua": (user_agent or "")[:512] or None,
                 "hours": settings.session_absolute_hours,
+                "sso": sso_tenant_id,
             },
         )
     ).one()
@@ -79,7 +84,7 @@ async def load_session(db: AsyncSession, settings: Settings, token: str) -> Sess
     row = (
         await db.execute(
             text(
-                "SELECT id, user_id, active_tenant_id, mfa_verified, created_at, "
+                "SELECT id, user_id, active_tenant_id, mfa_verified, created_at, sso_tenant_id, "
                 "       last_seen_at < now() - make_interval(secs => :touch) AS stale "
                 "FROM platform.sessions "
                 "WHERE token_hash = :h AND revoked_at IS NULL AND expires_at > now() "
@@ -99,7 +104,12 @@ async def load_session(db: AsyncSession, settings: Settings, token: str) -> Sess
             text("UPDATE platform.sessions SET last_seen_at = now() WHERE id = :id"), {"id": row.id}
         )
     return SessionRecord(
-        row.id, row.user_id, row.active_tenant_id, row.mfa_verified, row.created_at
+        row.id,
+        row.user_id,
+        row.active_tenant_id,
+        row.mfa_verified,
+        row.created_at,
+        row.sso_tenant_id,
     )
 
 
@@ -145,4 +155,5 @@ async def rotate(
         mfa_verified=mfa_verified,
         ip=ip,
         user_agent=user_agent,
+        sso_tenant_id=current.sso_tenant_id,
     )

@@ -4,6 +4,10 @@
 -- Replay protection for TOTP: the last accepted 30-second step.
 ALTER TABLE platform.users ADD COLUMN mfa_last_used_step bigint;
 
+-- A session opened through a tenant's identity provider only proves the user to
+-- that tenant, so it can't switch into their other tenants (ADR 0010).
+ALTER TABLE platform.sessions ADD COLUMN sso_tenant_id uuid REFERENCES platform.tenants (id);
+
 -- Secret template variables (link tokens) for tenant email, encrypted with the
 -- tenant data key and nulled once sent (ADR 0012).
 ALTER TABLE platform.email_outbox ADD COLUMN payload_enc bytea;

@@ -4,6 +4,7 @@
 from collections.abc import AsyncIterator
 from contextlib import AsyncExitStack, asynccontextmanager
 
+import httpx
 from fastapi import Depends, FastAPI, Request
 from fastapi.responses import JSONResponse
 
@@ -56,6 +57,11 @@ def create_app(settings: Settings | None = None, *, enqueue_jobs: bool = True) -
         )
         async with AsyncExitStack() as stack:
             stack.push_async_callback(database.dispose)
+            # Outbound calls (OIDC providers); tests swap in a mock transport.
+            if not hasattr(app.state, "http_client"):
+                app.state.http_client = await stack.enter_async_context(
+                    httpx.AsyncClient(timeout=10, follow_redirects=False)
+                )
             await run_startup_checks(settings, database.engine)
             if enqueue_jobs:
                 from pickwise.worker.app import app as jobs
