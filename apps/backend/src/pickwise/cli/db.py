@@ -14,7 +14,7 @@ from alembic.config import Config
 
 from pickwise.platform.crypto import kek_from_settings
 from pickwise.platform.crypto.keys import platform_key_aad, wrap_new_key
-from pickwise.platform.permissions import CATALOG
+from pickwise.platform.permissions import PERMISSIONS
 from pickwise.shared.logging import get_logger
 from pickwise.shared.settings import BootstrapSettings, Settings, get_settings
 
@@ -181,9 +181,10 @@ SEED_STEPS: tuple[tuple[str, str], ...] = (
 
 def sync_permissions(conn: psycopg.Connection[tuple[object, ...]]) -> None:
     """Make platform.permissions match the catalog in code (upsert, then delete the rest)."""
-    codes = [p.code for p in CATALOG]
+    catalog = PERMISSIONS.all()
+    codes = [p.code for p in catalog]
     with conn.transaction():
-        for p in CATALOG:
+        for p in catalog:
             conn.execute(
                 "INSERT INTO platform.permissions (code, module, description, is_sensitive) "
                 "VALUES (%s, %s, %s, %s) ON CONFLICT (code) DO UPDATE SET "
