@@ -53,6 +53,7 @@ RUN groupadd --system --gid 10001 pickwise \
 COPY --from=build /opt/venv /opt/venv
 COPY apps/backend/alembic.ini /app/apps/backend/alembic.ini
 COPY db/migrations /app/db/migrations
+COPY db/pii_classification.yaml /app/db/pii_classification.yaml
 WORKDIR /app/apps/backend
 USER pickwise
 EXPOSE 8000

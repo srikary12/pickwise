@@ -41,6 +41,18 @@ GRANT pickwise_ops   TO pickwise_maint    WITH INHERIT FALSE, SET TRUE;
 -- Objects created by migrations are owned by pickwise_owner.
 ALTER ROLE pickwise_migrator SET role = pickwise_owner;
 
+-- Per-login timeouts. A stuck request or job must not hold locks or connections
+-- forever. pickwise.cli.db.EXPECTED_ROLE_SETTINGS mirrors this table, and `migrate`
+-- verifies it (an older volume needs `make reset` to pick up changes).
+ALTER ROLE pickwise_api      SET statement_timeout = '30s';
+ALTER ROLE pickwise_api      SET idle_in_transaction_session_timeout = '60s';
+ALTER ROLE pickwise_worker   SET statement_timeout = '10min';
+ALTER ROLE pickwise_worker   SET idle_in_transaction_session_timeout = '60s';
+ALTER ROLE pickwise_maint    SET statement_timeout = 0;
+ALTER ROLE pickwise_maint    SET idle_in_transaction_session_timeout = '10min';
+ALTER ROLE pickwise_migrator SET statement_timeout = 0;
+ALTER ROLE pickwise_migrator SET idle_in_transaction_session_timeout = '10min';
+
 -- Database privileges -----------------------------------------------------------
 SELECT format('REVOKE ALL ON DATABASE %I FROM PUBLIC', current_database()) \gexec
 SELECT format('GRANT CONNECT, TEMPORARY ON DATABASE %I TO %s', current_database(),

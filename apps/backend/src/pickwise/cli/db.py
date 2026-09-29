@@ -12,6 +12,7 @@ import psycopg
 from alembic import command
 from alembic.config import Config
 
+from pickwise.platform.permissions import CATALOG
 from pickwise.shared.logging import get_logger
 from pickwise.shared.settings import BootstrapSettings, Settings
 
@@ -51,6 +52,22 @@ EXPECTED_MEMBERSHIPS = frozenset(
         Membership("pickwise_maint", "pickwise_ops", inherit=False, set_option=True),
     }
 )
+
+
+# db/bootstrap/00_roles.sql sets these per login user (ALTER ROLE … SET).
+EXPECTED_ROLE_SETTINGS: dict[str, dict[str, str]] = {
+    "pickwise_api": {"statement_timeout": "30s", "idle_in_transaction_session_timeout": "60s"},
+    "pickwise_worker": {
+        "statement_timeout": "10min",
+        "idle_in_transaction_session_timeout": "60s",
+    },
+    "pickwise_maint": {"statement_timeout": "0", "idle_in_transaction_session_timeout": "10min"},
+    "pickwise_migrator": {
+        "role": "pickwise_owner",
+        "statement_timeout": "0",
+        "idle_in_transaction_session_timeout": "10min",
+    },
+}
 
 
 class BootstrapError(RuntimeError):
@@ -125,6 +142,24 @@ def verify_role_model(conn: psycopg.Connection[tuple[object, ...]]) -> None:
     for extra in sorted(actual - EXPECTED_MEMBERSHIPS, key=str):
         problems.append(f"unexpected membership: {extra}")
 
+    setting_rows = conn.execute(
+        "SELECT r.rolname, unnest(s.setconfig) FROM pg_db_role_setting s "
+        "JOIN pg_roles r ON r.oid = s.setrole WHERE s.setdatabase = 0 "
+        "AND r.rolname LIKE 'pickwise\\_%'"
+    ).fetchall()
+    actual_settings: dict[str, dict[str, str]] = {}
+    for role, setting in setting_rows:
+        key, _, value = str(setting).partition("=")
+        actual_settings.setdefault(str(role), {})[key] = value
+    for role, expected in EXPECTED_ROLE_SETTINGS.items():
+        for key, value in expected.items():
+            got = actual_settings.get(role, {}).get(key)
+            if got != value:
+                problems.append(
+                    f"{role} has {key}={got!r}, expected {value!r} "
+                    "(an older database volume: run `make reset`)"
+                )
+
     if problems:
         raise BootstrapError("database role model is wrong:\n  - " + "\n  - ".join(problems))
 
@@ -141,15 +176,37 @@ SEED_STEPS: tuple[tuple[str, str], ...] = (
 )
 
 
+def sync_permissions(conn: psycopg.Connection[tuple[object, ...]]) -> None:
+    """Make platform.permissions match the catalog in code (upsert, then delete the rest)."""
+    codes = [p.code for p in CATALOG]
+    with conn.transaction():
+        for p in CATALOG:
+            conn.execute(
+                "INSERT INTO platform.permissions (code, module, description, is_sensitive) "
+                "VALUES (%s, %s, %s, %s) ON CONFLICT (code) DO UPDATE SET "
+                "module = EXCLUDED.module, description = EXCLUDED.description, "
+                "is_sensitive = EXCLUDED.is_sensitive",
+                (p.code, p.module, p.description, p.is_sensitive),
+            )
+        removed = conn.execute(
+            "DELETE FROM platform.permissions WHERE NOT (code = ANY(%s))", (codes,)
+        ).rowcount
+    log.info("permission catalog synced", permissions=len(codes), removed=removed)
+
+
 def seed_reference_data(conn: psycopg.Connection[tuple[object, ...]]) -> list[str]:
+    seeders = {"platform.permissions": sync_permissions}
     ran: list[str] = []
     for label, table in SEED_STEPS:
         exists = conn.execute("SELECT to_regclass(%s) IS NOT NULL", (table,)).fetchone()
         if not exists or not exists[0]:
             log.info("seed skipped: table not present yet", step=label, table=table)
             continue
-        # The seeders themselves arrive with their tables (Phases 1-2 and 8).
-        raise BootstrapError(f"{table} exists but no seeder is registered for {label}")
+        seeder = seeders.get(table)
+        if seeder is None:
+            raise BootstrapError(f"{table} exists but no seeder is registered for {label}")
+        seeder(conn)
+        ran.append(label)
     return ran
 
 

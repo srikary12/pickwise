@@ -14,7 +14,10 @@ import psycopg
 import typer
 
 from pickwise.cli import db as db_cli
+from pickwise.platform.partitions import ensure_partitions
 from pickwise.platform.scanning import ScannerError, build_scanner, eicar_bytes, iter_bytes
+from pickwise.shared import pii
+from pickwise.shared.db import Database, ops_command
 from pickwise.shared.logging import configure_logging, get_logger
 from pickwise.shared.settings import BootstrapSettings, ScannerKind, Settings, get_settings
 
@@ -23,10 +26,12 @@ db_app = typer.Typer(no_args_is_help=True, help="Database bootstrap, migrations 
 demo_app = typer.Typer(no_args_is_help=True, help="Demo data (development and test only).")
 openapi_app = typer.Typer(no_args_is_help=True, help="OpenAPI schema.")
 worker_app = typer.Typer(no_args_is_help=True, help="Worker utilities.")
+docs_app = typer.Typer(no_args_is_help=True, help="Generated documentation.")
 app.add_typer(db_app, name="db")
 app.add_typer(demo_app, name="demo")
 app.add_typer(openapi_app, name="openapi")
 app.add_typer(worker_app, name="worker")
+app.add_typer(docs_app, name="docs")
 
 log = get_logger("pickwise.cli")
 
@@ -74,18 +79,35 @@ def db_seed() -> None:
         db_cli.seed_reference_data(conn)
 
 
+@db_app.command("ensure-partitions")
+@ops_command
+def db_ensure_partitions() -> None:
+    """Create missing monthly partitions now (the worker also does this daily).
+
+    Run as pickwise_maint (DATABASE_USER=pickwise_maint).
+    """
+
+    async def run() -> dict[str, int]:
+        database = Database.from_settings(get_settings())
+        try:
+            async with database.ops_session() as session:
+                return await ensure_partitions(session)
+        finally:
+            await database.dispose()
+
+    for table, created in asyncio.run(run()).items():
+        typer.echo(f"{table}: {created} partition(s) created")
+
+
 @demo_app.command("seed")
 def demo_seed() -> None:
     """Create the demo tenants (acme, globex). Never runs in production."""
     settings = get_settings()
     if settings.is_production:
         _fail("demo data is never seeded when PICKWISE_ENV=production")
-    with psycopg.connect(settings.psycopg_conninfo()) as conn:
-        row = conn.execute("SELECT to_regclass('platform.tenants') IS NOT NULL").fetchone()
-    if not row or not row[0]:
-        typer.echo("demo seed skipped: platform.tenants doesn't exist yet (arrives in Phase 1)")
-        return
-    _fail("platform.tenants exists but the demo seeder hasn't been written yet")
+    # Demo tenants are created through tenant provisioning (keys, roles, hooks),
+    # which arrives in Phase 2.
+    typer.echo("demo seed skipped: tenant provisioning arrives in Phase 2")
 
 
 @openapi_app.command("export")
@@ -149,6 +171,23 @@ def worker_health(
         return
     if not row or not row[0]:
         _fail("worker unhealthy: no recent heartbeat")
+
+
+@docs_app.command("pii")
+def docs_pii(
+    doc: Annotated[Path, typer.Option(help="Document with the generated-section markers")] = Path(
+        "docs/DATA_MODEL.md"
+    ),
+) -> None:
+    """Regenerate the PII classification section of DATA_MODEL.md from the YAML."""
+    columns = pii.load()
+    if not doc.exists():
+        _fail(f"{doc} not found (the design docs are kept locally, outside git)")
+    updated = pii.replace_generated_section(
+        doc.read_text(encoding="utf-8"), pii.render_markdown(columns)
+    )
+    doc.write_text(updated, encoding="utf-8")
+    typer.echo(f"wrote {len(columns)} classified columns into {doc}")
 
 
 def main() -> None:

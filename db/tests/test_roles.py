@@ -59,7 +59,7 @@ def test_api_cannot_become_ops(connect: Connect) -> None:
 @pytest.mark.parametrize("user", ["pickwise_api", "pickwise_worker", "pickwise_maint"])
 def test_app_users_cannot_create_objects(connect: Connect, user: str) -> None:
     conn = connect(user)
-    for schema in ("public", "queue"):
+    for schema in ("public", "queue", "platform", "audit"):
         with pytest.raises(psycopg.errors.InsufficientPrivilege), conn.transaction():
             conn.execute(f"CREATE TABLE {schema}.should_not_exist (id int)")
 
@@ -94,3 +94,23 @@ def test_queue_routines_pin_their_search_path(connect: Connect) -> None:
         .fetchall()
     )
     assert rows == []
+
+
+@pytest.mark.parametrize(
+    ("user", "statement_timeout", "idle_timeout"),
+    [
+        ("pickwise_api", "30s", "1min"),
+        ("pickwise_worker", "10min", "1min"),
+        ("pickwise_maint", "0", "10min"),
+        ("pickwise_migrator", "0", "10min"),
+    ],
+)
+def test_per_login_timeouts(
+    connect: Connect, user: str, statement_timeout: str, idle_timeout: str
+) -> None:
+    conn = connect(user)
+    row = conn.execute(
+        "SELECT current_setting('statement_timeout'), "
+        "current_setting('idle_in_transaction_session_timeout')"
+    ).fetchone()
+    assert row == (statement_timeout, idle_timeout)

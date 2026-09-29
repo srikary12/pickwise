@@ -39,14 +39,22 @@ def test_verify_logins_explains_a_password_mismatch() -> None:
 def test_migrations_round_trip(connect: Connect) -> None:
     cfg = Config(str(alembic_ini()))
     command.downgrade(cfg, "base")
-    gone = connect("pickwise_api").execute("SELECT to_regnamespace('queue')").fetchone()
-    assert gone == (None,)
-    command.upgrade(cfg, "head")
-    row = (
+    gone = (
         connect("pickwise_api")
-        .execute("SELECT count(*) FROM pg_tables WHERE schemaname = 'queue'")
+        .execute("SELECT to_regnamespace('queue'), to_regnamespace('platform')")
         .fetchone()
     )
+    assert gone == (None, None)
+    command.upgrade(cfg, "head")
+    api = connect("pickwise_api")
+    row = api.execute("SELECT count(*) FROM pg_tables WHERE schemaname = 'queue'").fetchone()
     assert row is not None
     assert isinstance(row[0], int)
     assert row[0] >= 4
+    restored = api.execute(
+        "SELECT to_regprocedure('platform.list_memberships_for_user(uuid)') IS NOT NULL, "
+        "to_regprocedure('platform.purge_tenant(uuid)') IS NOT NULL, "
+        "(SELECT count(*) FROM pg_policies WHERE schemaname = 'platform' AND tablename = 'memberships'), "
+        "(SELECT count(*) FROM pg_inherits WHERE inhparent = 'audit.events'::regclass) > 0"
+    ).fetchone()
+    assert restored == (True, True, 3, True)
