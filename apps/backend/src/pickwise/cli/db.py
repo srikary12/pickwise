@@ -12,9 +12,11 @@ import psycopg
 from alembic import command
 from alembic.config import Config
 
+from pickwise.platform.crypto import kek_from_settings
+from pickwise.platform.crypto.keys import platform_key_aad, wrap_new_key
 from pickwise.platform.permissions import CATALOG
 from pickwise.shared.logging import get_logger
-from pickwise.shared.settings import BootstrapSettings, Settings
+from pickwise.shared.settings import BootstrapSettings, Settings, get_settings
 
 log = get_logger("pickwise.db")
 
@@ -171,6 +173,7 @@ def run_migrations(revision: str = "head") -> None:
 
 # Reference-data seeds. Each is a no-op until the phase that creates its table.
 SEED_STEPS: tuple[tuple[str, str], ...] = (
+    ("platform data key", "platform.platform_keys"),
     ("permission catalog", "platform.permissions"),
     ("statutory rule sets", "payroll.statutory_rule_sets"),
 )
@@ -194,8 +197,30 @@ def sync_permissions(conn: psycopg.Connection[tuple[object, ...]]) -> None:
     log.info("permission catalog synced", permissions=len(codes), removed=removed)
 
 
+def ensure_platform_data_key(conn: psycopg.Connection[tuple[object, ...]]) -> None:
+    """Create the first platform data key (wrapped by the KEK) if there is none."""
+    row = conn.execute(
+        "SELECT count(*) FROM platform.platform_keys WHERE purpose = 'data' AND status = 'active'"
+    ).fetchone()
+    if row and row[0]:
+        log.info("platform data key present")
+        return
+    kek = kek_from_settings(get_settings())
+    _material, wrapped = wrap_new_key(kek, platform_key_aad("data", 1))
+    with conn.transaction():
+        conn.execute(
+            "INSERT INTO platform.platform_keys (purpose, version, wrapped_key, kek_id) "
+            "VALUES ('data', 1, %s, %s)",
+            (wrapped, kek.kek_id),
+        )
+    log.info("platform data key created", version=1)
+
+
 def seed_reference_data(conn: psycopg.Connection[tuple[object, ...]]) -> list[str]:
-    seeders = {"platform.permissions": sync_permissions}
+    seeders = {
+        "platform.platform_keys": ensure_platform_data_key,
+        "platform.permissions": sync_permissions,
+    }
     ran: list[str] = []
     for label, table in SEED_STEPS:
         exists = conn.execute("SELECT to_regclass(%s) IS NOT NULL", (table,)).fetchone()
