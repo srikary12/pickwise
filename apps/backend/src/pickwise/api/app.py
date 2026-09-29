@@ -15,10 +15,13 @@ from pickwise.api.middleware import (
     RequestContextMiddleware,
     SecurityHeadersMiddleware,
 )
+from pickwise.platform.admin.router import router as admin_router
 from pickwise.platform.auth.dependencies import csrf_protect
 from pickwise.platform.auth.router import router as auth_router
 from pickwise.platform.crypto import kek_from_settings
+from pickwise.platform.jobs import set_job_queue
 from pickwise.platform.notifications.email import QueuedEmail, set_dispatcher
+from pickwise.platform.provisioning.router import router as signup_router
 from pickwise.platform.scanning import StubScanner
 from pickwise.platform.scanning.stub import STUB_WARNING
 from pickwise.platform.startup_checks import check_settings, run_startup_checks
@@ -28,6 +31,12 @@ from pickwise.shared.logging import configure_logging, get_logger
 from pickwise.shared.settings import ScannerKind, Settings, get_settings
 
 log = get_logger(__name__)
+
+
+async def _defer_job(task_name: str, **kwargs: str | None) -> None:
+    from pickwise.worker.app import app as jobs_app
+
+    await jobs_app.configure_task(task_name).defer_async(**kwargs)
 
 
 async def _defer_email(email: QueuedEmail) -> None:
@@ -68,7 +77,9 @@ def create_app(settings: Settings | None = None, *, enqueue_jobs: bool = True) -
 
                 await stack.enter_async_context(jobs.open_async())
                 set_dispatcher(_defer_email)
+                set_job_queue(_defer_job)
                 stack.callback(set_dispatcher, None)
+                stack.callback(set_job_queue, None)
             if settings.scanner is ScannerKind.STUB:
                 log.warning(STUB_WARNING, scanner=StubScanner.name)
             log.info("api started", environment=settings.pickwise_env.value)
@@ -96,4 +107,6 @@ def create_app(settings: Settings | None = None, *, enqueue_jobs: bool = True) -
     app.add_middleware(RequestContextMiddleware)
     app.include_router(health.router)
     app.include_router(auth_router)
+    app.include_router(admin_router)
+    app.include_router(signup_router)
     return app

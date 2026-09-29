@@ -8,6 +8,10 @@ ALTER TABLE platform.users ADD COLUMN mfa_last_used_step bigint;
 -- that tenant, so it can't switch into their other tenants (ADR 0010).
 ALTER TABLE platform.sessions ADD COLUMN sso_tenant_id uuid REFERENCES platform.tenants (id);
 
+-- Self-serve signup keeps the organisation name the requester typed (ADR 0007).
+ALTER TABLE platform.signup_requests ADD COLUMN requested_name text
+    CHECK (requested_name IS NULL OR length(requested_name) BETWEEN 1 AND 200);
+
 -- Secret template variables (link tokens) for tenant email, encrypted with the
 -- tenant data key and nulled once sent (ADR 0012).
 ALTER TABLE platform.email_outbox ADD COLUMN payload_enc bytea;

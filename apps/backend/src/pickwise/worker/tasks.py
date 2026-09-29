@@ -3,9 +3,11 @@
 
 import uuid
 
+from pickwise.platform import ratelimit
 from pickwise.platform.crypto import kek_from_settings
-from pickwise.platform.notifications.email import due_emails, send_queued
+from pickwise.platform.notifications.email import dispatch, due_emails, send_queued
 from pickwise.platform.partitions import ensure_partitions
+from pickwise.platform.provisioning import signup
 from pickwise.shared.db import ops_task
 from pickwise.shared.logging import get_logger
 from pickwise.shared.settings import get_settings
@@ -61,3 +63,26 @@ async def sweep_emails(timestamp: int) -> None:
     for email in pending:
         async with get_database().ops_session() as session:
             await send_queued(session, settings, kek, email.outbox_id, email.tenant_id)
+
+
+@app.task(name="pickwise.provision_signup", queue="default", retry=3)
+@ops_task
+async def provision_signup(signup_id: str) -> None:
+    """Create the tenant for a verified self-serve signup (ADR 0007)."""
+    settings = get_settings()
+    async with get_database().ops_session() as session:
+        invite = await signup.provision(
+            session, settings, kek_from_settings(settings), uuid.UUID(signup_id)
+        )
+    if invite is not None:
+        await dispatch([invite])
+
+
+@app.periodic(cron="41 3 * * *", periodic_id="prune_rate_limits")
+@app.task(name="pickwise.prune_rate_limits", queue="default", queueing_lock="prune_rate_limits")
+@ops_task
+async def prune_rate_limits(timestamp: int) -> None:
+    """Daily: drop rate-limit buckets idle for a day (they'd be full again anyway)."""
+    async with get_database().ops_session() as session:
+        removed = await ratelimit.prune(session)
+    log.info("rate-limit buckets pruned", removed=removed)

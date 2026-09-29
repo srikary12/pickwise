@@ -4,6 +4,7 @@
 import asyncio
 
 from pickwise import wiring
+from pickwise.platform.jobs import set_job_queue
 from pickwise.platform.notifications.email import QueuedEmail, set_dispatcher
 from pickwise.platform.scanning.stub import STUB_WARNING
 from pickwise.platform.startup_checks import run_startup_checks
@@ -37,6 +38,11 @@ async def main() -> None:
             )
 
         set_dispatcher(defer)
+
+        async def defer_job(task_name: str, **kwargs: str | None) -> None:
+            await app.configure_task(task_name).defer_async(**kwargs)
+
+        set_job_queue(defer_job)
         await app.run_worker_async(install_signal_handlers=True)
 
 
