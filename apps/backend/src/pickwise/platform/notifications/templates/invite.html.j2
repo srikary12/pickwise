@@ -1,0 +1,6 @@
+{#- SPDX-License-Identifier: AGPL-3.0-only -#}
+{% extends "_layout.html.j2" %}{% block body %}
+<p>You've been invited to join <strong>{{ tenant_name }}</strong> on Pickwise.</p>
+<p><a href="{{ link }}">Accept the invitation</a></p>
+<p>The link works once and expires in {{ expires_days }} days.</p>
+{% endblock %}

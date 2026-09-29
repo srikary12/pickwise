@@ -14,6 +14,7 @@ import psycopg
 import typer
 
 from pickwise.cli import db as db_cli
+from pickwise.cli import tenants as tenants_cli
 from pickwise.platform.partitions import ensure_partitions
 from pickwise.platform.scanning import ScannerError, build_scanner, eicar_bytes, iter_bytes
 from pickwise.shared import pii
@@ -32,6 +33,7 @@ app.add_typer(demo_app, name="demo")
 app.add_typer(openapi_app, name="openapi")
 app.add_typer(worker_app, name="worker")
 app.add_typer(docs_app, name="docs")
+app.add_typer(tenants_cli.tenant_app, name="tenant")
 
 log = get_logger("pickwise.cli")
 
@@ -105,9 +107,11 @@ def demo_seed() -> None:
     settings = get_settings()
     if settings.is_production:
         _fail("demo data is never seeded when PICKWISE_ENV=production")
-    # Demo tenants are created through tenant provisioning (keys, roles, hooks),
-    # which arrives in Phase 2.
-    typer.echo("demo seed skipped: tenant provisioning arrives in Phase 2")
+    logins = tenants_cli.seed_demo()
+    typer.echo("Demo tenants ready (acme, globex). Sign in at the web app with:")
+    for email in logins:
+        typer.echo(f"  {email}")
+    typer.echo("  password: the DEMO_PASSWORD value in your .env")
 
 
 @openapi_app.command("export")
