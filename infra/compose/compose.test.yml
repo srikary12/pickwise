@@ -33,6 +33,10 @@ services:
       DATABASE_NAME: pickwise
       DATABASE_USER: pickwise_maint
       DATABASE_PASSWORD: ${PG_MAINT_PASSWORD}
+      PICKWISE_KEK: ${PICKWISE_KEK}
+      SESSION_SECRET: ${SESSION_SECRET}
+      DEMO_PASSWORD: ${DEMO_PASSWORD}
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:3000}
     depends_on:
       migrate:
         condition: service_completed_successfully
@@ -43,6 +47,14 @@ services:
       - /data:size=256m
     volumes: !override
       - ./infra/docker/s3/seaweedfs-entrypoint.sh:/pickwise/seaweedfs-entrypoint.sh:ro
+
+  mailpit:
+    image: axllent/mailpit:v1.31.3@sha256:ed9b00c609e77e99c79b93f1178255ebc271868920f2c69a8d166bd5634ed10d
+    healthcheck:
+      test: ["CMD", "/mailpit", "readyz"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
 
   backend-test:
     build: *backend-dev
@@ -67,6 +79,13 @@ services:
       S3_BUCKET_FILES: ${S3_BUCKET_FILES:-pickwise-files}
       S3_BUCKET_QUARANTINE: ${S3_BUCKET_QUARANTINE:-pickwise-quarantine}
       SCANNER: stub
+      PICKWISE_KEK: ${PICKWISE_KEK}
+      SESSION_SECRET: ${SESSION_SECRET}
+      DEMO_PASSWORD: ${DEMO_PASSWORD}
+      PUBLIC_BASE_URL: http://localhost:3000
+      SMTP_HOST: mailpit
+      SMTP_PORT: "1025"
+      MAILPIT_URL: http://mailpit:8025
       PYTHONDONTWRITEBYTECODE: "1"
       PYTEST_ADDOPTS: "-p no:cacheprovider"
     volumes:
@@ -77,3 +96,5 @@ services:
         condition: service_completed_successfully
       s3-init:
         condition: service_completed_successfully
+      mailpit:
+        condition: service_healthy

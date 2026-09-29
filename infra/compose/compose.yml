@@ -32,6 +32,11 @@ x-app-env: &app-env
   PICKWISE_KEK: ${PICKWISE_KEK:?run make dev to generate .env}
   SESSION_SECRET: ${SESSION_SECRET:?run make dev to generate .env}
   JEV_MODEL: ${JEV_MODEL:-jev-1.13.0}
+  PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:3000}
+  SIGNUP_ENABLED: ${SIGNUP_ENABLED:-false}
+  # The reverse proxy (Next.js in dev, Caddy in prod) reaches the API over the
+  # compose network; only those addresses may set X-Forwarded-For.
+  TRUSTED_PROXIES: ${TRUSTED_PROXIES:-10.0.0.0/8,172.16.0.0/12,192.168.0.0/16}
 
 services:
   postgres:
@@ -69,6 +74,8 @@ services:
       PG_API_PASSWORD: ${PG_API_PASSWORD}
       PG_WORKER_PASSWORD: ${PG_WORKER_PASSWORD}
       PG_MAINT_PASSWORD: ${PG_MAINT_PASSWORD}
+      # migrate creates the first platform data key, wrapped by the KEK.
+      PICKWISE_KEK: ${PICKWISE_KEK:?run make dev to generate .env}
     depends_on:
       postgres:
         condition: service_healthy

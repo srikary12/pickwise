@@ -35,3 +35,5 @@ fill PG_WORKER_PASSWORD "$(hex 24)"
 fill PG_MAINT_PASSWORD "$(hex 24)"
 fill S3_ACCESS_KEY_ID "pickwise$(hex 8)"
 fill S3_SECRET_ACCESS_KEY "$(hex 32)"
+# Readable but unguessable, so demo logins are easy to type.
+fill DEMO_PASSWORD "demo-$(hex 8)"

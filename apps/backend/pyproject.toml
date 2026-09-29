@@ -19,6 +19,12 @@ dependencies = [
     "aioboto3>=15.5.0",
     "typer>=0.27.2",
     "pyyaml>=6.0.3",
+    "argon2-cffi>=25.1.0",
+    "cryptography>=50.0.1",
+    "pyotp>=2.10.0",
+    "authlib>=1.8.0",
+    "jinja2>=3.1.6",
+    "httpx>=0.28.1",
 ]
 
 [project.scripts]
@@ -33,7 +39,6 @@ dev = [
     "pytest-cov>=7.1.0",
     "hypothesis>=6.168.3",
     "import-linter>=2.15",
-    "httpx>=0.28.1",
     "types-pyyaml>=6.0.12.20260906",
 ]
 

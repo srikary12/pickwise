@@ -20,6 +20,18 @@ def check_settings(settings: Settings) -> None:
             "SCANNER=stub is not allowed when PICKWISE_ENV=production: "
             "set SCANNER=clamav and run clamd"
         )
+    if not settings.is_production:
+        return
+    if len(settings.session_secret.get_secret_value()) < 32:
+        raise UnsafeConfigurationError(
+            "SESSION_SECRET must be at least 32 characters in production"
+        )
+    if not settings.pickwise_kek.get_secret_value():
+        raise UnsafeConfigurationError("PICKWISE_KEK must be set in production")
+    if not settings.secure_cookies:
+        raise UnsafeConfigurationError("PUBLIC_BASE_URL must be https:// in production")
+    if settings.demo_password.get_secret_value():
+        raise UnsafeConfigurationError("DEMO_PASSWORD must not be set in production")
 
 
 async def check_database(settings: Settings, engine: AsyncEngine) -> None:
