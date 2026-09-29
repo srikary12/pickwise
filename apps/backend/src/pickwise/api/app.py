@@ -2,42 +2,71 @@
 """FastAPI application factory (composition root for the HTTP process)."""
 
 from collections.abc import AsyncIterator
-from contextlib import asynccontextmanager
+from contextlib import AsyncExitStack, asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI, Request
+from fastapi.responses import JSONResponse
 
-from pickwise import __version__
+from pickwise import __version__, wiring
 from pickwise.api import health
-from pickwise.api.middleware import RequestContextMiddleware
+from pickwise.api.middleware import (
+    ClientIpMiddleware,
+    RequestContextMiddleware,
+    SecurityHeadersMiddleware,
+)
+from pickwise.platform.auth.dependencies import csrf_protect
+from pickwise.platform.auth.router import router as auth_router
+from pickwise.platform.crypto import kek_from_settings
+from pickwise.platform.notifications.email import QueuedEmail, set_dispatcher
 from pickwise.platform.scanning import StubScanner
 from pickwise.platform.scanning.stub import STUB_WARNING
 from pickwise.platform.startup_checks import check_settings, run_startup_checks
-from pickwise.shared.db import create_engine
+from pickwise.shared.db import Database
+from pickwise.shared.errors import AppError
 from pickwise.shared.logging import configure_logging, get_logger
 from pickwise.shared.settings import ScannerKind, Settings, get_settings
 
 log = get_logger(__name__)
 
 
-def create_app(settings: Settings | None = None) -> FastAPI:
+async def _defer_email(email: QueuedEmail) -> None:
+    from pickwise.worker.tasks import send_email
+
+    await send_email.defer_async(
+        outbox_id=str(email.outbox_id),
+        tenant_id=str(email.tenant_id) if email.tenant_id else None,
+    )
+
+
+def create_app(settings: Settings | None = None, *, enqueue_jobs: bool = True) -> FastAPI:
     settings = settings or get_settings()
     configure_logging(settings.log_level)
     # Fail fast on configuration alone, before any connection is opened.
     check_settings(settings)
+    wiring.register_all()
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-        engine = create_engine(settings)
+        database = Database.from_settings(settings)
         app.state.settings = settings
-        app.state.engine = engine
-        try:
-            await run_startup_checks(settings, engine)
+        app.state.database = database
+        app.state.engine = database.engine
+        app.state.kek = (
+            kek_from_settings(settings) if settings.pickwise_kek.get_secret_value() else None
+        )
+        async with AsyncExitStack() as stack:
+            stack.push_async_callback(database.dispose)
+            await run_startup_checks(settings, database.engine)
+            if enqueue_jobs:
+                from pickwise.worker.app import app as jobs
+
+                await stack.enter_async_context(jobs.open_async())
+                set_dispatcher(_defer_email)
+                stack.callback(set_dispatcher, None)
             if settings.scanner is ScannerKind.STUB:
                 log.warning(STUB_WARNING, scanner=StubScanner.name)
             log.info("api started", environment=settings.pickwise_env.value)
             yield
-        finally:
-            await engine.dispose()
 
     app = FastAPI(
         title="Pickwise API",
@@ -45,7 +74,20 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         lifespan=lifespan,
         docs_url=None if settings.is_production else "/docs",
         redoc_url=None,
+        dependencies=[Depends(csrf_protect)],
     )
+
+    app.state.settings = settings
+
+    @app.exception_handler(AppError)
+    async def app_error(_request: Request, exc: AppError) -> JSONResponse:
+        body = {"error": {"code": exc.code, "message": exc.message, **exc.details}}
+        return JSONResponse(body, status_code=exc.status_code, headers=exc.headers)
+
+    # Starlette runs middleware in reverse order of addition: request id first.
+    app.add_middleware(SecurityHeadersMiddleware, hsts=settings.secure_cookies)
+    app.add_middleware(ClientIpMiddleware, trusted=settings.trusted_proxy_networks())
     app.add_middleware(RequestContextMiddleware)
     app.include_router(health.router)
+    app.include_router(auth_router)
     return app

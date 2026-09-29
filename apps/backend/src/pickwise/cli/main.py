@@ -13,6 +13,7 @@ from typing import Annotated
 import psycopg
 import typer
 
+from pickwise import wiring
 from pickwise.cli import db as db_cli
 from pickwise.cli import tenants as tenants_cli
 from pickwise.platform.partitions import ensure_partitions
@@ -41,6 +42,7 @@ log = get_logger("pickwise.cli")
 @app.callback()
 def _setup() -> None:
     configure_logging(get_settings().log_level)
+    wiring.register_all()
 
 
 def _fail(message: str) -> None:
