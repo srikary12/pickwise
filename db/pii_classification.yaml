@@ -53,6 +53,13 @@ tables:
   platform.email_outbox:
     to_address: confidential
     payload: confidential
+    payload_enc: restricted
+  platform.platform_email_outbox:
+    to_address: confidential
+    payload: confidential
+    payload_enc: restricted
+  platform.rate_limit_buckets:
+    key_hash: restricted
   platform.outbox_events:
     payload: confidential
   platform.webhook_endpoints:

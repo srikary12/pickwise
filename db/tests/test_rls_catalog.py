@@ -23,6 +23,8 @@ EXPECTED_GLOBAL = {
     "platform.mfa_recovery_codes",
     "platform.platform_keys",
     "platform.signup_requests",
+    "platform.platform_email_outbox",
+    "platform.rate_limit_buckets",
 }
 
 EXPECTED_POLICIES = {
