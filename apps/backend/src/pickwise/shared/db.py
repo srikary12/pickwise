@@ -76,7 +76,7 @@ class Database:
     @asynccontextmanager
     async def tenant_session(self, ctx: RequestContext) -> AsyncIterator[AsyncSession]:
         async with self._sessions() as session, session.begin():
-            await session.execute(_SET_CONTEXT, _context_params(ctx.settings()))
+            await set_context(session, ctx)
             yield session
 
     @asynccontextmanager
@@ -91,6 +91,16 @@ class Database:
             await session.execute(text("SET LOCAL ROLE pickwise_ops"))
             await session.execute(_SET_CONTEXT, _context_params(ctx.settings()))
             yield session
+
+
+async def set_context(session: AsyncSession, ctx: RequestContext) -> None:
+    """(Re)set the transaction-local request context.
+
+    A request starts with no tenant (authentication reads only global tables and
+    the SECURITY DEFINER lookups); once the caller is known, the API narrows the
+    same transaction to their tenant and user.
+    """
+    await session.execute(_SET_CONTEXT, _context_params(ctx.settings()))
 
 
 def _context_params(values: dict[str, str]) -> dict[str, str]:

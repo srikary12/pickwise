@@ -11,11 +11,12 @@ from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
+from pickwise.platform.auth.dependencies import public
 from pickwise.platform.storage import buckets_reachable
 from pickwise.shared.logging import get_logger
 from pickwise.shared.settings import Settings
 
-router = APIRouter(tags=["health"])
+router = APIRouter(tags=["health"], dependencies=[Depends(public)])
 log = get_logger(__name__)
 
 

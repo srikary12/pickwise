@@ -18,8 +18,9 @@ import pickwise.worker.tasks  # noqa: F401 - registers the tasks
 from pickwise.worker.app import app
 
 ALLOWED_TYPES: tuple[type, ...] = (uuid.UUID, int, bool, datetime.date, datetime.datetime)
-# A str is allowed only for opaque keys/codes such as an idempotency key or a leave-type code.
-ALLOWED_STR_SUFFIXES = ("_key", "_code")
+# A str is allowed only for ids (job arguments are JSON, so UUIDs travel as strings)
+# and opaque keys/codes such as an idempotency key or a leave-type code.
+ALLOWED_STR_SUFFIXES = ("_id", "_key", "_code")
 
 
 def _allowed(name: str, annotation: object) -> bool:
@@ -54,6 +55,8 @@ def test_registered_tasks_take_only_ids_and_keys() -> None:
 
 def test_the_check_rejects_free_text() -> None:
     assert not _allowed("candidate_name", str)
+    assert not _allowed("email", str)
+    assert _allowed("outbox_id", str)
     assert not _allowed("salary", float)
     assert not _allowed("payload", dict)
     assert _allowed("idempotency_key", str)

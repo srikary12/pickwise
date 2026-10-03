@@ -2,8 +2,14 @@
 import os
 
 import pytest
+from hypothesis import settings as hypothesis_settings
 
 from pickwise.shared.settings import Settings
+
+# The source tree is mounted read-only in the test container; keep Hypothesis's
+# example database in memory instead of warning about it.
+hypothesis_settings.register_profile("pickwise", database=None)
+hypothesis_settings.load_profile("pickwise")
 
 
 def _stack_available() -> bool:

@@ -7,6 +7,7 @@ migrate container additionally receives every login password so it can verify
 them (see ``BootstrapSettings``).
 """
 
+import ipaddress
 from enum import StrEnum
 from functools import lru_cache
 from urllib.parse import quote
@@ -52,9 +53,50 @@ class Settings(BaseSettings):
 
     readiness_timeout_seconds: float = Field(default=3.0, gt=0)
 
+    # --- crypto and sessions ------------------------------------------------
+    # PICKWISE_KEK: the only global crypto secret (base64, 32 bytes). It wraps the
+    # platform and tenant data keys (ADR 0006, CLAUDE.md "Crypto").
+    pickwise_kek: SecretStr = SecretStr("")
+    # SESSION_SECRET: HMAC key for signed short-lived cookies (SSO state) and
+    # rate-limit keys. Session tokens themselves are random, not signed.
+    session_secret: SecretStr = SecretStr("")
+    session_idle_minutes: int = Field(default=60, gt=0)
+    session_absolute_hours: int = Field(default=12, gt=0)
+
+    # The browser-facing origin; links in emails point here, and the API is
+    # served under <public_base_url>/api (same origin, ADR 0010).
+    public_base_url: str = "http://localhost:3000"
+    # Comma-separated CIDRs whose X-Forwarded-For we trust (the reverse proxy).
+    trusted_proxies: str = ""
+
+    signup_enabled: bool = False
+    breached_password_check: bool = False
+
+    # --- email ----------------------------------------------------------------
+    smtp_host: str = "mailpit"
+    smtp_port: int = 1025
+    smtp_username: str = ""
+    smtp_password: SecretStr = SecretStr("")
+    smtp_starttls: bool = False
+    smtp_from: str = "Pickwise <no-reply@pickwise.localhost>"
+
+    # Development/test only: the demo seed's login password.
+    demo_password: SecretStr = SecretStr("")
+
     @property
     def is_production(self) -> bool:
         return self.pickwise_env is Environment.PRODUCTION
+
+    @property
+    def secure_cookies(self) -> bool:
+        return self.public_base_url.startswith("https://")
+
+    def trusted_proxy_networks(self) -> list[ipaddress.IPv4Network | ipaddress.IPv6Network]:
+        return [
+            ipaddress.ip_network(part.strip(), strict=False)
+            for part in self.trusted_proxies.split(",")
+            if part.strip()
+        ]
 
     def sqlalchemy_url(self) -> str:
         """asyncpg URL for SQLAlchemy (API and worker request traffic)."""

@@ -81,7 +81,7 @@ jobs:
         run: |
           cp .env.example .env
           sed -i 's/^\([A-Z0-9_]*\(PASSWORD\|SECRET\|KEK\|KEY_ID\|ACCESS_KEY\)\)=$/\1=ci/' .env
-          PICKWISE_VERSION=ci PICKWISE_DOMAIN=example.com PICKWISE_API_DOMAIN=api.example.com SMTP_HOST=smtp \
+          PICKWISE_VERSION=ci PICKWISE_DOMAIN=example.com SMTP_HOST=smtp \
             docker compose --env-file .env --project-directory . \
             -f infra/compose/compose.yml -f infra/compose/compose.prod.yml config -q
 
