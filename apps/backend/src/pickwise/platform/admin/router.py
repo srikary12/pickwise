@@ -305,7 +305,7 @@ async def _roles(db: AsyncSession, role_id: uuid.UUID | None = None) -> list[Rol
                 "FROM platform.roles r LEFT JOIN platform.role_permissions rp "
                 "  ON rp.tenant_id = r.tenant_id AND rp.role_id = r.id "
                 "WHERE r.archived_at IS NULL AND (CAST(:id AS uuid) IS NULL OR r.id = :id) "
-                "GROUP BY r.id ORDER BY r.is_system DESC, r.name"
+                "GROUP BY r.tenant_id, r.id ORDER BY r.is_system DESC, r.name"
             ),
             {"id": role_id},
         )

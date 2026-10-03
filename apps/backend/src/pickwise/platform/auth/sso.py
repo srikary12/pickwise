@@ -370,7 +370,8 @@ def _validate_id_token(
     try:
         token = jwt.decode(
             id_token,
-            KeySet.import_key_set(jwks),  # type: ignore[arg-type]  # a JWKS document, algorithms=list(ALLOWED_ALGORITHMS)
+            KeySet.import_key_set(jwks),  # type: ignore[arg-type]  # a JWKS document
+            algorithms=list(ALLOWED_ALGORITHMS),
         )
         jwt.JWTClaimsRegistry(
             leeway=60,

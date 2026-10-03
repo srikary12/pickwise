@@ -77,12 +77,14 @@ def _aad(table: str, outbox_id: uuid.UUID) -> bytes:
 
 
 _TENANT_INSERT = text(
-    "INSERT INTO platform.email_outbox (to_address, template_key, locale, payload) "
-    "VALUES (:to, :template, :locale, :payload) RETURNING id"
+    "INSERT INTO platform.email_outbox "
+    "(id, to_address, template_key, locale, payload, payload_enc) "
+    "VALUES (:id, :to, :template, :locale, :payload, :enc)"
 ).bindparams(bindparam("payload", type_=JSONB))
 _PLATFORM_INSERT = text(
-    "INSERT INTO platform.platform_email_outbox (to_address, template_key, locale, payload) "
-    "VALUES (:to, :template, :locale, :payload) RETURNING id"
+    "INSERT INTO platform.platform_email_outbox "
+    "(id, to_address, template_key, locale, payload, payload_enc) "
+    "VALUES (:id, :to, :template, :locale, :payload, :enc)"
 ).bindparams(bindparam("payload", type_=JSONB))
 
 
@@ -100,21 +102,24 @@ async def queue_email(
     """Queue one email in the current transaction.
 
     ``tenant_id`` None means the pre-tenant outbox, and ``keyring`` must then be the
-    platform keyring; otherwise it's that tenant's keyring.
+    platform keyring; otherwise it's that tenant's keyring. The row is written once
+    (the app role can't UPDATE the global outbox), so the id is chosen first: it's
+    part of the ciphertext's AAD.
     """
     render(template_key, {**variables, **dict.fromkeys(secrets, "")})  # fail fast on bad templates
     table = "platform.email_outbox" if tenant_id else "platform.platform_email_outbox"
     insert = _TENANT_INSERT if tenant_id else _PLATFORM_INSERT
-    outbox_id: uuid.UUID = (
-        await session.execute(
-            insert,
-            {"to": to_address, "template": template_key, "locale": locale, "payload": variables},
-        )
-    ).scalar_one()
-    encrypted = keyring.encrypt(json.dumps(secrets).encode(), _aad(table, outbox_id))
+    outbox_id = uuid.UUID(str((await session.execute(text("SELECT uuidv7()"))).scalar_one()))
     await session.execute(
-        text(f"UPDATE {table} SET payload_enc = :enc WHERE id = :id"),  # noqa: S608 - fixed table names
-        {"enc": encrypted, "id": outbox_id},
+        insert,
+        {
+            "id": outbox_id,
+            "to": to_address,
+            "template": template_key,
+            "locale": locale,
+            "payload": variables,
+            "enc": keyring.encrypt(json.dumps(secrets).encode(), _aad(table, outbox_id)),
+        },
     )
     return QueuedEmail(outbox_id, tenant_id)
 
