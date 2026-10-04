@@ -45,6 +45,8 @@ tables:
     key_hash: restricted
   platform.files:
     original_name: confidential
+  platform.approval_requests:
+    attributes: confidential
   platform.approval_tasks:
     comment: confidential
   platform.notifications:
@@ -63,6 +65,7 @@ tables:
   platform.outbox_events:
     payload: confidential
   platform.webhook_endpoints:
+    url: confidential
     secret_enc: restricted
   platform.idempotency_keys:
     response_body: confidential

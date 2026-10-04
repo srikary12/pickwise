@@ -7,6 +7,7 @@ import uuid
 import httpx
 
 from pickwise.platform import ratelimit, storage
+from pickwise.platform.approvals import deadlines
 from pickwise.platform.crypto import kek_from_settings
 from pickwise.platform.events.relay import relay_batch
 from pickwise.platform.files import processing
@@ -208,3 +209,15 @@ async def sweep_webhooks(timestamp: int) -> None:
         )
     if due:
         log.info("webhook deliveries queued", count=len(due))
+
+
+@app.periodic(cron="* * * * *", periodic_id="escalate_approvals")
+@app.task(name="pickwise.escalate_approvals", queue="default", queueing_lock="escalate_approvals")
+@ops_task
+async def escalate_approvals(timestamp: int) -> None:
+    """Every minute: remind about approval tasks half way to their deadline and hand
+    overdue ones to the fallback approver."""
+    emails = await deadlines.run_deadlines(get_database(), kek_from_settings(get_settings()))
+    await dispatch(emails)
+    if emails:
+        log.info("approval deadlines processed", emails=len(emails))

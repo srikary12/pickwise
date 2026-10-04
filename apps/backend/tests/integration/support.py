@@ -127,9 +127,17 @@ class Env:
 
     @ops_task
     async def relay(self) -> RelayResult:
-        """What the worker's relay_events task does."""
-        async with self.db.ops_session() as s:
-            return await relay_batch(s, self.db)
+        """What the worker's relay_events task does, repeated until nothing is left (the
+        outbox is shared by every test's tenant, and a batch is capped)."""
+        total = RelayResult()
+        while True:
+            async with self.db.ops_session() as s:
+                batch = await relay_batch(s, self.db)
+            total.published += batch.published
+            total.failed += batch.failed
+            total.deliveries.extend(batch.deliveries)
+            if not (batch.published or batch.failed):
+                return total
 
     async def deliver(
         self,
