@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 import { Field, Input } from "@pickwise/ui";
-import type { FieldErrors, UseFormRegister } from "react-hook-form";
+import type { FieldErrors, Path, UseFormRegister } from "react-hook-form";
 import { z } from "zod";
 
 export const MIN_PASSWORD = 12;
@@ -17,36 +17,39 @@ export const newPasswordSchema = z
   });
 export type NewPasswordValues = z.infer<typeof newPasswordSchema>;
 
-export function NewPasswordFields({
+/** The new-password + confirm pair, usable in any form whose values include both fields. */
+export function NewPasswordFields<T extends NewPasswordValues>({
   register,
   errors,
 }: {
-  register: UseFormRegister<NewPasswordValues>;
-  errors: FieldErrors<NewPasswordValues>;
+  register: UseFormRegister<T>;
+  errors: FieldErrors<T>;
 }) {
+  const passwordError = errors.password?.message as string | undefined;
+  const confirmError = errors.confirm?.message as string | undefined;
   return (
     <>
       <Field
         id="password"
         label="New password"
         hint={`At least ${MIN_PASSWORD} characters.`}
-        error={errors.password?.message}
+        error={passwordError}
       >
         <Input
           id="password"
           type="password"
           autoComplete="new-password"
-          aria-invalid={Boolean(errors.password)}
-          {...register("password")}
+          aria-invalid={Boolean(passwordError)}
+          {...register("password" as Path<T>)}
         />
       </Field>
-      <Field id="confirm" label="Confirm password" error={errors.confirm?.message}>
+      <Field id="confirm" label="Confirm password" error={confirmError}>
         <Input
           id="confirm"
           type="password"
           autoComplete="new-password"
-          aria-invalid={Boolean(errors.confirm)}
-          {...register("confirm")}
+          aria-invalid={Boolean(confirmError)}
+          {...register("confirm" as Path<T>)}
         />
       </Field>
     </>
