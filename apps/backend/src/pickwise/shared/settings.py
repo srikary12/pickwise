@@ -74,6 +74,8 @@ class Settings(BaseSettings):
     # PICKWISE_KEK: the only global crypto secret (base64, 32 bytes). It wraps the
     # platform and tenant data keys (ADR 0006, CLAUDE.md "Crypto").
     pickwise_kek: SecretStr = SecretStr("")
+    # Only for `pickwise keys rewrap`: the KEK to move every wrapped key to (ADR 0014).
+    pickwise_kek_next: SecretStr = SecretStr("")
     # SESSION_SECRET: HMAC key for signed short-lived cookies (SSO state) and
     # rate-limit keys. Session tokens themselves are random, not signed.
     session_secret: SecretStr = SecretStr("")
