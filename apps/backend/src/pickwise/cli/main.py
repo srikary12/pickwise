@@ -59,6 +59,22 @@ def db_migrate() -> None:
         _fail(str(exc))
 
 
+@db_app.command("downgrade")
+def db_downgrade(
+    to: Annotated[
+        str, typer.Option("--to", help="-1 (one step), a revision id such as 0002, or base")
+    ] = "-1",
+) -> None:
+    """Roll the schema back (development and test only; it drops tables and their data)."""
+    settings = get_settings()
+    if settings.is_production:
+        _fail("refusing to downgrade when PICKWISE_ENV=production: restore a backup instead")
+    try:
+        db_cli.run_downgrade(to)
+    except db_cli.BootstrapError as exc:
+        _fail(str(exc))
+
+
 @db_app.command("verify-roles")
 def db_verify_roles() -> None:
     """Check that every login user can connect and the role model matches CLAUDE.md rule 4."""

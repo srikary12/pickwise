@@ -86,6 +86,11 @@ s3-ls: ## List every object in the dev object storage
 migrate: env ## Run migrations (and seeds) against the dev database
 	$(DEV) run --rm migrate
 
+.PHONY: migrate-down
+migrate-down: env ## Roll back one migration (dev only): make migrate-down [to=<revision>|base]
+	@echo "Rolling back $(if $(to),to $(to),one migration). This drops tables and their data."
+	$(DEV) run --rm migrate pickwise db downgrade --to "$(or $(to),-1)"
+
 .PHONY: migration
 migration: tools-image ## New Alembic revision: make migration m="add foo"
 	@test -n "$(m)" || (echo 'usage: make migration m="message"' && exit 1)

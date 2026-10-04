@@ -248,7 +248,7 @@ Until the module that registers into a registry exists, tests use stub registrat
   - `make dev-full`, `make down`
   - `make reset` (drops volumes)
   - `make logs s=api`, `make shell s=api`, `make psql`, `make s3-ls`
-  - `make migrate`, `make migration m="msg"`, `make seed`, `make seed-demo`
+  - `make migrate`, `make migrate-down` (dev only; `to=<revision>|base`), `make migration m="msg"`, `make seed`, `make seed-demo`
   - `make test`, `make test-db`, `make lint`, `make typecheck`, `make e2e`
   - `make hooks` (installs git hooks that run pre-commit inside the tools container)
   - `make openapi` (regenerates the TS client)
