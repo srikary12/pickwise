@@ -157,7 +157,8 @@ async def test_login_is_rate_limited_per_ip(api: Api, tenant: Tenant) -> None:
         for i in range(22)
     ]
     assert 429 in codes
-    assert codes.index(429) == 20
+    # Tokens refill continuously, so a slow run may admit one extra attempt.
+    assert codes.index(429) in (20, 21)
 
 
 # --- sessions ---------------------------------------------------------------------------------

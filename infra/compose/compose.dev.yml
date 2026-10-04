@@ -74,6 +74,8 @@ services:
     environment:
       SMTP_HOST: mailpit
       SMTP_PORT: "1025"
+      # The browser reaches SeaweedFS on the published port.
+      S3_PUBLIC_ENDPOINT_URL: http://localhost:8333
     volumes: *backend-mounts
     ports:
       - "127.0.0.1:8000:8000"

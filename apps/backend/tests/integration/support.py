@@ -12,10 +12,13 @@ import pyotp
 from fastapi import FastAPI
 from sqlalchemy import text
 
+from pickwise.platform import storage
 from pickwise.platform.auth.passwords import hash_password
 from pickwise.platform.crypto import KeyEncryptionKey
+from pickwise.platform.files import processing
 from pickwise.platform.notifications.email import QueuedEmail, RenderedEmail, send_queued
 from pickwise.platform.provisioning.service import add_member, ensure_user, provision_tenant
+from pickwise.platform.scanning import Scanner, build_scanner
 from pickwise.shared.db import Database, ops_task
 from pickwise.shared.settings import Settings
 
@@ -98,6 +101,25 @@ class Env:
     async def send(self, email: QueuedEmail) -> str:
         async with self.db.ops_session() as s:
             return await send_queued(s, self.settings, self.kek, email.outbox_id, email.tenant_id)
+
+    @ops_task
+    async def scan_file(
+        self, tenant_id: uuid.UUID, file_id: uuid.UUID, scanner: Scanner | None = None
+    ) -> processing.Outcome:
+        """What the worker's scan_file task does, with this environment's worker login."""
+        async with storage.s3_client(self.settings) as s3:
+            async with self.db.ops_session() as s:
+                outcome = await processing.scan_file(
+                    s,
+                    self.settings,
+                    scanner or build_scanner(self.settings),
+                    s3,
+                    tenant_id,
+                    file_id,
+                )
+            if outcome.cleanup is not None:
+                await storage.delete_object(s3, *outcome.cleanup)
+        return outcome
 
     @ops_task
     async def sql(self, statement: str, **params: Any) -> list[tuple[Any, ...]]:

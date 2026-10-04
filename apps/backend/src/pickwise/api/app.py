@@ -19,6 +19,7 @@ from pickwise.platform.admin.router import router as admin_router
 from pickwise.platform.auth.dependencies import csrf_protect
 from pickwise.platform.auth.router import router as auth_router
 from pickwise.platform.crypto import kek_from_settings
+from pickwise.platform.files.router import router as files_router
 from pickwise.platform.jobs import set_job_queue
 from pickwise.platform.notifications.email import QueuedEmail, set_dispatcher
 from pickwise.platform.provisioning.router import router as signup_router
@@ -109,4 +110,5 @@ def create_app(settings: Settings | None = None, *, enqueue_jobs: bool = True) -
     app.include_router(auth_router)
     app.include_router(admin_router)
     app.include_router(signup_router)
+    app.include_router(files_router)
     return app
