@@ -6,6 +6,7 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
+from pickwise.platform.rbac.system_roles import default_grants
 from tests.integration.conftest import MakeApi
 from tests.integration.support import Api, Env, Tenant
 
@@ -365,7 +366,7 @@ async def test_api_key_is_stored_hashed_and_listed_without_the_secret(
 async def test_api_key_post_requires_no_csrf_token(make_api: MakeApi, tenant: Tenant) -> None:
     admin = await admin_of(make_api, tenant)
     # Inviting an employee needs everything the employee role holds (no escalation).
-    scopes = ["platform.users.invite", "platform.files.upload", "platform.files.read"]
+    scopes = ["platform.users.invite", *default_grants("employee")]
     key = str((await make_key(admin, scopes))["key"])
     bare = await make_api()
     bare.http.headers.pop("X-CSRF-Token")

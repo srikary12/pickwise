@@ -37,7 +37,11 @@ def test_tenant_admin_holds_every_platform_permission() -> None:
     platform = {p.code for p in PERMISSIONS.all() if p.module == "platform"}
     assert platform <= set(default_grants("tenant_admin"))
     # Everyone may upload and read their own files; nothing else is a default.
-    assert set(default_grants("employee")) == {"platform.files.read", "platform.files.upload"}
+    assert set(default_grants("employee")) == {
+        "platform.custom_fields.read",
+        "platform.files.read",
+        "platform.files.upload",
+    }
 
 
 def test_registry_rejects_conflicting_definitions() -> None:

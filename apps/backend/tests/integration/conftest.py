@@ -86,3 +86,16 @@ async def api(make_api: MakeApi) -> Api:
 @pytest.fixture
 async def tenant(env: Env) -> Tenant:
     return await env.create_tenant()
+
+
+@pytest.fixture
+async def api_db() -> AsyncIterator[Database]:
+    """The API's own database login, for tests that run service code in a tenant session."""
+    database = Database.from_settings(
+        Settings(
+            database_user="pickwise_api",
+            database_password=SecretStr(os.environ["PG_API_PASSWORD"]),
+        )
+    )
+    yield database
+    await database.dispose()

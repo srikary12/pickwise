@@ -99,22 +99,6 @@ def scratch_table() -> Iterator[None]:
     conn.close()
 
 
-@pytest.fixture
-async def api_db(env: Env) -> Any:
-    from pydantic import SecretStr
-
-    from pickwise.shared.settings import Settings
-
-    database = Database.from_settings(
-        Settings(
-            database_user="pickwise_api",
-            database_password=SecretStr(os.environ["PG_API_PASSWORD"]),
-        )
-    )
-    yield database
-    await database.dispose()
-
-
 def ctx(tenant: Tenant) -> RequestContext:
     return RequestContext(ActorType.USER, tenant.id, tenant.admin.user_id)
 

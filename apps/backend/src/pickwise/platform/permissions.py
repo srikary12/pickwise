@@ -131,4 +131,23 @@ PERMISSIONS.register(
         is_sensitive=True,
         default_roles=(TENANT_ADMIN, HR_ADMIN),
     ),
+    Permission(
+        "platform.custom_fields.read",
+        "platform",
+        "See custom-field definitions (to build forms)",
+        default_roles=EVERY_ROLE,
+    ),
+    Permission(
+        "platform.custom_fields.manage",
+        "platform",
+        "Create, edit and archive custom fields",
+        default_roles=(TENANT_ADMIN, HR_ADMIN),
+    ),
+    Permission(
+        "platform.custom_fields.read_sensitive",
+        "platform",
+        "See and edit values of custom fields marked sensitive",
+        is_sensitive=True,
+        default_roles=(TENANT_ADMIN, HR_ADMIN),
+    ),
 )
