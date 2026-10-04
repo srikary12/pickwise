@@ -50,7 +50,7 @@ make scan-check   # streams EICAR through the scanner and requires "infected"
 | `make down` / `make reset` | Stop the stack / stop it and delete all its data |
 | `make logs s=api`, `make shell s=api` | Follow a service's logs / open a shell in it |
 | `make psql`, `make s3-ls` | Open psql / list the objects in dev storage |
-| `make migrate`, `make migration m="…"` | Apply migrations / create a new Alembic revision |
+| `make migrate`, `make migrate-down`, `make migration m="…"` | Apply migrations / roll one back (dev only) / create a new Alembic revision |
 | `make seed`, `make seed-demo` | Reference data / demo tenants (dev only) |
 | `make test`, `make test-db` | Backend and database tests in a disposable stack |
 | `make lint`, `make typecheck` | ruff, import-linter, SPDX headers, eslint, prettier / mypy --strict, tsc |

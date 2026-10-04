@@ -171,6 +171,16 @@ def run_migrations(revision: str = "head") -> None:
     command.upgrade(cfg, revision)
 
 
+def run_downgrade(revision: str = "-1") -> None:
+    """Roll back to ``revision``: ``-1`` (one step), a revision id such as ``0002``, or ``base``."""
+    cfg = Config(str(alembic_ini()))
+    log.info("current revision before downgrade")
+    command.current(cfg)  # alembic prints the revision
+    command.downgrade(cfg, revision)
+    log.info("downgraded", to=revision)
+    command.current(cfg)
+
+
 # Reference-data seeds. Each is a no-op until the phase that creates its table.
 SEED_STEPS: tuple[tuple[str, str], ...] = (
     ("platform data key", "platform.platform_keys"),
