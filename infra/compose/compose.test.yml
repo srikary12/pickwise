@@ -45,6 +45,10 @@ services:
   s3:
     tmpfs:
       - /data:size=256m
+    environment:
+      # Every bucket is a collection with its own volume; small volumes let the
+      # quarantine and files buckets both fit on the 256 MB tmpfs (CopyObject needs both).
+      S3_VOLUME_SIZE_LIMIT_MB: "16"
     volumes: !override
       - ./infra/docker/s3/seaweedfs-entrypoint.sh:/pickwise/seaweedfs-entrypoint.sh:ro
 
@@ -79,6 +83,9 @@ services:
       S3_BUCKET_FILES: ${S3_BUCKET_FILES:-pickwise-files}
       S3_BUCKET_QUARANTINE: ${S3_BUCKET_QUARANTINE:-pickwise-quarantine}
       SCANNER: stub
+      # Only used by `make scan-check`, which starts clamd (profile "full").
+      CLAMAV_HOST: clamav
+      CLAMAV_PORT: "3310"
       PICKWISE_KEK: ${PICKWISE_KEK}
       SESSION_SECRET: ${SESSION_SECRET}
       DEMO_PASSWORD: ${DEMO_PASSWORD}

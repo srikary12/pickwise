@@ -23,5 +23,5 @@ exec weed server \
     -dir=/data \
     -ip=s3 -ip.bind=0.0.0.0 \
     -volume.max=0 \
-    -master.volumeSizeLimitMB=256 \
+    -master.volumeSizeLimitMB="${S3_VOLUME_SIZE_LIMIT_MB:-256}" \
     -s3 -s3.port=8333 -s3.config=/tmp/s3.json

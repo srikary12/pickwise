@@ -46,6 +46,17 @@ PERMISSIONS = PermissionRegistry()
 
 TENANT_ADMIN = "tenant_admin"
 HR_ADMIN = "hr_admin"
+EVERY_ROLE = (
+    "tenant_admin",
+    "hr_admin",
+    "hr_ops",
+    "payroll_admin",
+    "recruiter",
+    "hiring_manager",
+    "interviewer",
+    "manager",
+    "employee",
+)
 
 PERMISSIONS.register(
     Permission(
@@ -100,5 +111,43 @@ PERMISSIONS.register(
         "Change tenant settings such as MFA enforcement",
         is_sensitive=True,
         default_roles=(TENANT_ADMIN,),
+    ),
+    Permission(
+        "platform.files.upload",
+        "platform",
+        "Upload files (scanned before use)",
+        default_roles=EVERY_ROLE,
+    ),
+    Permission(
+        "platform.files.read",
+        "platform",
+        "Download files you own or that a module lets you see",
+        default_roles=EVERY_ROLE,
+    ),
+    Permission(
+        "platform.files.read_all",
+        "platform",
+        "Download any clean file in the tenant",
+        is_sensitive=True,
+        default_roles=(TENANT_ADMIN, HR_ADMIN),
+    ),
+    Permission(
+        "platform.custom_fields.read",
+        "platform",
+        "See custom-field definitions (to build forms)",
+        default_roles=EVERY_ROLE,
+    ),
+    Permission(
+        "platform.custom_fields.manage",
+        "platform",
+        "Create, edit and archive custom fields",
+        default_roles=(TENANT_ADMIN, HR_ADMIN),
+    ),
+    Permission(
+        "platform.custom_fields.read_sensitive",
+        "platform",
+        "See and edit values of custom fields marked sensitive",
+        is_sensitive=True,
+        default_roles=(TENANT_ADMIN, HR_ADMIN),
     ),
 )

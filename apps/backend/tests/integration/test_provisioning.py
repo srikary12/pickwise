@@ -95,6 +95,11 @@ async def test_sync_defaults_backfills_missing_grants_and_roles(env: Env, tenant
         t=tenant.id,
     )
     await env.sql(
+        "DELETE FROM platform.role_permissions rp USING platform.roles r WHERE rp.tenant_id = :t "
+        "AND r.tenant_id = rp.tenant_id AND r.id = rp.role_id AND r.key = 'interviewer'",
+        t=tenant.id,
+    )
+    await env.sql(
         "DELETE FROM platform.roles WHERE tenant_id = :t AND key = 'interviewer'", t=tenant.id
     )
     assert (await counts(env, tenant.id))["grants"] < before["grants"]

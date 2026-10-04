@@ -1,0 +1,7 @@
+{#- SPDX-License-Identifier: AGPL-3.0-only -#}
+{% extends "_layout.html.j2" %}
+{% block body %}
+<h2 style="margin: 0 0 12px;">{{ title }}</h2>
+{% if body %}<p>{{ body }}</p>{% endif %}
+{% if link %}<p><a href="{{ base_url }}{{ link }}">Open in Pickwise</a></p>{% endif %}
+{% endblock %}

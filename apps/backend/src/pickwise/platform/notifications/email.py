@@ -19,9 +19,16 @@ from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from email.message import EmailMessage
 from email.utils import make_msgid
+from functools import lru_cache
 from typing import Any
 
-from jinja2 import Environment, PackageLoader, StrictUndefined, select_autoescape
+from jinja2 import (
+    ChoiceLoader,
+    Environment,
+    PackageLoader,
+    StrictUndefined,
+    select_autoescape,
+)
 from sqlalchemy import bindparam, text
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -38,14 +45,25 @@ from pickwise.shared.settings import Settings
 log = get_logger(__name__)
 
 MAX_ATTEMPTS = 5
-TEMPLATES = frozenset({"invite", "verify_email", "reset_password", "signup_verify"})
+TEMPLATES = frozenset({"invite", "verify_email", "reset_password", "signup_verify", "notification"})
+FALLBACK_LANGUAGE = "en"
 
-_jinja = Environment(
-    loader=PackageLoader("pickwise.platform.notifications", "templates"),
-    autoescape=select_autoescape(enabled_extensions=("html.j2",), default_for_string=False),
-    undefined=StrictUndefined,
-    keep_trailing_newline=False,
-)
+
+@lru_cache(maxsize=32)
+def _environment(language: str) -> Environment:
+    """Templates live in ``templates/<language>/``; a missing translation falls back to English."""
+    loaders = []
+    for lang in dict.fromkeys((language, FALLBACK_LANGUAGE)):
+        try:
+            loaders.append(PackageLoader("pickwise.platform.notifications", f"templates/{lang}"))
+        except ValueError:  # no such language directory
+            continue
+    return Environment(
+        loader=ChoiceLoader(loaders),
+        autoescape=select_autoescape(enabled_extensions=("html.j2",), default_for_string=False),
+        undefined=StrictUndefined,
+        keep_trailing_newline=False,
+    )
 
 
 @dataclass(frozen=True, slots=True)
@@ -64,11 +82,13 @@ class QueuedEmail:
 def render(template_key: str, variables: dict[str, Any]) -> RenderedEmail:
     if template_key not in TEMPLATES:
         raise ValueError(f"unknown email template {template_key!r}")
-    variables = {"locale": "en-IN", **variables}
+    locale = str(variables.get("locale", "en-IN"))
+    env = _environment(locale.split("-")[0].lower())
+    variables = {"locale": locale, **variables}
     return RenderedEmail(
-        subject=_jinja.get_template(f"{template_key}.subject.j2").render(**variables).strip(),
-        text=_jinja.get_template(f"{template_key}.txt.j2").render(**variables).strip() + "\n",
-        html=_jinja.get_template(f"{template_key}.html.j2").render(**variables),
+        subject=env.get_template(f"{template_key}.subject.j2").render(**variables).strip(),
+        text=env.get_template(f"{template_key}.txt.j2").render(**variables).strip() + "\n",
+        html=env.get_template(f"{template_key}.html.j2").render(**variables),
     )
 
 
@@ -106,7 +126,10 @@ async def queue_email(
     (the app role can't UPDATE the global outbox), so the id is chosen first: it's
     part of the ciphertext's AAD.
     """
-    render(template_key, {**variables, **dict.fromkeys(secrets, "")})  # fail fast on bad templates
+    # Fail fast on a bad template or missing variable, before anything is stored.
+    render(
+        template_key, {**variables, **dict.fromkeys(secrets, ""), "locale": locale, "base_url": ""}
+    )
     table = "platform.email_outbox" if tenant_id else "platform.platform_email_outbox"
     insert = _TENANT_INSERT if tenant_id else _PLATFORM_INSERT
     outbox_id = uuid.UUID(str((await session.execute(text("SELECT uuidv7()"))).scalar_one()))
@@ -174,7 +197,7 @@ async def send_queued(
     row = (
         await session.execute(
             text(
-                f"SELECT to_address, template_key, payload, payload_enc, status, attempts "  # noqa: S608
+                f"SELECT to_address, template_key, locale, payload, payload_enc, status, attempts "  # noqa: S608
                 f"FROM {table} WHERE id = :id FOR UPDATE SKIP LOCKED"
             ),
             {"id": outbox_id},
@@ -193,7 +216,10 @@ async def send_queued(
         else {}
     )
     try:
-        rendered = render(row.template_key, {**row.payload, **secrets})
+        rendered = render(
+            row.template_key,
+            {**row.payload, **secrets, "locale": row.locale, "base_url": settings.public_base_url},
+        )
         await asyncio.to_thread(_smtp_send, settings, str(row.to_address), rendered)
     except Exception as exc:  # noqa: BLE001 - recorded, retried by the sweep
         attempts = row.attempts + 1

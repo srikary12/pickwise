@@ -3,11 +3,14 @@
 
 import uuid
 
-from pickwise.platform import ratelimit
+from pickwise.platform import ratelimit, storage
 from pickwise.platform.crypto import kek_from_settings
+from pickwise.platform.files import processing
+from pickwise.platform.jobs import defer
 from pickwise.platform.notifications.email import dispatch, due_emails, send_queued
 from pickwise.platform.partitions import ensure_partitions
 from pickwise.platform.provisioning import signup
+from pickwise.platform.scanning import ScannerError, build_scanner
 from pickwise.shared.db import ops_task
 from pickwise.shared.logging import get_logger
 from pickwise.shared.settings import get_settings
@@ -86,3 +89,53 @@ async def prune_rate_limits(timestamp: int) -> None:
     async with get_database().ops_session() as session:
         removed = await ratelimit.prune(session)
     log.info("rate-limit buckets pruned", removed=removed)
+
+
+@app.task(name="pickwise.scan_file", queue="default", retry=5)
+@ops_task
+async def scan_file(file_id: str, tenant_id: str) -> None:
+    """Scan one uploaded file and move it to the clean bucket (deferred by /complete)."""
+    settings = get_settings()
+    scanner = build_scanner(settings)
+    async with storage.s3_client(settings) as s3:
+        try:
+            async with get_database().ops_session() as session:
+                outcome = await processing.scan_file(
+                    session, settings, scanner, s3, uuid.UUID(tenant_id), uuid.UUID(file_id)
+                )
+        except ScannerError:
+            # No verdict: raise so procrastinate retries; the sweep fails it after an hour.
+            log.warning("scanner unavailable", file_id=file_id)
+            raise
+        if outcome.cleanup is not None:
+            # Only after the commit above: a crash earlier just repeats the scan.
+            await storage.delete_object(s3, *outcome.cleanup)
+    log.info("file scanned", file_id=file_id, status=outcome.status)
+
+
+@app.periodic(cron="* * * * *", periodic_id="sweep_files")
+@app.task(name="pickwise.sweep_files", queue="default", queueing_lock="sweep_files")
+@ops_task
+async def sweep_files(timestamp: int) -> None:
+    """Every minute: re-queue scans that never started, fail ones stuck for an hour, and
+    close upload slots nobody completed."""
+    settings = get_settings()
+    async with get_database().ops_session() as session:
+        pending, stuck = await processing.sweep(session)
+    async with storage.s3_client(settings) as s3, get_database().ops_session() as session:
+        expired = await processing.expire_unfinished(session, settings, s3)
+    for tenant_id, file_id in pending:
+        await defer("pickwise.scan_file", file_id=str(file_id), tenant_id=str(tenant_id))
+    if pending or stuck or expired:
+        log.info("files swept", requeued=len(pending), failed=stuck, expired=expired)
+
+
+@app.periodic(cron="23 3 * * *", periodic_id="purge_expired_files")
+@app.task(name="pickwise.purge_expired_files", queue="default", queueing_lock="purge_expired_files")
+@ops_task
+async def purge_expired_files(timestamp: int) -> None:
+    """Daily: delete the bytes of files past their retention date."""
+    settings = get_settings()
+    async with storage.s3_client(settings) as s3, get_database().ops_session() as session:
+        removed = await processing.purge_retained(session, s3)
+    log.info("retained files purged", removed=removed)

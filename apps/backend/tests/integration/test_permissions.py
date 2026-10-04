@@ -194,8 +194,10 @@ async def test_a_custom_role_without_permissions_reaches_nothing(
         {"membership_id": members[person.email]["membership_id"], "role_id": role["id"]},
     )
     api = await (await make_api()).sign_in(person)
+    # The interviewer system role still holds its own defaults (the platform file permissions).
+    own = set(default_grants("interviewer"))
     for route in routes_of(app):
-        if route.permission:
+        if route.permission and route.permission not in own:
             assert await call(api, route) == 403, route.id
 
 

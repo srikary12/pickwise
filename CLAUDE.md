@@ -241,7 +241,7 @@ Until the module that registers into a registry exists, tests use stub registrat
 - **ClamAV lives behind a compose profile**, because it needs about 1.5–3 GB of RAM and takes minutes on first start while it downloads signatures.
   - Plain `make dev` uses `SCANNER=stub`. The stub is loudly labelled in logs and the UI, marks the EICAR test string as infected, and marks everything else clean.
   - `make dev-full` and CI run the real `clamd` (`SCANNER=clamav`), with the signature database kept in a named volume.
-  - `make scan-check` streams the EICAR string through our scanner adapter to the real clamd and asserts it comes back infected.
+  - `make scan-check` streams the EICAR string through our scanner adapter to the real clamd and asserts it comes back infected, then runs the whole file pipeline (upload → scan → status) against it.
   - When `PICKWISE_ENV=production`, the app refuses to start with `SCANNER=stub`.
 - **The worker connects to Postgres directly, never through PgBouncer transaction pooling.** Procrastinate needs LISTEN/NOTIFY and session-level advisory locks. The API may go through PgBouncer in transaction mode.
 - Other make targets:

@@ -15,6 +15,7 @@ import typer
 
 from pickwise import wiring
 from pickwise.cli import db as db_cli
+from pickwise.cli import keys as keys_cli
 from pickwise.cli import tenants as tenants_cli
 from pickwise.platform.partitions import ensure_partitions
 from pickwise.platform.scanning import ScannerError, build_scanner, eicar_bytes, iter_bytes
@@ -35,6 +36,7 @@ app.add_typer(openapi_app, name="openapi")
 app.add_typer(worker_app, name="worker")
 app.add_typer(docs_app, name="docs")
 app.add_typer(tenants_cli.tenant_app, name="tenant")
+app.add_typer(keys_cli.keys_app, name="keys")
 
 log = get_logger("pickwise.cli")
 

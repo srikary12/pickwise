@@ -45,6 +45,23 @@ class Settings(BaseSettings):
     s3_secret_access_key: SecretStr = SecretStr("")
     s3_bucket_files: str = "pickwise-files"
     s3_bucket_quarantine: str = "pickwise-quarantine"
+    # Presigned URLs are opened by browsers, which may reach the object store at a
+    # different address than the API does (dev: localhost:8333). Defaults to s3_endpoint_url.
+    s3_public_endpoint_url: str | None = None
+
+    # File pipeline (ADR 0013).
+    files_max_bytes: int = Field(default=25 * 1024 * 1024, gt=0)
+    files_upload_ttl_seconds: int = Field(default=900, gt=0)
+    files_download_ttl_seconds: int = Field(default=300, gt=0)
+    files_allowed_mime_types: tuple[str, ...] = (
+        "application/pdf",
+        "image/png",
+        "image/jpeg",
+        "text/plain",
+        "text/csv",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    )
 
     scanner: ScannerKind = ScannerKind.STUB
     clamav_host: str = "clamav"
@@ -57,6 +74,8 @@ class Settings(BaseSettings):
     # PICKWISE_KEK: the only global crypto secret (base64, 32 bytes). It wraps the
     # platform and tenant data keys (ADR 0006, CLAUDE.md "Crypto").
     pickwise_kek: SecretStr = SecretStr("")
+    # Only for `pickwise keys rewrap`: the KEK to move every wrapped key to (ADR 0014).
+    pickwise_kek_next: SecretStr = SecretStr("")
     # SESSION_SECRET: HMAC key for signed short-lived cookies (SSO state) and
     # rate-limit keys. Session tokens themselves are random, not signed.
     session_secret: SecretStr = SecretStr("")

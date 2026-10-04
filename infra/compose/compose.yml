@@ -19,6 +19,8 @@ x-db-env: &db-env
 
 x-s3-env: &s3-env
   S3_ENDPOINT_URL: http://s3:8333
+  # Where browsers reach the object store (presigned URLs). Empty: same as S3_ENDPOINT_URL.
+  S3_PUBLIC_ENDPOINT_URL: ${S3_PUBLIC_ENDPOINT_URL:-}
   S3_REGION: ${S3_REGION:-us-east-1}
   S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:?run make dev to generate .env}
   S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:?run make dev to generate .env}
