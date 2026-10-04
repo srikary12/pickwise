@@ -1,0 +1,6 @@
+{
+  "secret": "whsec_example_secret_do_not_use",
+  "timestamp": 1700000000,
+  "body": "{\"aggregate\":{\"id\":\"0198f2a0-6c1e-7a52-9d3e-000000000002\",\"type\":\"leave_request\"},\"created_at\":\"2026-10-04T09:30:00+00:00\",\"data\":{\"days\":2},\"id\":\"0198f2a0-6c1e-7a52-9d3e-5b1f2c8a4e10\",\"tenant_id\":\"0198f2a0-6c1e-7a52-9d3e-000000000001\",\"type\":\"leave.request.approved\"}",
+  "signature": "t=1700000000,v1=e4ab743c2ef10c20ee52ace2df04e1b431f66f31cb165d20d308cd0c280726cf"
+}

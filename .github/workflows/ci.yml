@@ -36,6 +36,7 @@ jobs:
       - run: make lint
       - run: make typecheck
       - run: make openapi-check
+      - run: make test-examples
 
   test:
     name: backend + database tests

@@ -247,6 +247,242 @@ export interface paths {
         patch: operations["update_membership_v1_admin_users__membership_id__patch"];
         trace?: never;
     };
+    "/v1/approvals/delegations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Delegations */
+        get: operations["list_delegations_v1_approvals_delegations_get"];
+        put?: never;
+        /**
+         * Create Delegation
+         * @description Hand your approvals to someone for a period (leave, travel). While it is active,
+         *     new tasks for you go to them and your own task is kept as ``delegated``.
+         */
+        post: operations["create_delegation_v1_approvals_delegations_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/approvals/delegations/{delegation_id}/end": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * End Delegation
+         * @description Stop a delegation now. Yours, or anyone's with manage.
+         */
+        post: operations["end_delegation_v1_approvals_delegations__delegation_id__end_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/approvals/inbox": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Inbox
+         * @description Tasks assigned to you. ``state=pending`` is what needs action, ``decided`` is what you
+         *     already answered, ``all`` includes escalated and skipped ones.
+         */
+        get: operations["inbox_v1_approvals_inbox_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/approvals/policies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Policies */
+        get: operations["list_policies_v1_approvals_policies_get"];
+        put?: never;
+        /** Create Policy */
+        post: operations["create_policy_v1_approvals_policies_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/approvals/policies/{policy_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Update Policy
+         * @description Edit a policy. Requests already in flight keep the policy they started with.
+         */
+        put: operations["update_policy_v1_approvals_policies__policy_id__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/approvals/policies/{policy_id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Archive Policy */
+        post: operations["archive_policy_v1_approvals_policies__policy_id__archive_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/approvals/policies/{policy_id}/unarchive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Unarchive Policy */
+        post: operations["unarchive_policy_v1_approvals_policies__policy_id__unarchive_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/approvals/requested": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Requested
+         * @description Approvals you started.
+         */
+        get: operations["requested_v1_approvals_requested_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/approvals/{request_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Request
+         * @description A request with its steps and tasks. Visible to its requester, its assignees and
+         *     people who manage approvals.
+         */
+        get: operations["get_request_v1_approvals__request_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/approvals/{request_id}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Approve
+         * @description Approve your pending task. The request moves to the next step, or is approved.
+         */
+        post: operations["approve_v1_approvals__request_id__approve_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/approvals/{request_id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Cancel
+         * @description Withdraw a pending request (its requester, or anyone who manages approvals).
+         */
+        post: operations["cancel_v1_approvals__request_id__cancel_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/approvals/{request_id}/reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Reject
+         * @description Reject the request. A comment is required.
+         */
+        post: operations["reject_v1_approvals__request_id__reject_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/auth/csrf": {
         parameters: {
             query?: never;
@@ -887,6 +1123,139 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/webhooks/deliveries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Deliveries */
+        get: operations["list_deliveries_v1_webhooks_deliveries_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/webhooks/deliveries/{delivery_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Delivery */
+        get: operations["get_delivery_v1_webhooks_deliveries__delivery_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/webhooks/deliveries/{delivery_id}/replay": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Replay Delivery
+         * @description Send the same event to the same endpoint again, as a new delivery.
+         */
+        post: operations["replay_delivery_v1_webhooks_deliveries__delivery_id__replay_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/webhooks/endpoints": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Endpoints */
+        get: operations["list_endpoints_v1_webhooks_endpoints_get"];
+        put?: never;
+        /**
+         * Create Endpoint
+         * @description Register a receiver. The signing secret is in this response only.
+         */
+        post: operations["create_endpoint_v1_webhooks_endpoints_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/webhooks/endpoints/{endpoint_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Endpoint */
+        get: operations["get_endpoint_v1_webhooks_endpoints__endpoint_id__get"];
+        /** Update Endpoint */
+        put: operations["update_endpoint_v1_webhooks_endpoints__endpoint_id__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/webhooks/endpoints/{endpoint_id}/rotate-secret": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Rotate Secret
+         * @description Issue a new signing secret (shown once). Deliveries signed from now on use it.
+         */
+        post: operations["rotate_secret_v1_webhooks_endpoints__endpoint_id__rotate_secret_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/webhooks/events/{event_id}/retry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Retry Event
+         * @description Let the relay try an event again after it gave up on a failing in-process handler.
+         */
+        post: operations["retry_event_v1_webhooks_events__event_id__retry_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1000,6 +1369,125 @@ export interface components {
              */
             csrf_token: string;
         };
+        /**
+         * Decision
+         * @example {
+         *       "comment": "Approved: coverage is arranged.",
+         *       "row_version": 3
+         *     }
+         */
+        Decision: {
+            /** Comment */
+            comment?: string | null;
+            /**
+             * Row Version
+             * @description The request's row_version you were looking at.
+             */
+            row_version: number;
+        };
+        /** DelegationCreate */
+        DelegationCreate: {
+            /**
+             * Ends At
+             * Format: date-time
+             */
+            ends_at: string;
+            /**
+             * Entity Types
+             * @description Request types covered. Empty means all.
+             */
+            entity_types?: ("leave_request" | "regularization" | "requisition" | "offer" | "payroll_run" | "compensation" | "separation")[];
+            /**
+             * From User Id
+             * @description Whose approvals are delegated. Defaults to you; setting someone else needs platform.approvals.manage.
+             */
+            from_user_id?: string | null;
+            /**
+             * Starts At
+             * Format: date-time
+             */
+            starts_at: string;
+            /**
+             * To User Id
+             * Format: uuid
+             */
+            to_user_id: string;
+        };
+        /** DelegationOut */
+        DelegationOut: {
+            /**
+             * Ends At
+             * Format: date-time
+             */
+            ends_at: string;
+            /** Entity Types */
+            entity_types: string[];
+            /**
+             * From User Id
+             * Format: uuid
+             */
+            from_user_id: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Starts At
+             * Format: date-time
+             */
+            starts_at: string;
+            /**
+             * To User Id
+             * Format: uuid
+             */
+            to_user_id: string;
+        };
+        /** DeliveryOut */
+        DeliveryOut: {
+            /** Attempt */
+            attempt: number;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Endpoint Id
+             * Format: uuid
+             */
+            endpoint_id: string;
+            /**
+             * Event Id
+             * Format: uuid
+             */
+            event_id: string;
+            /** Event Type */
+            event_type: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Last Error */
+            last_error: string | null;
+            /** Next Attempt At */
+            next_attempt_at: string | null;
+            /** Response Code */
+            response_code: number | null;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "pending" | "succeeded" | "failed" | "dead";
+        };
+        /** DeliveryPage */
+        DeliveryPage: {
+            /** Items */
+            items: components["schemas"]["DeliveryOut"][];
+            /** Next Cursor */
+            next_cursor: string | null;
+        };
         /** DependencyCheck */
         DependencyCheck: {
             /**
@@ -1017,6 +1505,96 @@ export interface components {
              * Url
              * @description Short-lived; forces a download
              */
+            url: string;
+        };
+        /**
+         * EndpointCreate
+         * @example {
+         *       "event_types": [
+         *         "leave.*"
+         *       ],
+         *       "url": "https://hooks.example.com/pickwise"
+         *     }
+         */
+        EndpointCreate: {
+            /**
+             * Event Types
+             * @description Exact types or 'prefix.*'. Empty means every event.
+             */
+            event_types?: string[];
+            /** Url */
+            url: string;
+        };
+        /** EndpointOut */
+        EndpointOut: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Event Types */
+            event_types: string[];
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Is Active */
+            is_active: boolean;
+            /** Row Version */
+            row_version: number;
+            /** Url */
+            url: string;
+        };
+        /**
+         * EndpointUpdate
+         * @example {
+         *       "event_types": [
+         *         "leave.*"
+         *       ],
+         *       "url": "https://hooks.example.com/pickwise"
+         *     }
+         */
+        EndpointUpdate: {
+            /**
+             * Event Types
+             * @description Exact types or 'prefix.*'. Empty means every event.
+             */
+            event_types?: string[];
+            /**
+             * Is Active
+             * @default true
+             */
+            is_active: boolean;
+            /** Row Version */
+            row_version: number;
+            /** Url */
+            url: string;
+        };
+        /** EndpointWithSecret */
+        EndpointWithSecret: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Event Types */
+            event_types: string[];
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Is Active */
+            is_active: boolean;
+            /** Row Version */
+            row_version: number;
+            /**
+             * Secret
+             * @description The signing secret. Shown only in this response, so store it now. Null when an Idempotency-Key replays the creation.
+             */
+            secret: string | null;
+            /** Url */
             url: string;
         };
         /**
@@ -1184,6 +1762,65 @@ export interface components {
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /** InboxItem */
+        InboxItem: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Delegated From User Id */
+            delegated_from_user_id: string | null;
+            /** Due At */
+            due_at: string | null;
+            /**
+             * Entity Id
+             * Format: uuid
+             */
+            entity_id: string;
+            /**
+             * Entity Type
+             * @enum {string}
+             */
+            entity_type: "leave_request" | "regularization" | "requisition" | "offer" | "payroll_run" | "compensation" | "separation";
+            /** Policy Name */
+            policy_name: string;
+            /**
+             * Request Id
+             * Format: uuid
+             */
+            request_id: string;
+            /**
+             * Request Status
+             * @enum {string}
+             */
+            request_status: "pending" | "approved" | "rejected" | "cancelled" | "expired";
+            /** Requested By */
+            requested_by: string | null;
+            /** Requester Name */
+            requester_name: string | null;
+            /** Step Name */
+            step_name: string | null;
+            /** Step No */
+            step_no: number;
+            /**
+             * Task Id
+             * Format: uuid
+             */
+            task_id: string;
+            /**
+             * Task Status
+             * @enum {string}
+             */
+            task_status: "pending" | "approved" | "rejected" | "skipped" | "delegated" | "escalated";
+        };
+        /** InboxPage */
+        InboxPage: {
+            /** Items */
+            items: components["schemas"]["InboxItem"][];
+            /** Next Cursor */
+            next_cursor: string | null;
         };
         /**
          * InviteRequest
@@ -1376,6 +2013,135 @@ export interface components {
             /** Module */
             module: string;
         };
+        /** PersonOut */
+        PersonOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Name */
+            name: string | null;
+        };
+        /**
+         * PolicyCreate
+         * @example {
+         *       "conditions": {
+         *         "field": "days",
+         *         "op": "gte",
+         *         "value": 5
+         *       },
+         *       "entity_type": "leave_request",
+         *       "key": "leave_long",
+         *       "name": "Leave of 5 days or more",
+         *       "priority": 10,
+         *       "steps": [
+         *         {
+         *           "approvers": [
+         *             "manager"
+         *           ],
+         *           "escalate_after_hours": 48,
+         *           "name": "Manager"
+         *         },
+         *         {
+         *           "approvers": [
+         *             "role:hr_admin"
+         *           ],
+         *           "mode": "any",
+         *           "name": "HR"
+         *         }
+         *       ]
+         *     }
+         */
+        PolicyCreate: {
+            /**
+             * Conditions
+             * @description Which requests this applies to. {} matches everything. See the condition language in the docs.
+             */
+            conditions?: {
+                [key: string]: unknown;
+            };
+            /**
+             * Entity Type
+             * @enum {string}
+             */
+            entity_type: "leave_request" | "regularization" | "requisition" | "offer" | "payroll_run" | "compensation" | "separation";
+            /**
+             * Is Active
+             * @default true
+             */
+            is_active: boolean;
+            /** Key */
+            key: string;
+            /** Name */
+            name: string;
+            /**
+             * Priority
+             * @description The highest-priority matching policy wins.
+             * @default 0
+             */
+            priority: number;
+            /** Steps */
+            steps: components["schemas"]["StepSpec"][];
+        };
+        /** PolicyOut */
+        PolicyOut: {
+            /** Archived At */
+            archived_at: string | null;
+            /** Conditions */
+            conditions: {
+                [key: string]: unknown;
+            };
+            /**
+             * Entity Type
+             * @enum {string}
+             */
+            entity_type: "leave_request" | "regularization" | "requisition" | "offer" | "payroll_run" | "compensation" | "separation";
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Is Active */
+            is_active: boolean;
+            /** Key */
+            key: string;
+            /** Name */
+            name: string;
+            /** Priority */
+            priority: number;
+            /** Row Version */
+            row_version: number;
+            /** Steps */
+            steps: components["schemas"]["StepSpec"][];
+        };
+        /** PolicyUpdate */
+        PolicyUpdate: {
+            /**
+             * Conditions
+             * @description Which requests this applies to. {} matches everything. See the condition language in the docs.
+             */
+            conditions?: {
+                [key: string]: unknown;
+            };
+            /**
+             * Is Active
+             * @default true
+             */
+            is_active: boolean;
+            /** Name */
+            name: string;
+            /**
+             * Priority
+             * @description The highest-priority matching policy wins.
+             * @default 0
+             */
+            priority: number;
+            /** Row Version */
+            row_version: number;
+            /** Steps */
+            steps: components["schemas"]["StepSpec"][];
+        };
         /** PreferenceOut */
         PreferenceOut: {
             channels: components["schemas"]["ChannelPreference"];
@@ -1447,6 +2213,95 @@ export interface components {
              * @description Shown once. Each works one time.
              */
             recovery_codes: string[];
+        };
+        /** RequestOut */
+        RequestOut: {
+            /** Can Cancel */
+            can_cancel: boolean;
+            /** Completed At */
+            completed_at: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Current Step */
+            current_step: number;
+            /**
+             * Entity Id
+             * Format: uuid
+             */
+            entity_id: string;
+            /**
+             * Entity Type
+             * @enum {string}
+             */
+            entity_type: "leave_request" | "regularization" | "requisition" | "offer" | "payroll_run" | "compensation" | "separation";
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * My Task Id
+             * @description The caller's pending task, if the request is waiting on them.
+             */
+            my_task_id: string | null;
+            /** Policy Name */
+            policy_name: string;
+            requested_by: components["schemas"]["PersonOut"] | null;
+            /** Row Version */
+            row_version: number;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "pending" | "approved" | "rejected" | "cancelled" | "expired";
+            /** Steps */
+            steps: components["schemas"]["StepOut"][];
+        };
+        /** RequestedItem */
+        RequestedItem: {
+            /** Completed At */
+            completed_at: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Current Step */
+            current_step: number;
+            /**
+             * Entity Id
+             * Format: uuid
+             */
+            entity_id: string;
+            /**
+             * Entity Type
+             * @enum {string}
+             */
+            entity_type: "leave_request" | "regularization" | "requisition" | "offer" | "payroll_run" | "compensation" | "separation";
+            /** Policy Name */
+            policy_name: string;
+            /**
+             * Request Id
+             * Format: uuid
+             */
+            request_id: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "pending" | "approved" | "rejected" | "cancelled" | "expired";
+            /** Step Count */
+            step_count: number;
+        };
+        /** RequestedPage */
+        RequestedPage: {
+            /** Items */
+            items: components["schemas"]["RequestedItem"][];
+            /** Next Cursor */
+            next_cursor: string | null;
         };
         /** ResetPasswordRequest */
         ResetPasswordRequest: {
@@ -1533,6 +2388,14 @@ export interface components {
          * @enum {string}
          */
         ScopeType: "tenant" | "legal_entity" | "location" | "department" | "department_subtree" | "direct_reports" | "all_reports" | "self";
+        /** SecretOut */
+        SecretOut: {
+            /**
+             * Secret
+             * @description The new signing secret, shown once. The old one stops working.
+             */
+            secret: string;
+        };
         /**
          * SessionState
          * @description Where a signed-in session stands; the web app routes on ``stage``.
@@ -1709,6 +2572,55 @@ export interface components {
              */
             tenant_id: string;
         };
+        /** StepOut */
+        StepOut: {
+            /**
+             * Mode
+             * @enum {string}
+             */
+            mode: "any" | "all";
+            /** Name */
+            name: string;
+            /**
+             * State
+             * @enum {string}
+             */
+            state: "done" | "current" | "upcoming";
+            /** Step No */
+            step_no: number;
+            /** Tasks */
+            tasks: components["schemas"]["TaskOut"][];
+        };
+        /** StepSpec */
+        StepSpec: {
+            /**
+             * Allow Self Approval
+             * @description Let the requester approve their own request at this step.
+             * @default false
+             */
+            allow_self_approval: boolean;
+            /** Approvers */
+            approvers: string[];
+            /**
+             * Escalate After Hours
+             * @description Hand an unanswered task to the fallback after this long; a reminder goes out at half the time. Omit for no escalation.
+             */
+            escalate_after_hours?: number | null;
+            /**
+             * Fallback
+             * @description Who gets an escalated task. Default: the approver's manager (skip_level), else the tenant_admin role.
+             */
+            fallback?: string | null;
+            /**
+             * Mode
+             * @description 'any': one approver decides the step. 'all': everyone must.
+             * @default any
+             * @enum {string}
+             */
+            mode: "any" | "all";
+            /** Name */
+            name: string;
+        };
         /** SwitchTenantRequest */
         SwitchTenantRequest: {
             /**
@@ -1716,6 +2628,32 @@ export interface components {
              * Format: uuid
              */
             tenant_id: string;
+        };
+        /** TaskOut */
+        TaskOut: {
+            /** Acted At */
+            acted_at: string | null;
+            assignee: components["schemas"]["PersonOut"];
+            /** Comment */
+            comment: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            delegated_from: components["schemas"]["PersonOut"] | null;
+            /** Due At */
+            due_at: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "pending" | "approved" | "rejected" | "skipped" | "delegated" | "escalated";
         };
         /** TenantSettingsOut */
         TenantSettingsOut: {
@@ -2369,6 +3307,468 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MemberOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_delegations_v1_approvals_delegations_get: {
+        parameters: {
+            query?: {
+                /** @description All delegations (needs manage). */
+                everyone?: boolean;
+                include_ended?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DelegationOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_delegation_v1_approvals_delegations_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DelegationCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DelegationOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    end_delegation_v1_approvals_delegations__delegation_id__end_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                delegation_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DelegationOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    inbox_v1_approvals_inbox_get: {
+        parameters: {
+            query?: {
+                state?: "pending" | "decided" | "all";
+                /** @description Cursor: next_cursor */
+                before?: string | null;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InboxPage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_policies_v1_approvals_policies_get: {
+        parameters: {
+            query?: {
+                entity_type?: string | null;
+                include_archived?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PolicyOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_policy_v1_approvals_policies_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PolicyCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PolicyOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_policy_v1_approvals_policies__policy_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                policy_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PolicyUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PolicyOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    archive_policy_v1_approvals_policies__policy_id__archive_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                policy_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PolicyOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    unarchive_policy_v1_approvals_policies__policy_id__unarchive_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                policy_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PolicyOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    requested_v1_approvals_requested_get: {
+        parameters: {
+            query?: {
+                /** @description Cursor: next_cursor */
+                before?: string | null;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RequestedPage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_request_v1_approvals__request_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                request_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RequestOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    approve_v1_approvals__request_id__approve_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                request_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Decision"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RequestOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    cancel_v1_approvals__request_id__cancel_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                request_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Decision"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RequestOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    reject_v1_approvals__request_id__reject_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                request_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Decision"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RequestOut"];
                 };
             };
             /** @description Validation Error */
@@ -3499,6 +4899,283 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["SignupStatusOut"];
                 };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_deliveries_v1_webhooks_deliveries_get: {
+        parameters: {
+            query?: {
+                endpoint_id?: string | null;
+                status?: ("pending" | "succeeded" | "failed" | "dead") | null;
+                event_type?: string | null;
+                /** @description Cursor: next_cursor */
+                before?: string | null;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeliveryPage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_delivery_v1_webhooks_deliveries__delivery_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                delivery_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeliveryOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    replay_delivery_v1_webhooks_deliveries__delivery_id__replay_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                delivery_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeliveryOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_endpoints_v1_webhooks_endpoints_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EndpointOut"][];
+                };
+            };
+        };
+    };
+    create_endpoint_v1_webhooks_endpoints_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EndpointCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EndpointWithSecret"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_endpoint_v1_webhooks_endpoints__endpoint_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                endpoint_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EndpointOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_endpoint_v1_webhooks_endpoints__endpoint_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                endpoint_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EndpointUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EndpointOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    rotate_secret_v1_webhooks_endpoints__endpoint_id__rotate_secret_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                endpoint_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SecretOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    retry_event_v1_webhooks_events__event_id__retry_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                event_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Validation Error */
             422: {

@@ -111,7 +111,7 @@ deps: tools-image
 
 .PHONY: lint
 lint: deps ## ruff, import-linter, SPDX headers, eslint, prettier
-	$(TOOLS_RUN) sh -c '$(UV) ruff check $(RUFF_CFG) apps/backend db && $(UV) ruff format --check $(RUFF_CFG) apps/backend db \
+	$(TOOLS_RUN) sh -c '$(UV) ruff check $(RUFF_CFG) apps/backend db examples && $(UV) ruff format --check $(RUFF_CFG) apps/backend db examples \
 		&& (cd apps/backend && uv run --frozen lint-imports) \
 		&& sh infra/scripts/check-spdx.sh \
 		&& pnpm -r --workspace-concurrency=1 lint && pnpm format:check'
@@ -125,6 +125,10 @@ test: env ## Backend + database tests in a disposable stack
 	$(TEST) --profile test build backend-test
 	$(TEST) --profile test run --rm backend-test; status=$$?; \
 		$(TEST) --profile test down --volumes --remove-orphans >/dev/null 2>&1; exit $$status
+
+.PHONY: test-examples
+test-examples: tools-image ## Run the example webhook receivers' own tests (Node)
+	$(TOOLS_RUN) node --test "examples/webhook-receiver/node/*.test.mjs"
 
 .PHONY: test-db
 test-db: env ## Database-level tests only (db/tests)
