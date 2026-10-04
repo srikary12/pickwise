@@ -128,9 +128,14 @@ test-db: env ## Database-level tests only (db/tests)
 		$(TEST) --profile test down --volumes --remove-orphans >/dev/null 2>&1; exit $$status
 
 .PHONY: e2e
-e2e: ## Playwright against the running dev stack (run make dev first)
-	docker run --rm --network pickwise_default -u $(HOST_UID):$(HOST_GID) \
-		-e HOME=/tmp -e CI=$(CI) -e E2E_BASE_URL=http://web:3000 -e pnpm_config_store_dir=/repo/.cache/pnpm-store \
+e2e: env ## Playwright against the running dev stack (run make dev first)
+	@test -n "$$($(DEV) ps -q web)" || { echo "the stack isn't running: run make dev first" >&2; exit 1; }
+	@# Share the web container's network namespace: the browser's localhost:3000 is then the web
+	@# app itself, so the page origin matches PUBLIC_BASE_URL (the API checks Origin on writes),
+	@# and Mailpit is reachable as mailpit:8025.
+	docker run --rm --network container:$$($(DEV) ps -q web) -u $(HOST_UID):$(HOST_GID) \
+		-e HOME=/tmp -e CI=$(CI) -e E2E_BASE_URL=http://localhost:3000 -e E2E_MAILPIT_URL=http://mailpit:8025 \
+		-e DEMO_PASSWORD="$$(sed -n 's/^DEMO_PASSWORD=//p' .env)" -e pnpm_config_store_dir=/repo/.cache/pnpm-store \
 		-v "$(CURDIR)":/repo -w /repo \
 		mcr.microsoft.com/playwright:v1.63.0-noble@sha256:eff16c30e6f3f4af0a03fa4b706120d5e9b0891c344a27d64559aff5900a4a27 \
 		sh -c 'npx --yes pnpm@12.6.0 --filter @pickwise/web exec playwright test'
