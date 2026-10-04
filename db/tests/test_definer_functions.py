@@ -121,6 +121,9 @@ def test_log_platform_event_rejects_free_text_actions(connect: Connect) -> None:
         ("SELECT platform.ensure_monthly_partitions('audit.events')", "pickwise_api"),
         ("SELECT * FROM platform.purge_tenant(gen_random_uuid())", "pickwise_api"),
         ("SELECT audit.scrub_subject('platform.roles', gen_random_uuid())", "pickwise_api"),
+        ("SELECT platform.begin_erasure()", "pickwise_api"),
+        ("SELECT platform.end_erasure()", "pickwise_worker"),
+        ("SELECT platform.begin_erasure()", "pickwise_maint"),  # needs SET LOCAL ROLE first
         ("SELECT platform.apply_tenant_policies('platform')", "pickwise_api"),
         ("SELECT platform.apply_rls('platform.roles')", "pickwise_worker"),
     ],
@@ -131,6 +134,22 @@ def test_ops_and_migration_functions_are_not_executable_by_the_app(
     conn = connect(user)
     with pytest.raises(psycopg.errors.InsufficientPrivilege):
         conn.execute(call)
+
+
+def test_erasure_functions_switch_purge_mode_for_ops_only(connect: Connect) -> None:
+    maint = connect("pickwise_maint")
+    with as_ops(maint):
+        before = maint.execute("SELECT current_setting('app.purge_mode', true)").fetchone()
+        maint.execute("SELECT platform.begin_erasure()")
+        during = maint.execute("SELECT current_setting('app.purge_mode', true)").fetchone()
+        maint.execute("SELECT platform.end_erasure()")
+        after = maint.execute("SELECT current_setting('app.purge_mode', true)").fetchone()
+    assert before in ((None,), ("",), ("off",))
+    assert during == ("on",)
+    assert after == ("off",)
+    # The mode is transaction-local: it can't leak into the next transaction.
+    leaked = maint.execute("SELECT current_setting('app.purge_mode', true)").fetchone()
+    assert leaked in ((None,), ("",), ("off",))
 
 
 def test_scrub_subject_needs_purge_mode(

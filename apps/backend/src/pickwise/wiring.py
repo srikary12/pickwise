@@ -12,6 +12,7 @@ _REGISTRATIONS = (
     "pickwise.platform.scopes",
     "pickwise.platform.approvals.resolvers",
     "pickwise.platform.approvals.types",
+    "pickwise.platform.erasure.platform_handler",
     "pickwise.platform.provisioning.platform_defaults",
 )
 
