@@ -173,9 +173,12 @@ docs-pii: deps ## Regenerate the PII section of docs/DATA_MODEL.md from db/pii_c
 
 # --- scanning ---------------------------------------------------------------
 .PHONY: scan-check
-scan-check: env ## Stream EICAR through the scanner adapter to real clamd; must be infected
-	SCANNER=clamav $(DEV) --profile full up -d --wait --wait-timeout 1200 clamav
-	$(DEV) --profile full run --rm --no-deps -e SCANNER=clamav api pickwise scan-check
+scan-check: env ## EICAR through the scanner adapter AND the whole file pipeline, against real clamd
+	$(TEST) --profile full up -d --wait --wait-timeout 1200 clamav
+	$(TEST) --profile test --profile full run --rm --no-deps -e SCANNER=clamav backend-test pickwise scan-check
+	$(TEST) --profile test --profile full run --rm -e SCANNER=clamav -e CLAMAV_E2E=1 backend-test \
+		pytest tests/integration/test_files_clamav.py; status=$$?; \
+		$(TEST) --profile test --profile full down --remove-orphans >/dev/null 2>&1; exit $$status
 
 # --- Jev eval (Phase 11) ----------------------------------------------------
 .PHONY: eval eval-live

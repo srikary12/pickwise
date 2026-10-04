@@ -265,6 +265,24 @@
         "title": "ChangePasswordRequest",
         "type": "object"
       },
+      "ChannelPreference": {
+        "properties": {
+          "email": {
+            "title": "Email",
+            "type": "boolean"
+          },
+          "in_app": {
+            "title": "In App",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "in_app",
+          "email"
+        ],
+        "title": "ChannelPreference",
+        "type": "object"
+      },
       "CheckStatus": {
         "enum": [
           "ok",
@@ -308,6 +326,377 @@
           "latency_ms"
         ],
         "title": "DependencyCheck",
+        "type": "object"
+      },
+      "DownloadOut": {
+        "properties": {
+          "expires_in": {
+            "title": "Expires In",
+            "type": "integer"
+          },
+          "url": {
+            "description": "Short-lived; forces a download",
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "expires_in"
+        ],
+        "title": "DownloadOut",
+        "type": "object"
+      },
+      "FieldCreate": {
+        "examples": [
+          {
+            "entity_type": "employee",
+            "field_type": "select",
+            "key": "t_shirt_size",
+            "label": "T-shirt size",
+            "options": {
+              "choices": [
+                {
+                  "label": "Medium",
+                  "value": "m"
+                },
+                {
+                  "label": "Large",
+                  "value": "l"
+                }
+              ]
+            },
+            "required": false
+          }
+        ],
+        "properties": {
+          "entity_type": {
+            "enum": [
+              "employee",
+              "candidate",
+              "job",
+              "application",
+              "requisition"
+            ],
+            "title": "Entity Type",
+            "type": "string"
+          },
+          "field_type": {
+            "enum": [
+              "text",
+              "number",
+              "date",
+              "boolean",
+              "select",
+              "multiselect",
+              "user",
+              "file"
+            ],
+            "title": "Field Type",
+            "type": "string"
+          },
+          "is_sensitive": {
+            "default": false,
+            "title": "Is Sensitive",
+            "type": "boolean"
+          },
+          "key": {
+            "pattern": "^[a-z][a-z0-9_]{0,62}$",
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Label",
+            "type": "string"
+          },
+          "options": {
+            "additionalProperties": true,
+            "title": "Options",
+            "type": "object"
+          },
+          "position": {
+            "default": 0,
+            "maximum": 10000.0,
+            "minimum": 0.0,
+            "title": "Position",
+            "type": "integer"
+          },
+          "required": {
+            "default": false,
+            "title": "Required",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "entity_type",
+          "key",
+          "label",
+          "field_type"
+        ],
+        "title": "FieldCreate",
+        "type": "object"
+      },
+      "FieldOut": {
+        "properties": {
+          "archived_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Archived At"
+          },
+          "entity_type": {
+            "enum": [
+              "employee",
+              "candidate",
+              "job",
+              "application",
+              "requisition"
+            ],
+            "title": "Entity Type",
+            "type": "string"
+          },
+          "field_type": {
+            "enum": [
+              "text",
+              "number",
+              "date",
+              "boolean",
+              "select",
+              "multiselect",
+              "user",
+              "file"
+            ],
+            "title": "Field Type",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_sensitive": {
+            "title": "Is Sensitive",
+            "type": "boolean"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "options": {
+            "additionalProperties": true,
+            "title": "Options",
+            "type": "object"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "required": {
+            "title": "Required",
+            "type": "boolean"
+          },
+          "row_version": {
+            "title": "Row Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "entity_type",
+          "key",
+          "label",
+          "field_type",
+          "options",
+          "required",
+          "is_sensitive",
+          "position",
+          "archived_at",
+          "row_version"
+        ],
+        "title": "FieldOut",
+        "type": "object"
+      },
+      "FieldUpdate": {
+        "description": "The key and type can't change: stored values were validated against them.",
+        "properties": {
+          "is_sensitive": {
+            "default": false,
+            "title": "Is Sensitive",
+            "type": "boolean"
+          },
+          "label": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Label",
+            "type": "string"
+          },
+          "options": {
+            "additionalProperties": true,
+            "title": "Options",
+            "type": "object"
+          },
+          "position": {
+            "default": 0,
+            "maximum": 10000.0,
+            "minimum": 0.0,
+            "title": "Position",
+            "type": "integer"
+          },
+          "required": {
+            "default": false,
+            "title": "Required",
+            "type": "boolean"
+          },
+          "row_version": {
+            "title": "Row Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "label",
+          "row_version"
+        ],
+        "title": "FieldUpdate",
+        "type": "object"
+      },
+      "FileOut": {
+        "properties": {
+          "classification": {
+            "enum": [
+              "public",
+              "internal",
+              "confidential",
+              "restricted"
+            ],
+            "title": "Classification",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "mime_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mime Type"
+          },
+          "original_name": {
+            "title": "Original Name",
+            "type": "string"
+          },
+          "owner_entity_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Owner Entity Id"
+          },
+          "owner_entity_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Owner Entity Type"
+          },
+          "scan_detail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scan Detail"
+          },
+          "scan_status": {
+            "enum": [
+              "pending",
+              "clean",
+              "infected",
+              "error"
+            ],
+            "title": "Scan Status",
+            "type": "string"
+          },
+          "scanned_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scanned At"
+          },
+          "size_bytes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Size Bytes"
+          },
+          "uploaded_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Uploaded At"
+          }
+        },
+        "required": [
+          "id",
+          "original_name",
+          "mime_type",
+          "size_bytes",
+          "scan_status",
+          "scan_detail",
+          "classification",
+          "owner_entity_type",
+          "owner_entity_id",
+          "uploaded_at",
+          "scanned_at"
+        ],
+        "title": "FileOut",
         "type": "object"
       },
       "ForgotPasswordRequest": {
@@ -602,6 +991,127 @@
         "title": "MfaVerifyRequest",
         "type": "object"
       },
+      "NotificationOut": {
+        "properties": {
+          "body": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Body"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "entity_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Entity Id"
+          },
+          "entity_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Entity Type"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "link": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Link"
+          },
+          "read_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Read At"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "title",
+          "body",
+          "link",
+          "entity_type",
+          "entity_id",
+          "read_at",
+          "created_at"
+        ],
+        "title": "NotificationOut",
+        "type": "object"
+      },
+      "NotificationPage": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/NotificationOut"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Pass as `before` to fetch the next (older) page",
+            "title": "Next Cursor"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "NotificationPage",
+        "type": "object"
+      },
       "PermissionOut": {
         "properties": {
           "code": {
@@ -628,6 +1138,59 @@
           "is_sensitive"
         ],
         "title": "PermissionOut",
+        "type": "object"
+      },
+      "PreferenceOut": {
+        "properties": {
+          "channels": {
+            "$ref": "#/components/schemas/ChannelPreference"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "locked": {
+            "description": "Channels that can't be turned off",
+            "items": {
+              "type": "string"
+            },
+            "title": "Locked",
+            "type": "array"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "label",
+          "description",
+          "channels",
+          "locked"
+        ],
+        "title": "PreferenceOut",
+        "type": "object"
+      },
+      "PreferencesUpdate": {
+        "properties": {
+          "preferences": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ChannelPreference"
+            },
+            "description": "Notification type key \u2192 channels. Unknown types are rejected.",
+            "title": "Preferences",
+            "type": "object"
+          }
+        },
+        "required": [
+          "preferences"
+        ],
+        "title": "PreferencesUpdate",
         "type": "object"
       },
       "Readiness": {
@@ -1402,6 +1965,130 @@
           "token"
         ],
         "title": "TokenRequest",
+        "type": "object"
+      },
+      "UnreadCount": {
+        "properties": {
+          "unread": {
+            "title": "Unread",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "unread"
+        ],
+        "title": "UnreadCount",
+        "type": "object"
+      },
+      "UploadRequest": {
+        "examples": [
+          {
+            "classification": "confidential",
+            "filename": "offer-letter.pdf",
+            "mime_type": "application/pdf",
+            "size_bytes": 182044
+          }
+        ],
+        "properties": {
+          "classification": {
+            "default": "confidential",
+            "enum": [
+              "public",
+              "internal",
+              "confidential",
+              "restricted"
+            ],
+            "title": "Classification",
+            "type": "string"
+          },
+          "filename": {
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Filename",
+            "type": "string"
+          },
+          "mime_type": {
+            "maxLength": 100,
+            "minLength": 3,
+            "title": "Mime Type",
+            "type": "string"
+          },
+          "owner_entity_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Owner Entity Id"
+          },
+          "owner_entity_type": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Owner Entity Type"
+          },
+          "size_bytes": {
+            "description": "Announced size; the store enforces the cap",
+            "exclusiveMinimum": 0.0,
+            "title": "Size Bytes",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "filename",
+          "mime_type",
+          "size_bytes"
+        ],
+        "title": "UploadRequest",
+        "type": "object"
+      },
+      "UploadSlotOut": {
+        "properties": {
+          "expires_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expires At"
+          },
+          "file": {
+            "$ref": "#/components/schemas/FileOut"
+          },
+          "upload_fields": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Upload Fields",
+            "type": "object"
+          },
+          "upload_url": {
+            "description": "POST the form here: the fields first, then the file",
+            "title": "Upload Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "file",
+          "upload_url",
+          "upload_fields",
+          "expires_at"
+        ],
+        "title": "UploadSlotOut",
         "type": "object"
       },
       "UserSummary": {
@@ -2802,6 +3489,429 @@
         ]
       }
     },
+    "/v1/custom-fields": {
+      "get": {
+        "description": "Definitions for building forms. Sensitive fields are listed only for callers who may\nsee them, and archived ones only on request.",
+        "operationId": "list_fields_v1_custom_fields_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "entity_type",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "employee",
+                    "candidate",
+                    "job",
+                    "application",
+                    "requisition"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Entity Type"
+            }
+          },
+          {
+            "in": "query",
+            "name": "include_archived",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Include Archived",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/FieldOut"
+                  },
+                  "title": "Response List Fields V1 Custom Fields Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Fields",
+        "tags": [
+          "custom-fields"
+        ]
+      },
+      "post": {
+        "operationId": "create_field_v1_custom_fields_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FieldCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FieldOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Field",
+        "tags": [
+          "custom-fields"
+        ]
+      }
+    },
+    "/v1/custom-fields/{field_id}": {
+      "put": {
+        "operationId": "update_field_v1_custom_fields__field_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "field_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Field Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FieldUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FieldOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Update Field",
+        "tags": [
+          "custom-fields"
+        ]
+      }
+    },
+    "/v1/custom-fields/{field_id}/archive": {
+      "post": {
+        "description": "Archive instead of delete: stored values stay, new writes are refused.",
+        "operationId": "archive_field_v1_custom_fields__field_id__archive_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "field_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Field Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FieldOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Archive Field",
+        "tags": [
+          "custom-fields"
+        ]
+      }
+    },
+    "/v1/custom-fields/{field_id}/unarchive": {
+      "post": {
+        "operationId": "unarchive_field_v1_custom_fields__field_id__unarchive_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "field_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Field Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FieldOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Unarchive Field",
+        "tags": [
+          "custom-fields"
+        ]
+      }
+    },
+    "/v1/files": {
+      "post": {
+        "description": "Ask for an upload slot. POST the file to ``upload_url`` (quarantine), then call\n``/complete``. The file can't be downloaded until it has been scanned clean.",
+        "operationId": "create_upload_v1_files_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadSlotOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Upload",
+        "tags": [
+          "files"
+        ]
+      }
+    },
+    "/v1/files/{file_id}": {
+      "get": {
+        "operationId": "get_file_v1_files__file_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "file_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "File Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get File",
+        "tags": [
+          "files"
+        ]
+      }
+    },
+    "/v1/files/{file_id}/complete": {
+      "post": {
+        "description": "Tell us the upload finished; the scan is queued from here (no bucket notifications).",
+        "operationId": "complete_upload_v1_files__file_id__complete_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "file_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "File Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Complete Upload",
+        "tags": [
+          "files"
+        ]
+      }
+    },
+    "/v1/files/{file_id}/download": {
+      "get": {
+        "description": "A short-lived presigned URL: only for clean files the caller may read.",
+        "operationId": "download_v1_files__file_id__download_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "file_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "File Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DownloadOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Download",
+        "tags": [
+          "files"
+        ]
+      }
+    },
     "/v1/me": {
       "get": {
         "operationId": "me_v1_me_get",
@@ -2821,6 +3931,208 @@
         "tags": [
           "auth",
           "me"
+        ]
+      }
+    },
+    "/v1/notifications": {
+      "get": {
+        "operationId": "list_notifications_v1_notifications_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "unread",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Unread",
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Cursor: id from next_cursor",
+            "in": "query",
+            "name": "before",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Cursor: id from next_cursor",
+              "title": "Before"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 30,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationPage"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Notifications",
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/v1/notifications/preferences": {
+      "get": {
+        "operationId": "get_preferences_v1_notifications_preferences_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PreferenceOut"
+                  },
+                  "title": "Response Get Preferences V1 Notifications Preferences Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Preferences",
+        "tags": [
+          "notifications"
+        ]
+      },
+      "put": {
+        "operationId": "put_preferences_v1_notifications_preferences_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreferencesUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Put Preferences",
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/v1/notifications/read-all": {
+      "post": {
+        "operationId": "read_all_v1_notifications_read_all_post",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Read All",
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/v1/notifications/unread-count": {
+      "get": {
+        "operationId": "unread_count_v1_notifications_unread_count_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnreadCount"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Unread Count",
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/v1/notifications/{notification_id}/read": {
+      "post": {
+        "operationId": "mark_read_v1_notifications__notification_id__read_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "notification_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Notification Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Mark Read",
+        "tags": [
+          "notifications"
         ]
       }
     },

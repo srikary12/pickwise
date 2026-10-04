@@ -545,6 +545,160 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/custom-fields": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Fields
+         * @description Definitions for building forms. Sensitive fields are listed only for callers who may
+         *     see them, and archived ones only on request.
+         */
+        get: operations["list_fields_v1_custom_fields_get"];
+        put?: never;
+        /** Create Field */
+        post: operations["create_field_v1_custom_fields_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/custom-fields/{field_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update Field */
+        put: operations["update_field_v1_custom_fields__field_id__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/custom-fields/{field_id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Archive Field
+         * @description Archive instead of delete: stored values stay, new writes are refused.
+         */
+        post: operations["archive_field_v1_custom_fields__field_id__archive_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/custom-fields/{field_id}/unarchive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Unarchive Field */
+        post: operations["unarchive_field_v1_custom_fields__field_id__unarchive_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/files": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create Upload
+         * @description Ask for an upload slot. POST the file to ``upload_url`` (quarantine), then call
+         *     ``/complete``. The file can't be downloaded until it has been scanned clean.
+         */
+        post: operations["create_upload_v1_files_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/files/{file_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get File */
+        get: operations["get_file_v1_files__file_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/files/{file_id}/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Complete Upload
+         * @description Tell us the upload finished; the scan is queued from here (no bucket notifications).
+         */
+        post: operations["complete_upload_v1_files__file_id__complete_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/files/{file_id}/download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Download
+         * @description A short-lived presigned URL: only for clean files the caller may read.
+         */
+        get: operations["download_v1_files__file_id__download_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/me": {
         parameters: {
             query?: never;
@@ -556,6 +710,92 @@ export interface paths {
         get: operations["me_v1_me_get"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Notifications */
+        get: operations["list_notifications_v1_notifications_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/notifications/preferences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Preferences */
+        get: operations["get_preferences_v1_notifications_preferences_get"];
+        /** Put Preferences */
+        put: operations["put_preferences_v1_notifications_preferences_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/notifications/read-all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Read All */
+        post: operations["read_all_v1_notifications_read_all_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/notifications/unread-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Unread Count */
+        get: operations["unread_count_v1_notifications_unread_count_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/notifications/{notification_id}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Mark Read */
+        post: operations["mark_read_v1_notifications__notification_id__read_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -735,6 +975,13 @@ export interface components {
             /** New Password */
             new_password: string;
         };
+        /** ChannelPreference */
+        ChannelPreference: {
+            /** Email */
+            email: boolean;
+            /** In App */
+            in_app: boolean;
+        };
         /**
          * CheckStatus
          * @enum {string}
@@ -761,6 +1008,172 @@ export interface components {
              */
             latency_ms: number;
             status: components["schemas"]["CheckStatus"];
+        };
+        /** DownloadOut */
+        DownloadOut: {
+            /** Expires In */
+            expires_in: number;
+            /**
+             * Url
+             * @description Short-lived; forces a download
+             */
+            url: string;
+        };
+        /**
+         * FieldCreate
+         * @example {
+         *       "entity_type": "employee",
+         *       "field_type": "select",
+         *       "key": "t_shirt_size",
+         *       "label": "T-shirt size",
+         *       "options": {
+         *         "choices": [
+         *           {
+         *             "label": "Medium",
+         *             "value": "m"
+         *           },
+         *           {
+         *             "label": "Large",
+         *             "value": "l"
+         *           }
+         *         ]
+         *       },
+         *       "required": false
+         *     }
+         */
+        FieldCreate: {
+            /**
+             * Entity Type
+             * @enum {string}
+             */
+            entity_type: "employee" | "candidate" | "job" | "application" | "requisition";
+            /**
+             * Field Type
+             * @enum {string}
+             */
+            field_type: "text" | "number" | "date" | "boolean" | "select" | "multiselect" | "user" | "file";
+            /**
+             * Is Sensitive
+             * @default false
+             */
+            is_sensitive: boolean;
+            /** Key */
+            key: string;
+            /** Label */
+            label: string;
+            /** Options */
+            options?: {
+                [key: string]: unknown;
+            };
+            /**
+             * Position
+             * @default 0
+             */
+            position: number;
+            /**
+             * Required
+             * @default false
+             */
+            required: boolean;
+        };
+        /** FieldOut */
+        FieldOut: {
+            /** Archived At */
+            archived_at: string | null;
+            /**
+             * Entity Type
+             * @enum {string}
+             */
+            entity_type: "employee" | "candidate" | "job" | "application" | "requisition";
+            /**
+             * Field Type
+             * @enum {string}
+             */
+            field_type: "text" | "number" | "date" | "boolean" | "select" | "multiselect" | "user" | "file";
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Is Sensitive */
+            is_sensitive: boolean;
+            /** Key */
+            key: string;
+            /** Label */
+            label: string;
+            /** Options */
+            options: {
+                [key: string]: unknown;
+            };
+            /** Position */
+            position: number;
+            /** Required */
+            required: boolean;
+            /** Row Version */
+            row_version: number;
+        };
+        /**
+         * FieldUpdate
+         * @description The key and type can't change: stored values were validated against them.
+         */
+        FieldUpdate: {
+            /**
+             * Is Sensitive
+             * @default false
+             */
+            is_sensitive: boolean;
+            /** Label */
+            label: string;
+            /** Options */
+            options?: {
+                [key: string]: unknown;
+            };
+            /**
+             * Position
+             * @default 0
+             */
+            position: number;
+            /**
+             * Required
+             * @default false
+             */
+            required: boolean;
+            /** Row Version */
+            row_version: number;
+        };
+        /** FileOut */
+        FileOut: {
+            /**
+             * Classification
+             * @enum {string}
+             */
+            classification: "public" | "internal" | "confidential" | "restricted";
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Mime Type */
+            mime_type: string | null;
+            /** Original Name */
+            original_name: string;
+            /** Owner Entity Id */
+            owner_entity_id: string | null;
+            /** Owner Entity Type */
+            owner_entity_type: string | null;
+            /** Scan Detail */
+            scan_detail: string | null;
+            /**
+             * Scan Status
+             * @enum {string}
+             */
+            scan_status: "pending" | "clean" | "infected" | "error";
+            /** Scanned At */
+            scanned_at: string | null;
+            /** Size Bytes */
+            size_bytes: number | null;
+            /** Uploaded At */
+            uploaded_at: string | null;
         };
         /** ForgotPasswordRequest */
         ForgotPasswordRequest: {
@@ -915,6 +1328,43 @@ export interface components {
             /** Recovery Code */
             recovery_code?: string | null;
         };
+        /** NotificationOut */
+        NotificationOut: {
+            /** Body */
+            body: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Entity Id */
+            entity_id: string | null;
+            /** Entity Type */
+            entity_type: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Link */
+            link: string | null;
+            /** Read At */
+            read_at: string | null;
+            /** Title */
+            title: string;
+            /** Type */
+            type: string;
+        };
+        /** NotificationPage */
+        NotificationPage: {
+            /** Items */
+            items: components["schemas"]["NotificationOut"][];
+            /**
+             * Next Cursor
+             * @description Pass as `before` to fetch the next (older) page
+             */
+            next_cursor?: string | null;
+        };
         /** PermissionOut */
         PermissionOut: {
             /** Code */
@@ -925,6 +1375,31 @@ export interface components {
             is_sensitive: boolean;
             /** Module */
             module: string;
+        };
+        /** PreferenceOut */
+        PreferenceOut: {
+            channels: components["schemas"]["ChannelPreference"];
+            /** Description */
+            description: string;
+            /** Label */
+            label: string;
+            /**
+             * Locked
+             * @description Channels that can't be turned off
+             */
+            locked: string[];
+            /** Type */
+            type: string;
+        };
+        /** PreferencesUpdate */
+        PreferencesUpdate: {
+            /**
+             * Preferences
+             * @description Notification type key → channels. Unknown types are rejected.
+             */
+            preferences: {
+                [key: string]: components["schemas"]["ChannelPreference"];
+            };
         };
         /**
          * Readiness
@@ -1281,6 +1756,56 @@ export interface components {
         TokenRequest: {
             /** Token */
             token: string;
+        };
+        /** UnreadCount */
+        UnreadCount: {
+            /** Unread */
+            unread: number;
+        };
+        /**
+         * UploadRequest
+         * @example {
+         *       "classification": "confidential",
+         *       "filename": "offer-letter.pdf",
+         *       "mime_type": "application/pdf",
+         *       "size_bytes": 182044
+         *     }
+         */
+        UploadRequest: {
+            /**
+             * Classification
+             * @default confidential
+             * @enum {string}
+             */
+            classification: "public" | "internal" | "confidential" | "restricted";
+            /** Filename */
+            filename: string;
+            /** Mime Type */
+            mime_type: string;
+            /** Owner Entity Id */
+            owner_entity_id?: string | null;
+            /** Owner Entity Type */
+            owner_entity_type?: string | null;
+            /**
+             * Size Bytes
+             * @description Announced size; the store enforces the cap
+             */
+            size_bytes: number;
+        };
+        /** UploadSlotOut */
+        UploadSlotOut: {
+            /** Expires At */
+            expires_at: string | null;
+            file: components["schemas"]["FileOut"];
+            /** Upload Fields */
+            upload_fields: {
+                [key: string]: string;
+            };
+            /**
+             * Upload Url
+             * @description POST the form here: the fields first, then the file
+             */
+            upload_url: string;
         };
         /** UserSummary */
         UserSummary: {
@@ -2376,6 +2901,294 @@ export interface operations {
             };
         };
     };
+    list_fields_v1_custom_fields_get: {
+        parameters: {
+            query?: {
+                entity_type?: ("employee" | "candidate" | "job" | "application" | "requisition") | null;
+                include_archived?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FieldOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_field_v1_custom_fields_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FieldCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FieldOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_field_v1_custom_fields__field_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                field_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FieldUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FieldOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    archive_field_v1_custom_fields__field_id__archive_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                field_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FieldOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    unarchive_field_v1_custom_fields__field_id__unarchive_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                field_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FieldOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_upload_v1_files_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UploadRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UploadSlotOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_file_v1_files__file_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                file_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FileOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    complete_upload_v1_files__file_id__complete_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                file_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FileOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    download_v1_files__file_id__download_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                file_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DownloadOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     me_v1_me_get: {
         parameters: {
             query?: never;
@@ -2392,6 +3205,158 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SessionState"];
+                };
+            };
+        };
+    };
+    list_notifications_v1_notifications_get: {
+        parameters: {
+            query?: {
+                unread?: boolean;
+                /** @description Cursor: id from next_cursor */
+                before?: string | null;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationPage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_preferences_v1_notifications_preferences_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PreferenceOut"][];
+                };
+            };
+        };
+    };
+    put_preferences_v1_notifications_preferences_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PreferencesUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_all_v1_notifications_read_all_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    unread_count_v1_notifications_unread_count_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnreadCount"];
+                };
+            };
+        };
+    };
+    mark_read_v1_notifications__notification_id__read_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                notification_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
