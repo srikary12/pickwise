@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # Production overlay for small self-hosted installs: prebuilt images, Caddy with
 # automatic TLS, the real ClamAV scanner, no bind mounts and never any demo data.
-# Set PICKWISE_VERSION, PICKWISE_DOMAIN, PICKWISE_API_DOMAIN and SMTP_* in .env.
+# Set PICKWISE_VERSION, PICKWISE_DOMAIN and SMTP_* in .env. The API is served on the
+# same origin under /api (ADR 0010).
 
 services:
   postgres:
@@ -22,6 +23,7 @@ services:
     environment:
       PICKWISE_ENV: production
       SCANNER: clamav
+      PUBLIC_BASE_URL: https://${PICKWISE_DOMAIN:?set PICKWISE_DOMAIN}
       SMTP_HOST: ${SMTP_HOST:?set SMTP_HOST}
       SMTP_PORT: ${SMTP_PORT:-587}
     depends_on:
@@ -35,6 +37,7 @@ services:
     environment:
       PICKWISE_ENV: production
       SCANNER: clamav
+      PUBLIC_BASE_URL: https://${PICKWISE_DOMAIN:?set PICKWISE_DOMAIN}
       SMTP_HOST: ${SMTP_HOST:?set SMTP_HOST}
       SMTP_PORT: ${SMTP_PORT:-587}
     depends_on:
@@ -56,7 +59,6 @@ services:
     image: caddy:2.11.4-alpine@sha256:6aeddd44c3078b0f9a35206472a11420648a79c184603ef95957d0a20044cb2b
     environment:
       PICKWISE_DOMAIN: ${PICKWISE_DOMAIN}
-      PICKWISE_API_DOMAIN: ${PICKWISE_API_DOMAIN:?set PICKWISE_API_DOMAIN}
     ports:
       - "80:80"
       - "443:443"
@@ -79,11 +81,13 @@ configs:
     content: |
       {$$PICKWISE_DOMAIN} {
         encode zstd gzip
-        reverse_proxy web:3000
-      }
-      {$$PICKWISE_API_DOMAIN} {
-        encode zstd gzip
-        reverse_proxy api:8000
+        # Same origin for the browser: /api/* goes to the API with the prefix removed.
+        handle_path /api/* {
+          reverse_proxy api:8000
+        }
+        handle {
+          reverse_proxy web:3000
+        }
       }
 
 volumes:

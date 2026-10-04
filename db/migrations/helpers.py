@@ -45,14 +45,21 @@ def attach_audit(table: str) -> None:
 
 
 def apply_pii_comments(schemas: tuple[str, ...]) -> int:
-    """Write '@pii …' comments from db/pii_classification.yaml for existing tables."""
+    """Write '@pii …' comments from db/pii_classification.yaml for existing columns.
+
+    The YAML describes the current schema while each migration runs against the
+    schema as of its revision, so columns that don't exist yet are skipped; the
+    migration that adds them applies their comments.
+    """
     bind = op.get_bind()
     written = 0
     for col in pii.personal_columns(pii.load()):
         if col.schema not in schemas:
             continue
         exists = bind.exec_driver_sql(
-            "SELECT to_regclass(%(t)s) IS NOT NULL", {"t": col.qualified_table}
+            "SELECT EXISTS (SELECT 1 FROM pg_attribute WHERE attrelid = to_regclass(%(t)s) "
+            "AND attname = %(c)s AND NOT attisdropped)",
+            {"t": col.qualified_table, "c": col.column},
         ).scalar()
         if not exists:
             continue

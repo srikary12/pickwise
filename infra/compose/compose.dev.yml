@@ -33,6 +33,10 @@ services:
       # Creating tenants is ops work: the seeder runs as pickwise_maint (@ops_command).
       DATABASE_USER: pickwise_maint
       DATABASE_PASSWORD: ${PG_MAINT_PASSWORD}
+      PICKWISE_KEK: ${PICKWISE_KEK}
+      SESSION_SECRET: ${SESSION_SECRET}
+      DEMO_PASSWORD: ${DEMO_PASSWORD}
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:3000}
     volumes: *backend-mounts
     depends_on:
       migrate:

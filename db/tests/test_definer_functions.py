@@ -160,3 +160,107 @@ def test_scrub_subject_needs_purge_mode(
         ).fetchone()
     assert row is not None
     assert int(str(row[0])) >= 1
+
+
+# --- Phase 2 lookups: resolve_api_key, resolve_tenant_by_slug, resolve_sso_by_domain ---------
+
+
+def _api_key(
+    maint: psycopg.Connection[tuple[object, ...]], tenant_id: uuid.UUID, **cols: str
+) -> bytes:
+    digest = hashlib.sha256(uuid.uuid4().bytes).digest()
+    with as_ops(maint):
+        maint.execute("SELECT set_config('app.tenant_id', %s, true)", (str(tenant_id),))
+        maint.execute(
+            f"INSERT INTO platform.api_keys (name, prefix, key_hash, scopes{''.join(', ' + c for c in cols)}) "
+            f"VALUES ('k', %s, %s, ARRAY['platform.users.read']{''.join(', ' + v for v in cols.values())})",
+            (uuid.uuid4().hex[:8], digest),
+        )
+    return digest
+
+
+def test_resolve_api_key_reports_usability(
+    connect: Connect, two_tenants: tuple[SeededTenant, SeededTenant]
+) -> None:
+    a, _ = two_tenants
+    maint, api = connect("pickwise_maint"), connect("pickwise_api")
+    good = _api_key(maint, a.tenant_id)
+    revoked = _api_key(maint, a.tenant_id, revoked_at="now()")
+    expired = _api_key(maint, a.tenant_id, expires_at="now() - interval '1 minute'")
+    sql = "SELECT tenant_id, scopes, is_usable FROM platform.resolve_api_key(%s)"
+    assert api.execute(sql, (good,)).fetchone() == (a.tenant_id, ["platform.users.read"], True)
+    assert api.execute(sql, (revoked,)).fetchone() == (a.tenant_id, ["platform.users.read"], False)
+    assert api.execute(sql, (expired,)).fetchone() == (a.tenant_id, ["platform.users.read"], False)
+    assert api.execute(sql, (hashlib.sha256(b"unknown").digest(),)).fetchone() is None
+    # The table itself stays invisible without a tenant context.
+    assert api.execute("SELECT count(*) FROM platform.api_keys").fetchone() == (0,)
+
+
+def test_resolve_api_key_is_false_for_a_suspended_tenant(
+    connect: Connect, two_tenants: tuple[SeededTenant, SeededTenant]
+) -> None:
+    a, _ = two_tenants
+    maint, api = connect("pickwise_maint"), connect("pickwise_api")
+    key = _api_key(maint, a.tenant_id)
+    with as_ops(maint):
+        maint.execute(
+            "UPDATE platform.tenants SET status = 'suspended' WHERE id = %s", (a.tenant_id,)
+        )
+    row = api.execute("SELECT is_usable FROM platform.resolve_api_key(%s)", (key,)).fetchone()
+    assert row == (False,)
+
+
+def test_resolve_tenant_by_slug_returns_ids_and_flags_only(
+    connect: Connect, two_tenants: tuple[SeededTenant, SeededTenant]
+) -> None:
+    a, _ = two_tenants
+    maint, api = connect("pickwise_maint"), connect("pickwise_api")
+    with as_ops(maint):
+        slug = maint.execute(
+            "SELECT slug FROM platform.tenants WHERE id = %s", (a.tenant_id,)
+        ).fetchone()
+    assert slug is not None
+    cols = api.execute("SELECT * FROM platform.resolve_tenant_by_slug(%s)", (str(slug[0]),))
+    assert [d.name for d in cols.description or []] == ["tenant_id", "status", "careers_enabled"]
+    assert cols.fetchone() == (a.tenant_id, "active", False)
+    assert (
+        api.execute("SELECT * FROM platform.resolve_tenant_by_slug('no-such-slug')").fetchone()
+        is None
+    )
+
+
+def test_resolve_sso_by_domain_lists_active_tenants_only(
+    connect: Connect, two_tenants: tuple[SeededTenant, SeededTenant]
+) -> None:
+    a, b = two_tenants
+    maint, api = connect("pickwise_maint"), connect("pickwise_api")
+    domain = f"sso-{uuid.uuid4().hex[:8]}.test"
+    with as_ops(maint):
+        for tenant, enforce in ((a, True), (b, False)):
+            maint.execute("SELECT set_config('app.tenant_id', %s, true)", (str(tenant.tenant_id),))
+            maint.execute(
+                "INSERT INTO platform.tenant_sso_configs "
+                "(issuer, client_id, client_secret_enc, allowed_domains, enforce_sso) "
+                "VALUES ('https://idp.example.test', 'c', '\\x00', ARRAY[%s]::citext[], %s)",
+                (domain, enforce),
+            )
+    sql = "SELECT tenant_id, enforce_sso FROM platform.resolve_sso_by_domain(%s)"
+    rows = api.execute(sql, (domain,)).fetchall()
+    assert {(r[0], r[1]) for r in rows} == {(a.tenant_id, True), (b.tenant_id, False)}
+    with as_ops(maint):
+        maint.execute(
+            "UPDATE platform.tenants SET status = 'suspended' WHERE id = %s", (b.tenant_id,)
+        )
+    assert [r[0] for r in api.execute(sql, (domain,)).fetchall()] == [a.tenant_id]
+    assert api.execute(sql, ("other.test",)).fetchall() == []
+    assert api.execute("SELECT count(*) FROM platform.tenant_sso_configs").fetchone() == (0,)
+
+
+def test_the_new_global_tables_are_not_readable_across_roles_unexpectedly(connect: Connect) -> None:
+    api = connect("pickwise_api")
+    # The app may spend rate-limit tokens, and queue pre-tenant email, but never edit the outbox.
+    api.execute("SELECT 1 FROM platform.rate_limit_buckets LIMIT 1")
+    with pytest.raises(psycopg.errors.InsufficientPrivilege):
+        api.execute("UPDATE platform.platform_email_outbox SET status = 'sent'")
+    with pytest.raises(psycopg.errors.InsufficientPrivilege):
+        api.execute("DELETE FROM platform.platform_email_outbox")
