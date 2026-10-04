@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 """Helpers shared by the API integration tests: tenants, accounts, a mailbox, an HTTP wrapper."""
 
+import datetime
 import itertools
 import re
 import uuid
@@ -15,10 +16,13 @@ from sqlalchemy import text
 from pickwise.platform import storage
 from pickwise.platform.auth.passwords import hash_password
 from pickwise.platform.crypto import KeyEncryptionKey
+from pickwise.platform.events.relay import RelayResult, relay_batch
 from pickwise.platform.files import processing
 from pickwise.platform.notifications.email import QueuedEmail, RenderedEmail, send_queued
 from pickwise.platform.provisioning.service import add_member, ensure_user, provision_tenant
 from pickwise.platform.scanning import Scanner, build_scanner
+from pickwise.platform.webhooks import delivery
+from pickwise.platform.webhooks.ssrf import Resolver, system_resolver
 from pickwise.shared.db import Database, ops_task
 from pickwise.shared.settings import Settings
 
@@ -120,6 +124,33 @@ class Env:
             if outcome.cleanup is not None:
                 await storage.delete_object(s3, *outcome.cleanup)
         return outcome
+
+    @ops_task
+    async def relay(self) -> RelayResult:
+        """What the worker's relay_events task does."""
+        async with self.db.ops_session() as s:
+            return await relay_batch(s, self.db)
+
+    async def deliver(
+        self,
+        tenant_id: uuid.UUID,
+        delivery_id: uuid.UUID,
+        client: httpx.AsyncClient,
+        *,
+        resolver: Resolver = system_resolver,
+        now: datetime.datetime | None = None,
+    ) -> str:
+        """What the worker's deliver_webhook task does, with a caller-supplied HTTP client."""
+        return await delivery.deliver_one(
+            self.db,
+            self.settings,
+            self.kek,
+            client,
+            tenant_id,
+            delivery_id,
+            resolver=resolver,
+            now=now,
+        )
 
     @ops_task
     async def sql(self, statement: str, **params: Any) -> list[tuple[Any, ...]]:

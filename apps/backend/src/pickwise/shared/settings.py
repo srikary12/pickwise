@@ -70,6 +70,13 @@ class Settings(BaseSettings):
 
     readiness_timeout_seconds: float = Field(default=3.0, gt=0)
 
+    # --- webhooks -----------------------------------------------------------------
+    # Webhook targets must be https and resolve only to public addresses (ADR 0017).
+    # Dev and test set this to deliver to a receiver on the compose network; it also
+    # allows plain http. The API and worker refuse to start with it in production.
+    webhook_allow_private_targets: bool = False
+    webhook_timeout_seconds: float = Field(default=10.0, gt=0)
+
     # --- crypto and sessions ------------------------------------------------
     # PICKWISE_KEK: the only global crypto secret (base64, 32 bytes). It wraps the
     # platform and tenant data keys (ADR 0006, CLAUDE.md "Crypto").

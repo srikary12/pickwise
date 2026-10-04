@@ -1,16 +1,21 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 """Task registry. Arguments are ids only (CLAUDE.md rule 14; a test checks)."""
 
+import datetime
 import uuid
+
+import httpx
 
 from pickwise.platform import ratelimit, storage
 from pickwise.platform.crypto import kek_from_settings
+from pickwise.platform.events.relay import relay_batch
 from pickwise.platform.files import processing
 from pickwise.platform.jobs import defer
 from pickwise.platform.notifications.email import dispatch, due_emails, send_queued
 from pickwise.platform.partitions import ensure_partitions
 from pickwise.platform.provisioning import signup
 from pickwise.platform.scanning import ScannerError, build_scanner
+from pickwise.platform.webhooks import delivery
 from pickwise.shared.db import ops_task
 from pickwise.shared.logging import get_logger
 from pickwise.shared.settings import get_settings
@@ -139,3 +144,67 @@ async def purge_expired_files(timestamp: int) -> None:
     async with storage.s3_client(settings) as s3, get_database().ops_session() as session:
         removed = await processing.purge_retained(session, s3)
     log.info("retained files purged", removed=removed)
+
+
+@ops_task
+async def _relay_events() -> None:
+    async with get_database().ops_session() as session:
+        result = await relay_batch(session, get_database())
+    for tenant_id, delivery_id in result.deliveries:
+        await defer(
+            "pickwise.deliver_webhook", delivery_id=str(delivery_id), tenant_id=str(tenant_id)
+        )
+    if result.published or result.failed:
+        log.info(
+            "events relayed",
+            published=result.published,
+            failed=result.failed,
+            deliveries=len(result.deliveries),
+        )
+
+
+@app.task(name="pickwise.relay_events", queue="default", queueing_lock="relay_events")
+@ops_task
+async def relay_events() -> None:
+    """Publish committed outbox events (deferred right after a commit that emitted one)."""
+    await _relay_events()
+
+
+@app.periodic(cron="* * * * *", periodic_id="sweep_events")
+@app.task(name="pickwise.sweep_events", queue="default", queueing_lock="sweep_events")
+@ops_task
+async def sweep_events(timestamp: int) -> None:
+    """Every minute: publish events whose immediate relay didn't happen, and retry failures."""
+    await _relay_events()
+
+
+@app.task(name="pickwise.deliver_webhook", queue="default", retry=False)
+@ops_task
+async def deliver_webhook(delivery_id: str, tenant_id: str) -> None:
+    """Attempt one webhook delivery (a no-op unless it is due and still pending)."""
+    settings = get_settings()
+    async with httpx.AsyncClient(follow_redirects=False) as client:
+        await delivery.deliver_one(
+            get_database(),
+            settings,
+            kek_from_settings(settings),
+            client,
+            uuid.UUID(tenant_id),
+            uuid.UUID(delivery_id),
+        )
+
+
+@app.periodic(cron="* * * * *", periodic_id="sweep_webhooks")
+@app.task(name="pickwise.sweep_webhooks", queue="default", queueing_lock="sweep_webhooks")
+@ops_task
+async def sweep_webhooks(timestamp: int) -> None:
+    """Every minute: queue deliveries whose time has come (retries, missed kicks, leases)."""
+    now = datetime.datetime.now(datetime.UTC)
+    async with get_database().ops_session() as session:
+        due = await delivery.due_deliveries(session, now=now)
+    for tenant_id, delivery_id in due:
+        await defer(
+            "pickwise.deliver_webhook", delivery_id=str(delivery_id), tenant_id=str(tenant_id)
+        )
+    if due:
+        log.info("webhook deliveries queued", count=len(due))

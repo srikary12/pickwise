@@ -20,6 +20,10 @@ def check_settings(settings: Settings) -> None:
             "SCANNER=stub is not allowed when PICKWISE_ENV=production: "
             "set SCANNER=clamav and run clamd"
         )
+    if settings.is_production and settings.webhook_allow_private_targets:
+        raise UnsafeConfigurationError(
+            "WEBHOOK_ALLOW_PRIVATE_TARGETS is not allowed when PICKWISE_ENV=production"
+        )
     if not settings.is_production:
         return
     if len(settings.session_secret.get_secret_value()) < 32:
