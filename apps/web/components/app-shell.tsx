@@ -16,6 +16,9 @@ const NAV = [
   { href: "/", label: "Home", permission: null },
   { href: "/admin/users", label: "Users", permission: "platform.users.read" },
   { href: "/admin/roles", label: "Roles", permission: "platform.roles.read" },
+  { href: "/admin/imports", label: "Imports", permission: "platform.imports.run" },
+  { href: "/admin/webhooks", label: "Webhooks", permission: "platform.webhooks.manage" },
+  { href: "/admin/audit", label: "Audit", permission: "platform.audit.read" },
   { href: "/settings/security", label: "Security", permission: null },
 ] as const;
 

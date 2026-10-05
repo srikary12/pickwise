@@ -14,7 +14,7 @@ cors=$(cat <<JSON
   "CORSRules": [
     {
       "AllowedOrigins": ["${WEB_ORIGIN:-http://localhost:3000}"],
-      "AllowedMethods": ["PUT", "GET", "HEAD"],
+      "AllowedMethods": ["POST", "PUT", "GET", "HEAD"],
       "AllowedHeaders": ["*"],
       "ExposeHeaders": ["ETag"],
       "MaxAgeSeconds": 3000
