@@ -53,6 +53,7 @@ class Settings(BaseSettings):
     files_max_bytes: int = Field(default=25 * 1024 * 1024, gt=0)
     files_upload_ttl_seconds: int = Field(default=900, gt=0)
     files_download_ttl_seconds: int = Field(default=300, gt=0)
+    branding_logo_max_bytes: int = Field(default=1024 * 1024, gt=0)
     files_allowed_mime_types: tuple[str, ...] = (
         "application/pdf",
         "image/png",
