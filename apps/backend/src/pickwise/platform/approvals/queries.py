@@ -66,6 +66,19 @@ async def inbox(
     return items[:limit], items[limit - 1]["task_id"] if more else None
 
 
+async def pending_count(db: AsyncSession, user_id: uuid.UUID) -> int:
+    count: int = (
+        await db.execute(
+            text(
+                "SELECT count(*) FROM platform.approval_tasks "
+                "WHERE assignee_user_id = :u AND status = 'pending'"
+            ),
+            {"u": user_id},
+        )
+    ).scalar_one()
+    return count
+
+
 async def requested_by(
     db: AsyncSession, user_id: uuid.UUID, *, before: uuid.UUID | None, limit: int
 ) -> tuple[list[dict[str, Any]], uuid.UUID | None]:

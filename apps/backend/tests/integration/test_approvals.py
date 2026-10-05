@@ -795,3 +795,38 @@ async def test_two_steps_with_delegation_and_escalation(org: Org) -> None:
     assert final["status"] == "approved"
     assert [d.status for d in org.decisions] == ["approved"]
     assert await org.events("approval.approved") == 1
+
+
+# --- the dashboard summary -------------------------------------------------------------------
+
+
+async def test_dashboard_summarises_my_waiting_work(org: Org) -> None:
+    await org.policy(steps=[HR_STEP])
+    for _ in range(7):
+        await org.start()
+
+    hr = await (await org.api(org.hr1)).get("/v1/dashboard")
+    assert hr.status_code == 200, hr.text
+    body = hr.json()
+    assert body["pending_approvals"]["count"] == 7
+    assert len(body["pending_approvals"]["items"]) == 5  # the page shows five, the badge all
+    assert body["pending_approvals"]["items"][0]["task_status"] == "pending"
+    (unread,) = (
+        await org.env.sql(
+            "SELECT count(*) FROM platform.notifications "
+            "WHERE user_id = :u AND read_at IS NULL AND tenant_id = :t",
+            u=org.hr1.user_id,
+            t=org.tenant.id,
+        )
+    )[0]
+    assert body["notifications"]["unread"] == unread
+    assert len(body["notifications"]["items"]) == min(5, unread)
+
+    # Strictly the caller's own: someone not asked sees nothing.
+    other = (await (await org.api(org.deputy)).get("/v1/dashboard")).json()
+    assert other["pending_approvals"] == {"count": 0, "items": []}
+
+
+async def test_dashboard_needs_a_session(org: Org) -> None:
+    anonymous = await org.make_api()
+    assert (await anonymous.get("/v1/dashboard")).status_code == 401

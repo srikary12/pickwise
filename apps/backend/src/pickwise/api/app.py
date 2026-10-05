@@ -23,6 +23,7 @@ from pickwise.platform.auth.router import router as auth_router
 from pickwise.platform.branding.router import router as branding_router
 from pickwise.platform.crypto import kek_from_settings
 from pickwise.platform.custom_fields.router import router as custom_fields_router
+from pickwise.platform.dashboard.router import router as dashboard_router
 from pickwise.platform.files.router import router as files_router
 from pickwise.platform.imports.router import router as imports_router
 from pickwise.platform.jobs import set_job_queue
@@ -127,4 +128,5 @@ def create_app(settings: Settings | None = None, *, enqueue_jobs: bool = True) -
     app.include_router(webhooks_router)
     app.include_router(search_router)
     app.include_router(branding_router)
+    app.include_router(dashboard_router)
     return app
