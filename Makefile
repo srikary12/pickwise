@@ -130,6 +130,10 @@ test: env ## Backend + database tests in a disposable stack
 test-examples: tools-image ## Run the example webhook receivers' own tests (Node)
 	$(TOOLS_RUN) node --test "examples/webhook-receiver/node/*.test.mjs"
 
+.PHONY: test-ui
+test-ui: deps ## Unit tests of the shared UI package (formatters)
+	$(TOOLS_RUN) pnpm --filter @pickwise/ui test
+
 .PHONY: test-db
 test-db: env ## Database-level tests only (db/tests)
 	$(TEST) --profile test build backend-test

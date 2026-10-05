@@ -17,7 +17,6 @@
     "@pickwise/api-client": "workspace:*",
     "@pickwise/ui": "workspace:*",
     "@tanstack/react-query": "5.104.1",
-    "@tanstack/react-table": "9.2.5",
     "next": "16.3.6",
     "qrcode-generator": "2.0.4",
     "react": "19.3.0",

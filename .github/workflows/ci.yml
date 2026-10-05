@@ -37,6 +37,7 @@ jobs:
       - run: make typecheck
       - run: make openapi-check
       - run: make test-examples
+      - run: make test-ui
 
   test:
     name: backend + database tests
