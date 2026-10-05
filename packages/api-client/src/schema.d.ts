@@ -483,6 +483,48 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/audit/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Events
+         * @description Audit events, newest first. Confidential and restricted values are never in the diffs.
+         */
+        get: operations["list_events_v1_audit_events_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/audit/events/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Export Events
+         * @description The same filters as a CSV download (at most 100,000 rows: narrow the dates beyond that).
+         *
+         *     The export is recorded in the audit trail before the first byte is sent.
+         */
+        get: operations["export_events_v1_audit_events_export_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/auth/csrf": {
         parameters: {
             query?: never;
@@ -935,6 +977,121 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/imports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Imports */
+        get: operations["list_imports_v1_imports_get"];
+        put?: never;
+        /**
+         * Create Import
+         * @description Start a dry run of an uploaded file. Nothing is written until you commit.
+         */
+        post: operations["create_import_v1_imports_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/imports/types": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Import Types
+         * @description What can be imported, with the columns each file needs.
+         */
+        get: operations["import_types_v1_imports_types_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/imports/{import_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Import */
+        get: operations["get_import_v1_imports__import_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/imports/{import_id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancel Import */
+        post: operations["cancel_import_v1_imports__import_id__cancel_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/imports/{import_id}/commit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Commit Import
+         * @description Write the validated rows. Only an error-free dry run of an unchanged file can commit.
+         */
+        post: operations["commit_import_v1_imports__import_id__commit_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/imports/{import_id}/errors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Error File
+         * @description A link to the CSV listing each problem row (row, column, message).
+         */
+        get: operations["error_file_v1_imports__import_id__errors_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/me": {
         parameters: {
             query?: never;
@@ -1236,6 +1393,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/webhooks/endpoints/{endpoint_id}/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send Test Event
+         * @description Send a signed ``webhook.ping`` to this endpoint only.
+         */
+        post: operations["send_test_event_v1_webhooks_endpoints__endpoint_id__test_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/webhooks/events/{event_id}/retry": {
         parameters: {
             query?: never;
@@ -1331,6 +1508,51 @@ export interface components {
             /** Scopes */
             scopes: string[];
         };
+        /** AuditEventOut */
+        AuditEventOut: {
+            /** Action */
+            action: string;
+            /** Actor Name */
+            actor_name: string | null;
+            /** Actor Type */
+            actor_type: string;
+            /** Actor User Id */
+            actor_user_id: string | null;
+            /**
+             * Changes
+             * @description Column diffs; confidential and restricted columns show only '[changed]'.
+             */
+            changes: {
+                [key: string]: unknown;
+            } | null;
+            /** Entity Id */
+            entity_id: string | null;
+            /** Entity Schema */
+            entity_schema: string | null;
+            /** Entity Table */
+            entity_table: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Ip */
+            ip: string | null;
+            /**
+             * Occurred At
+             * Format: date-time
+             */
+            occurred_at: string;
+            /** Request Id */
+            request_id: string | null;
+        };
+        /** AuditPage */
+        AuditPage: {
+            /** Items */
+            items: components["schemas"]["AuditEventOut"][];
+            /** Next Cursor */
+            next_cursor: string | null;
+        };
         /**
          * AuthStage
          * @description What a signed-in session still has to do before it can use the app.
@@ -1356,6 +1578,17 @@ export interface components {
          * @enum {string}
          */
         CheckStatus: "ok" | "fail";
+        /** ColumnOut */
+        ColumnOut: {
+            /** Description */
+            description: string;
+            /** Label */
+            label: string;
+            /** Name */
+            name: string;
+            /** Required */
+            required: boolean;
+        };
         /**
          * CsrfToken
          * @example {
@@ -1597,6 +1830,16 @@ export interface components {
             /** Url */
             url: string;
         };
+        /** ErrorFileOut */
+        ErrorFileOut: {
+            /** Expires In */
+            expires_in: number;
+            /**
+             * Url
+             * @description Short-lived download link for the CSV of row errors
+             */
+            url: string;
+        };
         /**
          * FieldCreate
          * @example {
@@ -1762,6 +2005,91 @@ export interface components {
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /**
+         * ImportCreate
+         * @example {
+         *       "file_id": "0198f2a0-6c1e-7a52-9d3e-5b1f2c8a4e10",
+         *       "import_type": "employees"
+         *     }
+         */
+        ImportCreate: {
+            /**
+             * File Id
+             * Format: uuid
+             * @description A clean CSV or XLSX uploaded through /v1/files
+             */
+            file_id: string;
+            /** Import Type */
+            import_type: string;
+        };
+        /** ImportOut */
+        ImportOut: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * File Id
+             * Format: uuid
+             */
+            file_id: string;
+            /** Has Error File */
+            has_error_file: boolean;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Import Type */
+            import_type: string;
+            /** Row Version */
+            row_version: number;
+            /**
+             * Stats
+             * @description Progress and results: rows, valid_rows, error_rows, errors_total, committed_rows, and error/error_message when it failed.
+             */
+            stats: {
+                [key: string]: unknown;
+            };
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "pending" | "validating" | "validated" | "committing" | "committed" | "failed" | "cancelled";
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+        };
+        /** ImportPage */
+        ImportPage: {
+            /** Items */
+            items: components["schemas"]["ImportOut"][];
+            /** Next Cursor */
+            next_cursor: string | null;
+        };
+        /** ImportTypeOut */
+        ImportTypeOut: {
+            /** Columns */
+            columns: components["schemas"]["ColumnOut"][];
+            /** Description */
+            description: string;
+            /** Key */
+            key: string;
+            /** Label */
+            label: string;
+            /**
+             * Permitted
+             * @description Whether the caller may import this type.
+             */
+            permitted: boolean;
+            /** Sample */
+            sample: {
+                [key: string]: string;
+            };
         };
         /** InboxItem */
         InboxItem: {
@@ -2380,6 +2708,11 @@ export interface components {
         RolePermissionsUpdate: {
             /** Permissions */
             permissions: string[];
+            /** Row Version */
+            row_version: number;
+        };
+        /** RowVersion */
+        RowVersion: {
             /** Row Version */
             row_version: number;
         };
@@ -3782,6 +4115,87 @@ export interface operations {
             };
         };
     };
+    list_events_v1_audit_events_get: {
+        parameters: {
+            query?: {
+                /** @description next_cursor of the previous page */
+                cursor?: string | null;
+                limit?: number;
+                /** @description schema.table */
+                entity_table?: string | null;
+                entity_id?: string | null;
+                actor_user_id?: string | null;
+                /** @description Exact, or 'prefix.*' */
+                action?: string | null;
+                request_id?: string | null;
+                since?: string | null;
+                until?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuditPage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    export_events_v1_audit_events_export_get: {
+        parameters: {
+            query?: {
+                /** @description schema.table */
+                entity_table?: string | null;
+                entity_id?: string | null;
+                actor_user_id?: string | null;
+                /** @description Exact, or 'prefix.*' */
+                action?: string | null;
+                request_id?: string | null;
+                since?: string | null;
+                until?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     csrf_token_v1_auth_csrf_get: {
         parameters: {
             query?: never;
@@ -4589,6 +5003,224 @@ export interface operations {
             };
         };
     };
+    list_imports_v1_imports_get: {
+        parameters: {
+            query?: {
+                /** @description Cursor: next_cursor */
+                before?: string | null;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportPage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_import_v1_imports_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ImportCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    import_types_v1_imports_types_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportTypeOut"][];
+                };
+            };
+        };
+    };
+    get_import_v1_imports__import_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                import_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    cancel_import_v1_imports__import_id__cancel_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                import_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RowVersion"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    commit_import_v1_imports__import_id__commit_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                import_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RowVersion"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    error_file_v1_imports__import_id__errors_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                import_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorFileOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     me_v1_me_get: {
         parameters: {
             query?: never;
@@ -5146,6 +5778,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SecretOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    send_test_event_v1_webhooks_endpoints__endpoint_id__test_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                endpoint_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeliveryOut"];
                 };
             };
             /** @description Validation Error */

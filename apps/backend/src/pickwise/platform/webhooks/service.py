@@ -260,3 +260,31 @@ async def kick_delivery(tenant_id: uuid.UUID, delivery_id: uuid.UUID) -> None:
         pass
     except Exception as exc:  # noqa: BLE001 - the sweep delivers it; never fail the request
         log.warning("delivery kick failed; the sweep will deliver", error=type(exc).__name__)
+
+
+async def send_test_event(db: AsyncSession, endpoint_id: uuid.UUID) -> uuid.UUID:
+    """Queue a ``webhook.ping`` to this endpoint only, so a receiver can be checked end to
+    end. The event is created already published: the relay must not fan it out to others."""
+    endpoint = await get_endpoint(db, endpoint_id)
+    if not endpoint.is_active:
+        raise ConflictError("Enable the endpoint first.", code="endpoint_disabled")
+    event_id: uuid.UUID = (
+        await db.execute(
+            text(
+                "INSERT INTO platform.outbox_events "
+                "(aggregate_type, aggregate_id, event_type, payload, published_at) "
+                "VALUES ('webhook_endpoint', :e, 'webhook.ping', '{}', now()) RETURNING id"
+            ),
+            {"e": endpoint_id},
+        )
+    ).scalar_one()
+    delivery_id: uuid.UUID = (
+        await db.execute(
+            text(
+                "INSERT INTO platform.webhook_deliveries (endpoint_id, event_id, next_attempt_at) "
+                "VALUES (:endpoint, :event, now()) RETURNING id"
+            ),
+            {"endpoint": endpoint_id, "event": event_id},
+        )
+    ).scalar_one()
+    return delivery_id
