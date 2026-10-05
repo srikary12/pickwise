@@ -7,21 +7,22 @@ import {
   Badge,
   Button,
   Dialog,
-  Field,
-  Input,
   DataTable,
   type DataTableColumn,
+  Form,
   Select,
+  SelectField,
+  TextField,
+  useZodForm,
 } from "@pickwise/ui";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { NoAccess } from "@/components/no-access";
 import { api, call, errorMessage } from "@/lib/api";
 import { showConflict } from "@/lib/conflict";
+import { useApiMutation } from "@/lib/mutations";
 import { isStaleVersion } from "@/lib/query";
 import { can, useSession } from "@/lib/session";
 
@@ -44,64 +45,54 @@ function InviteDialog({
   roles: RoleOut[];
 }) {
   const queryClient = useQueryClient();
-  // One key per opening of the dialog: a double submit or retry replays instead of inviting twice.
-  const [idempotencyKey, setIdempotencyKey] = useState(() => crypto.randomUUID());
-  const form = useForm<InviteValues>({
-    resolver: zodResolver(inviteSchema),
-    defaultValues: { email: "", display_name: "", role_key: "employee" },
+  const form = useZodForm(inviteSchema, { email: "", display_name: "", role_key: "employee" });
+  // The mutation keeps one Idempotency-Key across retries, so a double submit invites once.
+  const invite = useApiMutation({
+    mutationFn: (values: InviteValues, { idempotencyKey }) =>
+      call(
+        api().POST("/v1/admin/users/invite", {
+          body: values,
+          headers: { "Idempotency-Key": idempotencyKey },
+        }),
+      ),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: USERS });
+      form.reset();
+      onClose();
+    },
   });
-  const { register, handleSubmit, setError, reset, formState } = form;
 
   return (
     <Dialog open={open} onClose={onClose} title="Invite a person">
-      <form
-        noValidate
-        className="flex flex-col gap-4"
-        onSubmit={handleSubmit(async (values) => {
-          try {
-            await call(
-              api().POST("/v1/admin/users/invite", {
-                body: values,
-                headers: { "Idempotency-Key": idempotencyKey },
-              }),
-            );
-            await queryClient.invalidateQueries({ queryKey: USERS });
-            setIdempotencyKey(crypto.randomUUID());
-            reset();
-            onClose();
-          } catch (error) {
-            setError("root", { message: errorMessage(error) });
-          }
-        })}
+      <Form
+        form={form}
+        label="Invite a person"
+        onSubmit={async (values) => {
+          await invite.mutateAsync(values).catch(() => undefined); // shown below
+        }}
       >
-        <Field id="invite-email" label="Email" error={formState.errors.email?.message}>
-          <Input id="invite-email" type="email" {...register("email")} />
-        </Field>
-        <Field id="invite-name" label="Name" error={formState.errors.display_name?.message}>
-          <Input id="invite-name" {...register("display_name")} />
-        </Field>
-        <Field id="invite-role" label="Role">
-          <Select id="invite-role" {...register("role_key")}>
-            {roles.length === 0 ? <option value="employee">Employee</option> : null}
-            {roles.map((role) => (
-              <option key={role.id} value={role.key}>
-                {role.name}
-              </option>
-            ))}
-          </Select>
-        </Field>
-        {formState.errors.root ? (
-          <Alert variant="destructive">{formState.errors.root.message}</Alert>
-        ) : null}
+        <TextField form={form} name="email" label="Email" type="email" />
+        <TextField form={form} name="display_name" label="Name" />
+        <SelectField
+          form={form}
+          name="role_key"
+          label="Role"
+          options={
+            roles.length === 0
+              ? [{ value: "employee", label: "Employee" }]
+              : roles.map((role) => ({ value: role.key, label: role.name }))
+          }
+        />
+        {invite.error ? <Alert variant="destructive">{errorMessage(invite.error)}</Alert> : null}
         <div className="flex justify-end gap-3">
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button type="submit" disabled={formState.isSubmitting}>
+          <Button type="submit" disabled={invite.isPending}>
             Send invitation
           </Button>
         </div>
-      </form>
+      </Form>
     </Dialog>
   );
 }
