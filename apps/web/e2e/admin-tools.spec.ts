@@ -125,19 +125,26 @@ test("a webhook endpoint receives a signed test event, and a delivery can be rep
 });
 
 /** The object store is published on localhost:8333 for browsers, but this test's browser
- * shares the web container's network, where it is `s3:8333`. Forward those requests. */
-async function reachObjectStore(page: Page): Promise<void> {
+ * shares the web container's network, where it is `s3:8333`. Forward those requests, and keep
+ * what comes back so the test can read downloads without depending on browser download UI. */
+async function reachObjectStore(page: Page): Promise<{ url: string; body: string }[]> {
+  const fetched: { url: string; body: string }[] = [];
   await page.route("http://localhost:8333/**", async (route) => {
-    const forwarded = route.request().url().replace("http://localhost:8333", "http://s3:8333");
-    await route.fulfill({ response: await route.fetch({ url: forwarded }) });
+    const url = route.request().url();
+    const response = await route.fetch({
+      url: url.replace("http://localhost:8333", "http://s3:8333"),
+    });
+    if (route.request().method() === "GET") fetched.push({ url, body: await response.text() });
+    await route.fulfill({ response });
   });
+  return fetched;
 }
 
 test("an import dry run reports row errors in a downloadable file, then commits a fixed file", async ({
   browser,
 }) => {
   const page = await adminPage(browser, ACME);
-  await reachObjectStore(page);
+  const fetched = await reachObjectStore(page);
   await page.goto("/admin/imports");
   await expect(page.getByTestId("import-columns")).toContainText("email*");
 
@@ -155,12 +162,13 @@ test("an import dry run reports row errors in a downloadable file, then commits 
   );
   await expect(first.getByRole("button", { name: "Commit import" })).toHaveCount(0);
 
-  const download = page.waitForEvent("download");
   await first.getByRole("button", { name: "Download error file" }).click();
-  const file = await download;
-  const { readFile } = await import("node:fs/promises");
-  const csv = await readFile((await file.path()) ?? "", "utf8");
-  expect(csv).toContain("row,column,message");
+  await expect
+    .poll(() => fetched.find((f) => f.url.includes("import-errors"))?.body ?? "", {
+      timeout: 30_000,
+    })
+    .toContain("row,column,message");
+  const csv = fetched.find((f) => f.url.includes("import-errors"))?.body ?? "";
   expect(csv).toContain("3,email,isn't a valid email address");
 
   // The corrected file validates cleanly and can be committed.
