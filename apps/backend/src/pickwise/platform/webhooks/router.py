@@ -126,6 +126,21 @@ async def rotate_secret(endpoint_id: uuid.UUID, db: DB, kek: KekDep, auth: Manag
     return SecretOut(secret=secret)
 
 
+@router.post(
+    "/endpoints/{endpoint_id}/test",
+    response_model=DeliveryOut,
+    status_code=status.HTTP_201_CREATED,
+)
+async def send_test_event(
+    endpoint_id: uuid.UUID, db: DB, background: BackgroundTasks, auth: Manage
+) -> DeliveryOut:
+    """Send a signed ``webhook.ping`` to this endpoint only."""
+    delivery_id = await service.send_test_event(db, endpoint_id)
+    await audit.record(db, "webhook.test_sent", "platform.webhook_endpoints", endpoint_id)
+    background.add_task(service.kick_delivery, auth.tenant_id, delivery_id)
+    return DeliveryOut(**await service.get_delivery(db, delivery_id))
+
+
 @router.get("/deliveries", response_model=DeliveryPage)
 async def list_deliveries(
     db: DB,

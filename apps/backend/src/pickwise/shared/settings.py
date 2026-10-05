@@ -63,6 +63,11 @@ class Settings(BaseSettings):
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     )
 
+    # --- bulk imports ---------------------------------------------------------------
+    imports_max_rows: int = Field(default=20_000, gt=0)
+    imports_max_errors: int = Field(default=5_000, gt=0)
+    imports_batch_size: int = Field(default=500, gt=0)
+
     scanner: ScannerKind = ScannerKind.STUB
     clamav_host: str = "clamav"
     clamav_port: int = 3310

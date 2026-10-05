@@ -519,3 +519,37 @@ async def test_delivery_listing_filters_and_pages(
     typed = (await admin.get("/v1/webhooks/deliveries?event_type=payroll.run.finalized")).json()
     assert [i["endpoint_id"] for i in typed["items"]] == [second]
     assert (await admin.get("/v1/webhooks/deliveries?status=dead")).json()["items"] == []
+
+
+async def test_a_test_event_goes_to_one_endpoint_only(admin: Api, env: Env, tenant: Tenant) -> None:
+    first, secret = await create_endpoint(admin)
+    second, _ = await create_endpoint(admin)
+    sent = await admin.post(f"/v1/webhooks/endpoints/{first}/test")
+    assert sent.status_code == 201, sent.text
+    assert sent.json()["event_type"] == "webhook.ping"
+    assert sent.json()["endpoint_id"] == first
+    assert any(j[0] == "pickwise.deliver_webhook" for j in env.jobs)
+    # The relay doesn't fan the ping out to the other endpoint.
+    await env.relay()
+    assert [d[1] for d in await deliveries_of(env, tenant)] == ["pending"]
+
+    seen: list[httpx.Request] = []
+    async with receiver(seen) as client:
+        status = await env.deliver(
+            tenant.id, uuid.UUID(sent.json()["id"]), client, resolver=_public
+        )
+    assert status == "succeeded"
+    assert json.loads(seen[0].content)["type"] == "webhook.ping"
+    assert verify(
+        secret,
+        seen[0].content,
+        seen[0].headers["x-pickwise-signature"],
+        now=datetime.datetime.now(datetime.UTC).timestamp(),
+    )
+    # A disabled endpoint can't be tested.
+    current = (await admin.get(f"/v1/webhooks/endpoints/{second}")).json()
+    await admin.put(
+        f"/v1/webhooks/endpoints/{second}",
+        {"url": URL, "event_types": [], "is_active": False, "row_version": current["row_version"]},
+    )
+    assert (await admin.post(f"/v1/webhooks/endpoints/{second}/test")).status_code == 409

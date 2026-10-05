@@ -13,6 +13,11 @@ export type SessionState = components["schemas"]["SessionState"];
 export type MemberOut = components["schemas"]["MemberOut"];
 export type RoleOut = components["schemas"]["RoleOut"];
 export type PermissionOut = components["schemas"]["PermissionOut"];
+export type AuditEventOut = components["schemas"]["AuditEventOut"];
+export type EndpointOut = components["schemas"]["EndpointOut"];
+export type DeliveryOut = components["schemas"]["DeliveryOut"];
+export type ImportOut = components["schemas"]["ImportOut"];
+export type ImportTypeOut = components["schemas"]["ImportTypeOut"];
 
 export function createApiClient(
   baseUrl: string,

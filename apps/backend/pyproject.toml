@@ -26,6 +26,7 @@ dependencies = [
     "jinja2>=3.1.6",
     "httpx>=0.28.1",
     "puremagic>=2.2.0",
+    "openpyxl>=3.1.5",
 ]
 
 [project.scripts]
@@ -85,7 +86,10 @@ plugins = ["pydantic.mypy"]
 warn_unreachable = true
 
 [[tool.mypy.overrides]]
-module = ["aioboto3", "aioboto3.*", "botocore", "botocore.*", "asyncpg", "asyncpg.*"]
+module = [
+  "aioboto3", "aioboto3.*", "botocore", "botocore.*", "asyncpg", "asyncpg.*",
+  "openpyxl", "openpyxl.*",
+]
 ignore_missing_imports = true
 
 # --- pytest -----------------------------------------------------------------

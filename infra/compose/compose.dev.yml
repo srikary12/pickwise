@@ -76,6 +76,8 @@ services:
       SMTP_PORT: "1025"
       # The browser reaches SeaweedFS on the published port.
       S3_PUBLIC_ENDPOINT_URL: http://localhost:8333
+      # Webhooks may target receivers on the compose network (refused in production).
+      WEBHOOK_ALLOW_PRIVATE_TARGETS: "true"
     volumes: *backend-mounts
     ports:
       - "127.0.0.1:8000:8000"
@@ -94,6 +96,7 @@ services:
     environment:
       SMTP_HOST: mailpit
       SMTP_PORT: "1025"
+      WEBHOOK_ALLOW_PRIVATE_TARGETS: "true"
     volumes: *backend-mounts
 
   web:
