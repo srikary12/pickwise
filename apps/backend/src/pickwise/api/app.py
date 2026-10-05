@@ -30,6 +30,7 @@ from pickwise.platform.notifications.router import router as notifications_route
 from pickwise.platform.provisioning.router import router as signup_router
 from pickwise.platform.scanning import StubScanner
 from pickwise.platform.scanning.stub import STUB_WARNING
+from pickwise.platform.search.router import router as search_router
 from pickwise.platform.startup_checks import check_settings, run_startup_checks
 from pickwise.platform.webhooks.router import router as webhooks_router
 from pickwise.shared.db import Database
@@ -123,4 +124,5 @@ def create_app(settings: Settings | None = None, *, enqueue_jobs: bool = True) -
     app.include_router(audit_router)
     app.include_router(imports_router)
     app.include_router(webhooks_router)
+    app.include_router(search_router)
     return app

@@ -113,6 +113,12 @@ PERMISSIONS.register(
         default_roles=(TENANT_ADMIN,),
     ),
     Permission(
+        "platform.search.use",
+        "platform",
+        "Use global search (results are limited to what each record type's own permission allows)",
+        default_roles=EVERY_ROLE,
+    ),
+    Permission(
         "platform.files.upload",
         "platform",
         "Upload files (scanned before use)",
