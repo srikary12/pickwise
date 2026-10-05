@@ -170,4 +170,30 @@ PERMISSIONS.register(
         is_sensitive=True,
         default_roles=(TENANT_ADMIN, HR_ADMIN),
     ),
+    Permission(
+        "platform.imports.run",
+        "platform",
+        "Upload bulk-import files, run dry runs and see your own imports",
+        default_roles=(TENANT_ADMIN, HR_ADMIN, "hr_ops"),
+    ),
+    Permission(
+        "platform.imports.read_all",
+        "platform",
+        "See every import in the tenant, including its error file",
+        default_roles=(TENANT_ADMIN, HR_ADMIN),
+    ),
+    Permission(
+        "platform.audit.read",
+        "platform",
+        "Search the audit trail",
+        is_sensitive=True,
+        default_roles=(TENANT_ADMIN, HR_ADMIN),
+    ),
+    Permission(
+        "platform.audit.export",
+        "platform",
+        "Download the audit trail as CSV",
+        is_sensitive=True,
+        default_roles=(TENANT_ADMIN,),
+    ),
 )

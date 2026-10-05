@@ -11,6 +11,7 @@ from pickwise.platform.approvals import deadlines
 from pickwise.platform.crypto import kek_from_settings
 from pickwise.platform.events.relay import relay_batch
 from pickwise.platform.files import processing
+from pickwise.platform.imports import processing as import_processing
 from pickwise.platform.jobs import defer
 from pickwise.platform.notifications.email import dispatch, due_emails, send_queued
 from pickwise.platform.partitions import ensure_partitions
@@ -221,3 +222,40 @@ async def escalate_approvals(timestamp: int) -> None:
     await dispatch(emails)
     if emails:
         log.info("approval deadlines processed", emails=len(emails))
+
+
+@app.task(name="pickwise.validate_import", queue="default", retry=False)
+@ops_task
+async def validate_import(import_id: str, tenant_id: str) -> None:
+    """The dry run of an import (deferred right after the import is created)."""
+    settings = get_settings()
+    async with storage.s3_client(settings) as s3:
+        outcome = await import_processing.run_validation(
+            get_database(), settings, s3, uuid.UUID(tenant_id), uuid.UUID(import_id)
+        )
+    log.info("import validated", import_id=import_id, outcome=outcome)
+
+
+@app.task(name="pickwise.commit_import", queue="default", retry=False)
+@ops_task
+async def commit_import(import_id: str, tenant_id: str) -> None:
+    """Write a validated import in batches (deferred when the commit is requested)."""
+    settings = get_settings()
+    async with storage.s3_client(settings) as s3:
+        outcome = await import_processing.run_commit(
+            get_database(), settings, s3, uuid.UUID(tenant_id), uuid.UUID(import_id)
+        )
+    log.info("import committed", import_id=import_id, outcome=outcome)
+
+
+@app.periodic(cron="* * * * *", periodic_id="sweep_imports")
+@app.task(name="pickwise.sweep_imports", queue="default", queueing_lock="sweep_imports")
+@ops_task
+async def sweep_imports(timestamp: int) -> None:
+    """Every minute: re-queue dry runs whose job was lost, fail imports stuck mid-run."""
+    async with get_database().ops_session() as session:
+        pending, stuck = await import_processing.sweep(session)
+    for tenant_id, import_id in pending:
+        await defer("pickwise.validate_import", import_id=str(import_id), tenant_id=str(tenant_id))
+    if pending or stuck:
+        log.info("imports swept", requeued=len(pending), failed=stuck)

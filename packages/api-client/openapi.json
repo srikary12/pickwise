@@ -232,6 +232,164 @@
         "title": "ApiKeyOut",
         "type": "object"
       },
+      "AuditEventOut": {
+        "properties": {
+          "action": {
+            "title": "Action",
+            "type": "string"
+          },
+          "actor_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actor Name"
+          },
+          "actor_type": {
+            "title": "Actor Type",
+            "type": "string"
+          },
+          "actor_user_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actor User Id"
+          },
+          "changes": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Column diffs; confidential and restricted columns show only '[changed]'.",
+            "title": "Changes"
+          },
+          "entity_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Entity Id"
+          },
+          "entity_schema": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Entity Schema"
+          },
+          "entity_table": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Entity Table"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "ip": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ip"
+          },
+          "occurred_at": {
+            "format": "date-time",
+            "title": "Occurred At",
+            "type": "string"
+          },
+          "request_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Request Id"
+          }
+        },
+        "required": [
+          "id",
+          "occurred_at",
+          "actor_user_id",
+          "actor_name",
+          "actor_type",
+          "action",
+          "entity_schema",
+          "entity_table",
+          "entity_id",
+          "changes",
+          "request_id",
+          "ip"
+        ],
+        "title": "AuditEventOut",
+        "type": "object"
+      },
+      "AuditPage": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AuditEventOut"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          }
+        },
+        "required": [
+          "items",
+          "next_cursor"
+        ],
+        "title": "AuditPage",
+        "type": "object"
+      },
       "AuthStage": {
         "description": "What a signed-in session still has to do before it can use the app.",
         "enum": [
@@ -290,6 +448,34 @@
         ],
         "title": "CheckStatus",
         "type": "string"
+      },
+      "ColumnOut": {
+        "properties": {
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "required": {
+            "title": "Required",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "label",
+          "required",
+          "description"
+        ],
+        "title": "ColumnOut",
+        "type": "object"
       },
       "CsrfToken": {
         "examples": [
@@ -775,6 +961,25 @@
         "title": "EndpointWithSecret",
         "type": "object"
       },
+      "ErrorFileOut": {
+        "properties": {
+          "expires_in": {
+            "title": "Expires In",
+            "type": "integer"
+          },
+          "url": {
+            "description": "Short-lived download link for the CSV of row errors",
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "expires_in"
+        ],
+        "title": "ErrorFileOut",
+        "type": "object"
+      },
       "FieldCreate": {
         "examples": [
           {
@@ -1153,6 +1358,175 @@
           }
         },
         "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "ImportCreate": {
+        "examples": [
+          {
+            "file_id": "0198f2a0-6c1e-7a52-9d3e-5b1f2c8a4e10",
+            "import_type": "employees"
+          }
+        ],
+        "properties": {
+          "file_id": {
+            "description": "A clean CSV or XLSX uploaded through /v1/files",
+            "format": "uuid",
+            "title": "File Id",
+            "type": "string"
+          },
+          "import_type": {
+            "pattern": "^[a-z][a-z_]{1,62}$",
+            "title": "Import Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "import_type",
+          "file_id"
+        ],
+        "title": "ImportCreate",
+        "type": "object"
+      },
+      "ImportOut": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "file_id": {
+            "format": "uuid",
+            "title": "File Id",
+            "type": "string"
+          },
+          "has_error_file": {
+            "title": "Has Error File",
+            "type": "boolean"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "import_type": {
+            "title": "Import Type",
+            "type": "string"
+          },
+          "row_version": {
+            "title": "Row Version",
+            "type": "integer"
+          },
+          "stats": {
+            "additionalProperties": true,
+            "description": "Progress and results: rows, valid_rows, error_rows, errors_total, committed_rows, and error/error_message when it failed.",
+            "title": "Stats",
+            "type": "object"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "validating",
+              "validated",
+              "committing",
+              "committed",
+              "failed",
+              "cancelled"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "import_type",
+          "file_id",
+          "status",
+          "stats",
+          "has_error_file",
+          "created_at",
+          "updated_at",
+          "row_version"
+        ],
+        "title": "ImportOut",
+        "type": "object"
+      },
+      "ImportPage": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ImportOut"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          }
+        },
+        "required": [
+          "items",
+          "next_cursor"
+        ],
+        "title": "ImportPage",
+        "type": "object"
+      },
+      "ImportTypeOut": {
+        "properties": {
+          "columns": {
+            "items": {
+              "$ref": "#/components/schemas/ColumnOut"
+            },
+            "title": "Columns",
+            "type": "array"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "permitted": {
+            "description": "Whether the caller may import this type.",
+            "title": "Permitted",
+            "type": "boolean"
+          },
+          "sample": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Sample",
+            "type": "object"
+          }
+        },
+        "required": [
+          "key",
+          "label",
+          "description",
+          "columns",
+          "sample",
+          "permitted"
+        ],
+        "title": "ImportTypeOut",
         "type": "object"
       },
       "InboxItem": {
@@ -2557,6 +2931,20 @@
           "row_version"
         ],
         "title": "RolePermissionsUpdate",
+        "type": "object"
+      },
+      "RowVersion": {
+        "properties": {
+          "row_version": {
+            "minimum": 1.0,
+            "title": "Row Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "row_version"
+        ],
+        "title": "RowVersion",
         "type": "object"
       },
       "ScopeType": {
@@ -4869,6 +5257,348 @@
         ]
       }
     },
+    "/v1/audit/events": {
+      "get": {
+        "description": "Audit events, newest first. Confidential and restricted values are never in the diffs.",
+        "operationId": "list_events_v1_audit_events_get",
+        "parameters": [
+          {
+            "description": "next_cursor of the previous page",
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "next_cursor of the previous page",
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "schema.table",
+            "in": "query",
+            "name": "entity_table",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "pattern": "^[a-z_]+\\.[a-z_]+$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "schema.table",
+              "title": "Entity Table"
+            }
+          },
+          {
+            "in": "query",
+            "name": "entity_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Entity Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "actor_user_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Actor User Id"
+            }
+          },
+          {
+            "description": "Exact, or 'prefix.*'",
+            "in": "query",
+            "name": "action",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "pattern": "^[a-z_]+(\\.[a-z_]+)*(\\.\\*)?$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Exact, or 'prefix.*'",
+              "title": "Action"
+            }
+          },
+          {
+            "in": "query",
+            "name": "request_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 100,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Request Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "since",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Since"
+            }
+          },
+          {
+            "in": "query",
+            "name": "until",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Until"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditPage"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Events",
+        "tags": [
+          "audit"
+        ]
+      }
+    },
+    "/v1/audit/events/export": {
+      "get": {
+        "description": "The same filters as a CSV download (at most 100,000 rows: narrow the dates beyond that).\n\nThe export is recorded in the audit trail before the first byte is sent.",
+        "operationId": "export_events_v1_audit_events_export_get",
+        "parameters": [
+          {
+            "description": "schema.table",
+            "in": "query",
+            "name": "entity_table",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "pattern": "^[a-z_]+\\.[a-z_]+$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "schema.table",
+              "title": "Entity Table"
+            }
+          },
+          {
+            "in": "query",
+            "name": "entity_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Entity Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "actor_user_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Actor User Id"
+            }
+          },
+          {
+            "description": "Exact, or 'prefix.*'",
+            "in": "query",
+            "name": "action",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "pattern": "^[a-z_]+(\\.[a-z_]+)*(\\.\\*)?$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Exact, or 'prefix.*'",
+              "title": "Action"
+            }
+          },
+          {
+            "in": "query",
+            "name": "request_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 100,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Request Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "since",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Since"
+            }
+          },
+          {
+            "in": "query",
+            "name": "until",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Until"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Export Events",
+        "tags": [
+          "audit"
+        ]
+      }
+    },
     "/v1/auth/csrf": {
       "get": {
         "description": "Issue (or re-use) the double-submit CSRF token. Call once before any POST.",
@@ -5937,6 +6667,330 @@
         ]
       }
     },
+    "/v1/imports": {
+      "get": {
+        "operationId": "list_imports_v1_imports_get",
+        "parameters": [
+          {
+            "description": "Cursor: next_cursor",
+            "in": "query",
+            "name": "before",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Cursor: next_cursor",
+              "title": "Before"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 30,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImportPage"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Imports",
+        "tags": [
+          "imports"
+        ]
+      },
+      "post": {
+        "description": "Start a dry run of an uploaded file. Nothing is written until you commit.",
+        "operationId": "create_import_v1_imports_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImportCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImportOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Import",
+        "tags": [
+          "imports"
+        ]
+      }
+    },
+    "/v1/imports/types": {
+      "get": {
+        "description": "What can be imported, with the columns each file needs.",
+        "operationId": "import_types_v1_imports_types_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ImportTypeOut"
+                  },
+                  "title": "Response Import Types V1 Imports Types Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Import Types",
+        "tags": [
+          "imports"
+        ]
+      }
+    },
+    "/v1/imports/{import_id}": {
+      "get": {
+        "operationId": "get_import_v1_imports__import_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "import_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Import Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImportOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Import",
+        "tags": [
+          "imports"
+        ]
+      }
+    },
+    "/v1/imports/{import_id}/cancel": {
+      "post": {
+        "operationId": "cancel_import_v1_imports__import_id__cancel_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "import_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Import Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RowVersion"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImportOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Cancel Import",
+        "tags": [
+          "imports"
+        ]
+      }
+    },
+    "/v1/imports/{import_id}/commit": {
+      "post": {
+        "description": "Write the validated rows. Only an error-free dry run of an unchanged file can commit.",
+        "operationId": "commit_import_v1_imports__import_id__commit_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "import_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Import Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RowVersion"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImportOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Commit Import",
+        "tags": [
+          "imports"
+        ]
+      }
+    },
+    "/v1/imports/{import_id}/errors": {
+      "get": {
+        "description": "A link to the CSV listing each problem row (row, column, message).",
+        "operationId": "error_file_v1_imports__import_id__errors_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "import_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Import Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorFileOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Error File",
+        "tags": [
+          "imports"
+        ]
+      }
+    },
     "/v1/me": {
       "get": {
         "operationId": "me_v1_me_get",
@@ -6757,6 +7811,50 @@
           }
         },
         "summary": "Rotate Secret",
+        "tags": [
+          "webhooks"
+        ]
+      }
+    },
+    "/v1/webhooks/endpoints/{endpoint_id}/test": {
+      "post": {
+        "description": "Send a signed ``webhook.ping`` to this endpoint only.",
+        "operationId": "send_test_event_v1_webhooks_endpoints__endpoint_id__test_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "endpoint_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Endpoint Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Send Test Event",
         "tags": [
           "webhooks"
         ]
