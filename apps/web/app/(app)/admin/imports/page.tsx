@@ -41,7 +41,7 @@ function ImportCard({ item }: { item: ImportOut }) {
   }
 
   return (
-    <Card data-testid={`import-${item.id}`}>
+    <Card data-testid={`import-item-${item.id}`}>
       <CardContent className="flex flex-col gap-3 pt-6">
         <div className="flex items-center gap-3">
           <span className="font-medium">{item.import_type}</span>

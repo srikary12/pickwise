@@ -14,31 +14,44 @@ test.beforeAll(() => {
 
 test("the audit page filters events and exports CSV", async ({ browser }) => {
   const page = await adminPage(browser, ACME);
+  // Make something auditable happen: a custom field is created through the API.
+  const csrf = (await (await page.request.get("/api/v1/auth/csrf")).json()) as {
+    csrf_token: string;
+  };
+  const key = `e2e_${Date.now()}`;
+  const created = await page.request.post("/api/v1/custom-fields", {
+    headers: { "X-CSRF-Token": csrf.csrf_token },
+    data: { entity_type: "employee", key, label: "E2E field", field_type: "text" },
+  });
+  expect(created.status()).toBe(201);
+
   await page.goto("/admin/audit");
   await expect(page.getByTestId("audit-row").first()).toBeVisible();
 
-  await page.getByLabel("Action").fill("login");
+  await page.getByLabel("Action").fill("custom_field.created");
   await page.getByRole("button", { name: "Apply filters" }).click();
   await expect(page.getByTestId("audit-row").first()).toBeVisible();
   for (const cell of await page
     .getByTestId("audit-row")
     .locator("td:nth-child(3)")
     .allTextContents()) {
-    expect(cell).toContain("login");
+    expect(cell).toContain("custom_field.created");
   }
   await page.getByLabel("Action").fill("no.such_action");
   await page.getByRole("button", { name: "Apply filters" }).click();
   await expect(page.getByText("No events match.")).toBeVisible();
 
   // The export link carries the filters and returns a CSV for this session.
-  await page.getByLabel("Action").fill("login");
+  await page.getByLabel("Action").fill("custom_field.created");
   await page.getByRole("button", { name: "Apply filters" }).click();
   const href = await page.getByTestId("audit-export").getAttribute("href");
-  expect(href).toContain("action=login");
+  expect(href).toContain("action=custom_field.created");
   const response = await page.request.get(href ?? "");
   expect(response.status()).toBe(200);
   expect(response.headers()["content-type"]).toContain("text/csv");
-  expect((await response.text()).split("\n")[0]).toContain("occurred_at");
+  const lines = (await response.text()).trim().split("\n");
+  expect(lines[0]).toContain("occurred_at");
+  expect(lines.length).toBeGreaterThan(1);
 });
 
 interface Received {
@@ -133,7 +146,7 @@ test("an import dry run reports row errors in a downloadable file, then commits 
     mimeType: "text/csv",
     buffer: Buffer.from("name,email\nAsha Rao,asha@example.com\nBala,not-an-email\n"),
   });
-  const first = page.locator('[data-testid^="import-"]').first();
+  const first = page.locator('[data-testid^="import-item-"]').first();
   await expect(first.getByTestId("import-summary")).toContainText(
     "2 rows: 1 valid, 1 with errors",
     {
@@ -156,7 +169,7 @@ test("an import dry run reports row errors in a downloadable file, then commits 
     mimeType: "text/csv",
     buffer: Buffer.from("name,email\nAsha Rao,asha@example.com\nBala,bala@example.com\n"),
   });
-  const fixed = page.locator('[data-testid^="import-"]').first();
+  const fixed = page.locator('[data-testid^="import-item-"]').first();
   await expect(fixed.getByTestId("import-summary")).toContainText(
     "2 rows: 2 valid, 0 with errors",
     {
