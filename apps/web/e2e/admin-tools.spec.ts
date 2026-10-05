@@ -4,9 +4,10 @@ import { createHmac } from "node:crypto";
 import { createServer, type IncomingMessage } from "node:http";
 import type { AddressInfo } from "node:net";
 
-import { expect, type Page, test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 import { ACME, adminPage, BASE_URL, DEMO_PASSWORD } from "./support/flows";
+import { reachObjectStore } from "./support/objectstore";
 
 test.beforeAll(() => {
   if (!DEMO_PASSWORD) throw new Error("DEMO_PASSWORD is not set: run via `make e2e`");
@@ -123,24 +124,6 @@ test("a webhook endpoint receives a signed test event, and a delivery can be rep
     hook.close();
   }
 });
-
-/** The object store is published on localhost:8333 for browsers, but this test's browser
- * shares the web container's network, where it is `s3:8333`. Forward those requests, and keep
- * what comes back so the test can read downloads without depending on browser download UI. */
-async function reachObjectStore(page: Page): Promise<{ url: string; body: string }[]> {
-  const fetched: { url: string; body: string }[] = [];
-  await page.route("http://localhost:8333/**", async (route) => {
-    const url = route.request().url();
-    // Presigned downloads sign the Host header, so keep the one the URL was signed for.
-    const response = await route.fetch({
-      url: url.replace("http://localhost:8333", "http://s3:8333"),
-      headers: { ...route.request().headers(), host: "localhost:8333" },
-    });
-    if (route.request().method() === "GET") fetched.push({ url, body: await response.text() });
-    await route.fulfill({ response });
-  });
-  return fetched;
-}
 
 test("an import dry run reports row errors in a downloadable file, then commits a fixed file", async ({
   browser,

@@ -4,6 +4,7 @@
 import { expect, type Page, test } from "@playwright/test";
 
 import { ACME, adminPage, createMember, DEMO_PASSWORD } from "./support/flows";
+import { reachObjectStore } from "./support/objectstore";
 
 test.beforeAll(() => {
   if (!DEMO_PASSWORD) throw new Error("DEMO_PASSWORD is not set: run via `make e2e`");
@@ -76,6 +77,7 @@ test("the theme can be chosen and is remembered", async ({ browser }) => {
 test("search finds people and pages from the keyboard", async ({ browser }) => {
   const page = await adminPage(browser, ACME);
   await page.goto("/");
+  await expect(page.getByTestId("welcome")).toBeVisible(); // the shortcut is live once the shell is
   await page.keyboard.press("Control+k");
   const input = page.getByTestId("palette-input");
   await expect(input).toBeFocused();
@@ -154,6 +156,7 @@ test("an admin sets and removes the tenant logo, and a stale save prompts a relo
   browser,
 }) => {
   const page = await adminPage(browser, ACME);
+  await reachObjectStore(page);
   await page.goto("/admin/branding");
   await expect(page.getByTestId("logo-file")).toBeEnabled();
 
@@ -162,7 +165,13 @@ test("an admin sets and removes the tenant logo, and a stale save prompts a relo
     .setInputFiles({ name: "logo.png", mimeType: "image/png", buffer: PNG });
   await expect(page.getByText("Logo updated.")).toBeVisible({ timeout: 30_000 });
   await expect(page.getByTestId("logo-preview")).toBeVisible();
-  await expect(page.getByTestId("tenant-logo")).toBeVisible(); // the header, for everyone
+  // The header carries it for everyone: the image URL is versioned, and the endpoint behind
+  // it redirects to a signed object-store URL (the browser here can't reach the store itself).
+  const src = await page.getByTestId("tenant-logo").getAttribute("src");
+  expect(src).toMatch(/^\/api\/v1\/branding\/logo\?v=[0-9a-f-]{36}$/);
+  const redirect = await page.request.get(src ?? "", { maxRedirects: 0 });
+  expect(redirect.status()).toBe(302);
+  expect(redirect.headers()["location"]).toContain("X-Amz-Signature");
 
   // Someone else changes the tenant after this page loaded it: the next save is stale.
   const settings = (await (await page.request.get("/api/v1/admin/tenant")).json()) as {
