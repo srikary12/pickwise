@@ -98,6 +98,7 @@ services:
     volumes:
       - ./apps/backend:/app/apps/backend:ro
       - ./db:/app/db:ro
+      - ./examples:/app/examples:ro
     depends_on:
       seed-demo:
         condition: service_completed_successfully

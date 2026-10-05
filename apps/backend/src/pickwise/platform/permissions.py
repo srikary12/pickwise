@@ -150,4 +150,24 @@ PERMISSIONS.register(
         is_sensitive=True,
         default_roles=(TENANT_ADMIN, HR_ADMIN),
     ),
+    Permission(
+        "platform.webhooks.manage",
+        "platform",
+        "Create webhook endpoints, see deliveries and replay them",
+        is_sensitive=True,
+        default_roles=(TENANT_ADMIN,),
+    ),
+    Permission(
+        "platform.approvals.act",
+        "platform",
+        "Decide approval tasks assigned to you, start delegations for yourself",
+        default_roles=EVERY_ROLE,
+    ),
+    Permission(
+        "platform.approvals.manage",
+        "platform",
+        "Edit approval policies; see, delegate and cancel any approval",
+        is_sensitive=True,
+        default_roles=(TENANT_ADMIN, HR_ADMIN),
+    ),
 )
