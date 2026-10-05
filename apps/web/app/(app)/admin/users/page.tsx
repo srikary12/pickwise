@@ -6,18 +6,12 @@ import {
   Alert,
   Badge,
   Button,
-  Card,
-  CardContent,
   Dialog,
   Field,
   Input,
+  DataTable,
+  type DataTableColumn,
   Select,
-  Table,
-  TBody,
-  Td,
-  Th,
-  THead,
-  Tr,
 } from "@pickwise/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -27,6 +21,8 @@ import { z } from "zod";
 
 import { NoAccess } from "@/components/no-access";
 import { api, call, errorMessage } from "@/lib/api";
+import { showConflict } from "@/lib/conflict";
+import { isStaleVersion } from "@/lib/query";
 import { can, useSession } from "@/lib/session";
 
 const USERS = ["admin", "users"] as const;
@@ -116,129 +112,135 @@ const STATUS_VARIANT = {
   suspended: "destructive",
 } as const;
 
-function MemberRow({
+type Run = (action: () => Promise<unknown>) => Promise<void>;
+
+function PersonCell({ member }: { member: MemberOut }) {
+  return (
+    <>
+      <div className="font-medium">{member.display_name}</div>
+      <div className="text-xs text-muted-foreground">{member.email}</div>
+    </>
+  );
+}
+
+function StatusCell({ member }: { member: MemberOut }) {
+  const status = member.status as keyof typeof STATUS_VARIANT;
+  return (
+    <>
+      <Badge variant={STATUS_VARIANT[status] ?? "outline"}>{member.status}</Badge>
+      {member.mfa_enabled ? (
+        <Badge variant="outline" className="ml-1">
+          MFA
+        </Badge>
+      ) : null}
+    </>
+  );
+}
+
+function RolesCell({
   member,
   roles,
-  canManage,
   canManageRoles,
-  isSelf,
   run,
 }: {
   member: MemberOut;
   roles: RoleOut[];
-  canManage: boolean;
   canManageRoles: boolean;
-  isSelf: boolean;
-  run: (action: () => Promise<unknown>) => Promise<void>;
+  run: Run;
 }) {
   const [roleId, setRoleId] = useState("");
-  const status = member.status as keyof typeof STATUS_VARIANT;
   const held = new Set(member.roles.map((r) => r.role_id));
   const grantable = roles.filter((r) => !held.has(r.id));
-
   return (
-    <Tr data-testid={`member-${member.email}`}>
-      <Td>
-        <div className="font-medium">{member.display_name}</div>
-        <div className="text-xs text-muted-foreground">{member.email}</div>
-      </Td>
-      <Td>
-        <Badge variant={STATUS_VARIANT[status] ?? "outline"}>{member.status}</Badge>
-        {member.mfa_enabled ? (
-          <Badge variant="outline" className="ml-1">
-            MFA
+    <>
+      <div className="flex flex-wrap items-center gap-1">
+        {member.roles.map((assignment) => (
+          <Badge key={assignment.id} variant="outline" className="gap-1">
+            {assignment.role_key}
+            {canManageRoles ? (
+              <button
+                type="button"
+                aria-label={`Remove role ${assignment.role_key} from ${member.email}`}
+                className="text-muted-foreground hover:text-foreground"
+                onClick={() =>
+                  void run(() =>
+                    call(
+                      api().DELETE("/v1/admin/role-assignments/{assignment_id}", {
+                        params: { path: { assignment_id: assignment.id } },
+                      }),
+                    ),
+                  )
+                }
+              >
+                ×
+              </button>
+            ) : null}
           </Badge>
-        ) : null}
-      </Td>
-      <Td>
-        <div className="flex flex-wrap items-center gap-1">
-          {member.roles.map((assignment) => (
-            <Badge key={assignment.id} variant="outline" className="gap-1">
-              {assignment.role_key}
-              {canManageRoles ? (
-                <button
-                  type="button"
-                  aria-label={`Remove role ${assignment.role_key} from ${member.email}`}
-                  className="text-muted-foreground hover:text-foreground"
-                  onClick={() =>
-                    void run(() =>
-                      call(
-                        api().DELETE("/v1/admin/role-assignments/{assignment_id}", {
-                          params: { path: { assignment_id: assignment.id } },
-                        }),
-                      ),
-                    )
-                  }
-                >
-                  ×
-                </button>
-              ) : null}
-            </Badge>
-          ))}
-        </div>
-        {canManageRoles && grantable.length > 0 ? (
-          <div className="mt-2 flex gap-2">
-            <Select
-              aria-label={`Add a role for ${member.email}`}
-              className="h-8 w-40 text-xs"
-              value={roleId}
-              onChange={(event) => setRoleId(event.target.value)}
-            >
-              <option value="">Add role…</option>
-              {grantable.map((role) => (
-                <option key={role.id} value={role.id}>
-                  {role.name}
-                </option>
-              ))}
-            </Select>
-            <Button
-              size="sm"
-              variant="outline"
-              disabled={!roleId}
-              onClick={() =>
-                void run(async () => {
-                  await call(
-                    api().POST("/v1/admin/role-assignments", {
-                      body: {
-                        membership_id: member.membership_id,
-                        role_id: roleId,
-                        scope_type: "tenant",
-                      },
-                    }),
-                  );
-                  setRoleId("");
-                })
-              }
-            >
-              Add
-            </Button>
-          </div>
-        ) : null}
-      </Td>
-      <Td className="text-right">
-        {canManage && !isSelf && member.status !== "invited" ? (
+        ))}
+      </div>
+      {canManageRoles && grantable.length > 0 ? (
+        <div className="mt-2 flex gap-2">
+          <Select
+            aria-label={`Add a role for ${member.email}`}
+            className="h-8 w-40 text-xs"
+            value={roleId}
+            onChange={(event) => setRoleId(event.target.value)}
+          >
+            <option value="">Add role…</option>
+            {grantable.map((role) => (
+              <option key={role.id} value={role.id}>
+                {role.name}
+              </option>
+            ))}
+          </Select>
           <Button
             size="sm"
-            variant={member.status === "active" ? "outline" : "default"}
+            variant="outline"
+            disabled={!roleId}
             onClick={() =>
-              void run(() =>
-                call(
-                  api().PATCH("/v1/admin/users/{membership_id}", {
-                    params: { path: { membership_id: member.membership_id } },
+              void run(async () => {
+                await call(
+                  api().POST("/v1/admin/role-assignments", {
                     body: {
-                      status: member.status === "active" ? "suspended" : "active",
-                      row_version: member.row_version,
+                      membership_id: member.membership_id,
+                      role_id: roleId,
+                      scope_type: "tenant",
                     },
                   }),
-                ),
-              )
+                );
+                setRoleId("");
+              })
             }
           >
-            {member.status === "active" ? "Suspend" : "Reactivate"}
+            Add
           </Button>
-        ) : null}
-      </Td>
-    </Tr>
+        </div>
+      ) : null}
+    </>
+  );
+}
+
+function ActionCell({ member, run }: { member: MemberOut; run: Run }) {
+  return (
+    <Button
+      size="sm"
+      variant={member.status === "active" ? "outline" : "default"}
+      onClick={() =>
+        void run(() =>
+          call(
+            api().PATCH("/v1/admin/users/{membership_id}", {
+              params: { path: { membership_id: member.membership_id } },
+              body: {
+                status: member.status === "active" ? "suspended" : "active",
+                row_version: member.row_version,
+              },
+            }),
+          ),
+        )
+      }
+    >
+      {member.status === "active" ? "Suspend" : "Reactivate"}
+    </Button>
   );
 }
 
@@ -266,11 +268,37 @@ export default function UsersPage() {
     try {
       await action();
     } catch (error) {
-      setNotice(errorMessage(error));
+      // A stale row_version gets the shared "reload" prompt; anything else is shown here.
+      if (isStaleVersion(error)) showConflict();
+      else setNotice(errorMessage(error));
     }
-    // A stale row_version is fixed by reloading, so always refresh.
     await queryClient.invalidateQueries({ queryKey: USERS });
   }
+
+  const canManage = can(session, "platform.users.manage");
+  const canManageRoles = can(session, "platform.roles.manage");
+  const allRoles = roles.data ?? [];
+  const columns: DataTableColumn<MemberOut>[] = [
+    { id: "person", header: "Person", cell: (m) => <PersonCell member={m} />, hideable: false },
+    { id: "status", header: "Status", cell: (m) => <StatusCell member={m} /> },
+    {
+      id: "roles",
+      header: "Roles",
+      cell: (m) => (
+        <RolesCell member={m} roles={allRoles} canManageRoles={canManageRoles} run={run} />
+      ),
+    },
+    {
+      id: "actions",
+      header: "Actions",
+      hideable: false,
+      className: "text-right",
+      cell: (m) =>
+        canManage && m.user_id !== session?.user.id && m.status !== "invited" ? (
+          <ActionCell member={m} run={run} />
+        ) : null,
+    },
+  ];
 
   if (!session) return null;
   if (!allowed) return <NoAccess />;
@@ -283,36 +311,16 @@ export default function UsersPage() {
         ) : null}
       </div>
       {notice ? <Alert variant="destructive">{notice}</Alert> : null}
-      {members.isError ? <Alert variant="destructive">{errorMessage(members.error)}</Alert> : null}
-      <Card>
-        <CardContent className="p-0">
-          <Table>
-            <THead>
-              <Tr>
-                <Th>Person</Th>
-                <Th>Status</Th>
-                <Th>Roles</Th>
-                <Th>
-                  <span className="sr-only">Actions</span>
-                </Th>
-              </Tr>
-            </THead>
-            <TBody>
-              {(members.data ?? []).map((member) => (
-                <MemberRow
-                  key={member.membership_id}
-                  member={member}
-                  roles={roles.data ?? []}
-                  canManage={can(session, "platform.users.manage")}
-                  canManageRoles={can(session, "platform.roles.manage")}
-                  isSelf={member.user_id === session.user.id}
-                  run={run}
-                />
-              ))}
-            </TBody>
-          </Table>
-        </CardContent>
-      </Card>
+      <DataTable
+        caption="People in this organisation"
+        columns={columns}
+        rows={members.data ?? []}
+        getRowId={(m) => m.membership_id}
+        rowTestId={(m) => `member-${m.email}`}
+        loading={members.isLoading}
+        error={members.isError ? errorMessage(members.error) : null}
+        emptyMessage="No one has been added yet."
+      />
       <InviteDialog open={inviting} onClose={() => setInviting(false)} roles={roles.data ?? []} />
     </div>
   );

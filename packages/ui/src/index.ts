@@ -3,6 +3,7 @@ export { Alert, type AlertProps } from "./alert";
 export { Badge, type BadgeProps } from "./badge";
 export { Button, buttonVariants, type ButtonProps } from "./button";
 export { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./card";
+export { DataTable, type DataTableColumn, type DataTableProps, type Sort } from "./data-table";
 export { Dialog } from "./dialog";
 export { Checkbox, Input, Select } from "./input";
 export { Field, Label } from "./label";
