@@ -1,12 +1,18 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 "use client";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { type ReactNode, useState } from "react";
 
+import { ConflictDialog } from "@/components/conflict-dialog";
+import { createQueryClient } from "@/lib/query";
+
 export function Providers({ children }: { children: ReactNode }) {
-  const [client] = useState(
-    () => new QueryClient({ defaultOptions: { queries: { retry: false } } }),
+  const [client] = useState(createQueryClient);
+  return (
+    <QueryClientProvider client={client}>
+      {children}
+      <ConflictDialog />
+    </QueryClientProvider>
   );
-  return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
 }

@@ -18,6 +18,12 @@ export type EndpointOut = components["schemas"]["EndpointOut"];
 export type DeliveryOut = components["schemas"]["DeliveryOut"];
 export type ImportOut = components["schemas"]["ImportOut"];
 export type ImportTypeOut = components["schemas"]["ImportTypeOut"];
+export type DashboardOut = components["schemas"]["DashboardOut"];
+export type NotificationOut = components["schemas"]["NotificationOut"];
+export type InboxItem = components["schemas"]["InboxItem"];
+export type RequestedItem = components["schemas"]["RequestedItem"];
+export type SearchOut = components["schemas"]["SearchOut"];
+export type BrandingOut = components["schemas"]["BrandingOut"];
 
 export function createApiClient(
   baseUrl: string,
