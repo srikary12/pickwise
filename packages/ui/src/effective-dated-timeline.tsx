@@ -61,10 +61,7 @@ export function EffectiveDatedTimeline({
             ) : null}
           </div>
           {gapBefore ? (
-            <p
-              className="px-3 py-1 text-xs text-amber-700 dark:text-amber-400"
-              data-testid="timeline-gap"
-            >
+            <p className="px-3 py-1 text-xs text-warning" data-testid="timeline-gap">
               No record for the period between these two.
             </p>
           ) : (

@@ -161,7 +161,7 @@ test("an admin sets and removes the tenant logo, and a stale save prompts a relo
   await expect(page.getByLabel("Choose a logo")).toBeEnabled();
 
   await page
-    .getByTestId("logo-file")
+    .getByLabel("Choose a logo")
     .setInputFiles({ name: "logo.png", mimeType: "image/png", buffer: PNG });
   await expect(page.getByText("Logo updated.")).toBeVisible({ timeout: 30_000 });
   await expect(page.getByTestId("logo-preview")).toBeVisible();
@@ -184,7 +184,7 @@ test("an admin sets and removes the tenant logo, and a stale save prompts a relo
   });
   expect(bump.status()).toBe(200);
   await page
-    .getByTestId("logo-file")
+    .getByLabel("Choose a logo")
     .setInputFiles({ name: "logo.png", mimeType: "image/png", buffer: PNG });
   await expect(
     page.getByRole("dialog", { name: "This changed while you were editing" }),

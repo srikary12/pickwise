@@ -83,6 +83,7 @@ test("focus moves to the page after navigating, and the skip link works", async 
   await expect(page.locator("main")).toBeFocused();
 
   await page.reload();
+  await expect(page.getByRole("heading", { name: "Roles", level: 1 })).toBeVisible(); // shell is up
   await page.keyboard.press("Tab");
   const skip = page.getByRole("link", { name: "Skip to content" });
   await expect(skip).toBeFocused();
