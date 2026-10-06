@@ -2924,6 +2924,64 @@
         "title": "ResetPasswordRequest",
         "type": "object"
       },
+      "RevealOut": {
+        "properties": {
+          "value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Shown once; never cached. Null when the field is empty",
+            "title": "Value"
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "title": "RevealOut",
+        "type": "object"
+      },
+      "RevealRequest": {
+        "examples": [
+          {
+            "entity_id": "01928f6e-\u2026",
+            "entity_type": "employee",
+            "field": "pan"
+          }
+        ],
+        "properties": {
+          "entity_id": {
+            "format": "uuid",
+            "title": "Entity Id",
+            "type": "string"
+          },
+          "entity_type": {
+            "maxLength": 64,
+            "minLength": 1,
+            "pattern": "^[a-z_]+$",
+            "title": "Entity Type",
+            "type": "string"
+          },
+          "field": {
+            "maxLength": 64,
+            "minLength": 1,
+            "pattern": "^[a-z_]+$",
+            "title": "Field",
+            "type": "string"
+          }
+        },
+        "required": [
+          "entity_type",
+          "entity_id",
+          "field"
+        ],
+        "title": "RevealRequest",
+        "type": "object"
+      },
       "RoleAssignmentCreate": {
         "properties": {
           "membership_id": {
@@ -7643,6 +7701,48 @@
         "summary": "List Permissions",
         "tags": [
           "admin"
+        ]
+      }
+    },
+    "/v1/pii/reveal": {
+      "post": {
+        "description": "Each reveal writes a ``pii.reveal`` audit event naming the field and record, never the\nvalue. The response is not cacheable.",
+        "operationId": "reveal_v1_pii_reveal_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevealRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevealOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Reveal",
+        "tags": [
+          "privacy"
         ]
       }
     },

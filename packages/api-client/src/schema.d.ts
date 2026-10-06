@@ -1290,6 +1290,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/pii/reveal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Reveal
+         * @description Each reveal writes a ``pii.reveal`` audit event naming the field and record, never the
+         *     value. The response is not cacheable.
+         */
+        post: operations["reveal_v1_pii_reveal_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/search": {
         parameters: {
             query?: never;
@@ -2818,6 +2839,33 @@ export interface components {
             password: string;
             /** Token */
             token: string;
+        };
+        /** RevealOut */
+        RevealOut: {
+            /**
+             * Value
+             * @description Shown once; never cached. Null when the field is empty
+             */
+            value: string | null;
+        };
+        /**
+         * RevealRequest
+         * @example {
+         *       "entity_id": "01928f6e-…",
+         *       "entity_type": "employee",
+         *       "field": "pan"
+         *     }
+         */
+        RevealRequest: {
+            /**
+             * Entity Id
+             * Format: uuid
+             */
+            entity_id: string;
+            /** Entity Type */
+            entity_type: string;
+            /** Field */
+            field: string;
         };
         /** RoleAssignmentCreate */
         RoleAssignmentCreate: {
@@ -5754,6 +5802,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PermissionOut"][];
+                };
+            };
+        };
+    };
+    reveal_v1_pii_reveal_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RevealRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RevealOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

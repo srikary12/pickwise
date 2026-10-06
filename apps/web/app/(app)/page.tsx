@@ -47,9 +47,9 @@ export default function HomePage() {
             </CardTitle>
             <CardDescription>Approvals assigned to you.</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="min-h-56">
             {!data ? (
-              <p className="min-h-16 text-sm text-muted-foreground">Loading…</p>
+              <p className="text-sm text-muted-foreground">Loading…</p>
             ) : data.pending_approvals.items.length === 0 ? (
               <p className="text-sm text-muted-foreground">Nothing is waiting for you.</p>
             ) : (
@@ -89,9 +89,9 @@ export default function HomePage() {
             </CardTitle>
             <CardDescription>The latest things that need your attention.</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="min-h-56">
             {!data ? (
-              <p className="min-h-16 text-sm text-muted-foreground">Loading…</p>
+              <p className="text-sm text-muted-foreground">Loading…</p>
             ) : data.notifications.items.length === 0 ? (
               <p className="text-sm text-muted-foreground">No notifications yet.</p>
             ) : (

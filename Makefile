@@ -130,6 +130,10 @@ test: env ## Backend + database tests in a disposable stack
 test-examples: tools-image ## Run the example webhook receivers' own tests (Node)
 	$(TOOLS_RUN) node --test "examples/webhook-receiver/node/*.test.mjs"
 
+.PHONY: test-ui
+test-ui: deps ## Unit tests of the shared UI package (formatters)
+	$(TOOLS_RUN) pnpm --filter @pickwise/ui test
+
 .PHONY: test-db
 test-db: env ## Database-level tests only (db/tests)
 	$(TEST) --profile test build backend-test
@@ -148,6 +152,16 @@ e2e: env ## Playwright against the running dev stack (run make dev first)
 		-v "$(CURDIR)":/repo -w /repo \
 		mcr.microsoft.com/playwright:v1.63.0-noble@sha256:eff16c30e6f3f4af0a03fa4b706120d5e9b0891c344a27d64559aff5900a4a27 \
 		sh -c 'npx --yes pnpm@12.6.0 --filter @pickwise/web exec playwright test'
+
+.PHONY: lighthouse
+lighthouse: ## Lighthouse performance (>= 90) on the dashboard of a production build (run make dev first)
+	@test -n "$$($(DEV) ps -q web)" || { echo "the stack isn't running: run make dev first" >&2; exit 1; }
+	docker run --rm --network container:$$($(DEV) ps -q web) -u $(HOST_UID):$(HOST_GID) \
+		-e HOME=/tmp -e E2E_BASE_URL=http://localhost:3000 \
+		-e DEMO_PASSWORD="$$(sed -n 's/^DEMO_PASSWORD=//p' .env)" -e pnpm_config_store_dir=/repo/.cache/pnpm-store \
+		-v "$(CURDIR)":/repo -w /repo \
+		mcr.microsoft.com/playwright:v1.63.0-noble@sha256:eff16c30e6f3f4af0a03fa4b706120d5e9b0891c344a27d64559aff5900a4a27 \
+		sh -c 'npx --yes pnpm@12.6.0 --filter @pickwise/web exec node perf/lighthouse.mjs'
 
 .PHONY: web-build
 web-build: deps ## Production build of the web app
