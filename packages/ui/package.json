@@ -30,5 +30,6 @@
     "react-hook-form": "7.89.0",
     "typescript": "6.0.3",
     "zod": "4.6.5"
-  }
+  },
+  "sideEffects": false
 }

@@ -109,6 +109,29 @@ jobs:
           docker compose --env-file .env --project-directory . \
             -f infra/compose/compose.yml -f infra/compose/compose.dev.yml logs --tail 200
 
+  lighthouse:
+    name: Lighthouse (production build)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            .cache/uv
+            .cache/pnpm-store
+          key: tools-${{ runner.os }}-${{ hashFiles('apps/backend/uv.lock', 'pnpm-lock.yaml') }}
+          restore-keys: tools-${{ runner.os }}-
+      # Builds the production app, serves it against the demo stack's API, and needs a median
+      # performance score of at least 90 on the signed-in dashboard.
+      - run: make dev
+      - run: make lighthouse
+      - name: Service logs (on failure)
+        if: failure()
+        run: |
+          docker compose --env-file .env --project-directory . \
+            -f infra/compose/compose.yml -f infra/compose/compose.dev.yml logs --tail 200
+
   scan-check:
     name: real ClamAV scan-check
     runs-on: ubuntu-24.04

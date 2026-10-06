@@ -24,6 +24,8 @@ htmlcov/
 # JS
 node_modules/
 .next/
+.next-prod/
+apps/web/perf/report/
 .turbo/
 dist/
 *.tsbuildinfo

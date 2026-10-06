@@ -35,6 +35,26 @@ function Brand({ session }: { session: SessionState }) {
   );
 }
 
+/** The shell's frame while the session loads, so the page doesn't jump when it arrives. */
+function ShellSkeleton() {
+  return (
+    <div className="min-h-screen">
+      <header className="flex min-h-[53px] items-center border-b border-border bg-card px-4 font-semibold">
+        Pickwise
+      </header>
+      <div className="md:flex">
+        <aside className="hidden border-border bg-card md:block md:h-[calc(100vh-53px)] md:w-60 md:shrink-0 md:border-r" />
+        <main className="mx-auto w-full max-w-5xl p-4 sm:p-6">
+          <p role="status" className="sr-only">
+            Loading…
+          </p>
+          <div aria-hidden="true" className="h-8 w-64 rounded bg-muted" />
+        </main>
+      </div>
+    </div>
+  );
+}
+
 export function AppShell({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -48,7 +68,8 @@ export function AppShell({ children }: { children: ReactNode }) {
   const main = useRef<HTMLElement>(null);
   const firstPath = useRef(pathname);
   const ready = session?.stage === "ready";
-  const counts = useDashboard(ready).data;
+  // Fetched alongside the session, not after it: one round trip less before the page is useful.
+  const counts = useDashboard().data;
 
   // Route by the session's stage; a stage other than `ready` confines the user to one page.
   useEffect(() => {
@@ -91,7 +112,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   }, [menuOpen]);
 
   if (isLoading || !session) {
-    return <p className="p-8 text-sm text-muted-foreground">Loading…</p>;
+    return <ShellSkeleton />;
   }
   if (session.stage !== "ready" && pathname !== routeForStage(session.stage).split("?")[0]) {
     return null;
