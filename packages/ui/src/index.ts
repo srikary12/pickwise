@@ -18,6 +18,7 @@ export {
 export { Checkbox, Input, Select } from "./input";
 export { Field, Label } from "./label";
 export { cn } from "./lib/utils";
+export { type TabItem, Tabs } from "./tabs";
 export { Table, TBody, Td, Th, THead, Tr } from "./table";
 export {
   DEFAULT_TIME_ZONE,

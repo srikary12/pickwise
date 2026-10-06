@@ -30,6 +30,7 @@ test("an admin sees every section; an employee only their own", async ({ page, b
   for (const name of [
     "Home",
     "Approvals",
+    "Organisation",
     "Users",
     "Roles",
     "Imports",
