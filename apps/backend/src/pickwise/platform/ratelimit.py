@@ -37,6 +37,7 @@ RESET_PER_EMAIL = Rule("reset:email", 3, 3600)
 RESET_PER_IP = Rule("reset:ip", 20, 3600)
 LOOKUP_PER_IP = Rule("lookup:ip", 60, 60)
 SEARCH_PER_USER = Rule("search:user", 120, 60)
+REVEAL_PER_USER = Rule("reveal:user", 30, 60)
 
 _TAKE = text(
     """
