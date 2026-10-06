@@ -9,8 +9,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  Field,
-  Input,
+  FileUpload,
 } from "@pickwise/ui";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -40,21 +39,13 @@ export default function BrandingPage() {
     void queryClient.invalidateQueries({ queryKey: TENANT_KEY });
     void queryClient.invalidateQueries({ queryKey: SESSION_KEY }); // carries logo_version
   };
-  const upload = useApiMutation({
-    mutationFn: async (file: File) => {
-      if (!session?.active_tenant || !tenant.data)
-        throw new Error("Reload the page and try again.");
-      if (file.size > MAX_BYTES) throw new Error("A logo can be at most 1 MB.");
-      const fileId = await uploadAndScan(file, {
-        classification: "public",
-        owner: { type: "tenant_logo", id: session.active_tenant.tenant_id },
-      });
-      return call(
+  const setLogo = useApiMutation({
+    mutationFn: (fileId: string) =>
+      call(
         api().PUT("/v1/admin/tenant/logo", {
-          body: { file_id: fileId, row_version: tenant.data.row_version },
+          body: { file_id: fileId, row_version: tenant.data?.row_version ?? 0 },
         }),
-      );
-    },
+      ),
     onSuccess: () => {
       setMessage("Logo updated.");
       changed();
@@ -76,7 +67,7 @@ export default function BrandingPage() {
   if (!session) return null;
   if (!allowed) return <NoAccess />;
   const logo = session.logo_version;
-  const error = upload.error ?? remove.error;
+  const error = setLogo.error ?? remove.error;
   return (
     <div className="flex flex-col gap-6">
       <h1 className="text-2xl font-semibold">Branding</h1>
@@ -104,26 +95,25 @@ export default function BrandingPage() {
           )}
           {message ? <Alert variant="success">{message}</Alert> : null}
           {error ? <Alert variant="destructive">{errorMessage(error)}</Alert> : null}
-          <Field id="logo-file" label="Choose a logo">
-            <Input
-              id="logo-file"
-              type="file"
-              accept="image/png,image/jpeg"
-              data-testid="logo-file"
-              disabled={upload.isPending || !tenant.data}
-              onChange={(event) => {
-                const file = event.target.files?.[0];
-                setMessage(null);
-                if (file) upload.mutate(file);
-                event.target.value = "";
-              }}
-            />
-          </Field>
-          {upload.isPending ? (
-            <p role="status" className="text-sm">
-              Uploading and checking the file…
-            </p>
-          ) : null}
+          <FileUpload
+            label="Choose a logo"
+            accept="image/png,image/jpeg"
+            maxBytes={MAX_BYTES}
+            disabled={!tenant.data || !session.active_tenant}
+            hint="PNG or JPEG, up to 1 MB."
+            upload={(file, report, signal) =>
+              uploadAndScan(file, {
+                classification: "public",
+                owner: { type: "tenant_logo", id: session.active_tenant?.tenant_id ?? "" },
+                onStage: report,
+                signal,
+              })
+            }
+            onUploaded={(fileId) => {
+              setMessage(null);
+              setLogo.mutate(fileId);
+            }}
+          />
           {logo ? (
             <Button
               variant="outline"

@@ -3,18 +3,14 @@
 
 import type { AuditEventOut } from "@pickwise/api-client";
 import {
-  Alert,
   Button,
   Card,
   CardContent,
+  DataTable,
+  type DataTableColumn,
   Field,
+  formatDateTime,
   Input,
-  Table,
-  TBody,
-  Td,
-  Th,
-  THead,
-  Tr,
 } from "@pickwise/ui";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -39,6 +35,42 @@ function query(filters: Filters): Record<string, string> {
   }
   return out;
 }
+
+const COLUMNS: DataTableColumn<AuditEventOut>[] = [
+  {
+    id: "when",
+    header: "When",
+    cell: (e) => <span className="whitespace-nowrap text-xs">{formatDateTime(e.occurred_at)}</span>,
+    hideable: false,
+  },
+  { id: "who", header: "Who", cell: (e) => e.actor_name ?? e.actor_type },
+  {
+    id: "action",
+    header: "Action",
+    cell: (e) => <span className="font-mono text-xs">{e.action}</span>,
+    hideable: false,
+  },
+  {
+    id: "record",
+    header: "Record",
+    cell: (e) => (
+      <span className="font-mono text-xs">
+        {e.entity_table ? `${e.entity_schema}.${e.entity_table}` : ""}
+      </span>
+    ),
+  },
+  {
+    id: "changes",
+    header: "Changes",
+    cell: (e) =>
+      e.changes ? (
+        <details>
+          <summary className="cursor-pointer text-xs underline">Show</summary>
+          <pre className="max-w-md overflow-auto text-xs">{JSON.stringify(e.changes, null, 2)}</pre>
+        </details>
+      ) : null,
+  },
+];
 
 export default function AuditPage() {
   const { data: session } = useSession();
@@ -132,54 +164,19 @@ export default function AuditPage() {
           </form>
         </CardContent>
       </Card>
-      {events.error ? <Alert variant="destructive">{errorMessage(events.error)}</Alert> : null}
-      <Table>
-        <THead>
-          <Tr>
-            <Th>When</Th>
-            <Th>Who</Th>
-            <Th>Action</Th>
-            <Th>Record</Th>
-            <Th>Changes</Th>
-          </Tr>
-        </THead>
-        <TBody>
-          {items.map((e) => (
-            <Tr key={e.id} data-testid="audit-row">
-              <Td className="whitespace-nowrap text-xs">
-                {new Date(e.occurred_at).toLocaleString()}
-              </Td>
-              <Td>{e.actor_name ?? e.actor_type}</Td>
-              <Td className="font-mono text-xs">{e.action}</Td>
-              <Td className="font-mono text-xs">
-                {e.entity_table ? `${e.entity_schema}.${e.entity_table}` : ""}
-              </Td>
-              <Td>
-                {e.changes ? (
-                  <details>
-                    <summary className="cursor-pointer text-xs underline">Show</summary>
-                    <pre className="max-w-md overflow-auto text-xs">
-                      {JSON.stringify(e.changes, null, 2)}
-                    </pre>
-                  </details>
-                ) : null}
-              </Td>
-            </Tr>
-          ))}
-        </TBody>
-      </Table>
-      {items.length === 0 && !events.isLoading ? (
-        <p className="text-sm text-muted-foreground">No events match.</p>
-      ) : null}
-      {events.hasNextPage ? (
-        <Button
-          variant="outline"
-          disabled={events.isFetchingNextPage}
-          onClick={() => void events.fetchNextPage()}
-        >
-          Load more
-        </Button>
-      ) : null}
+      <DataTable
+        caption="Audit events, newest first"
+        columns={COLUMNS}
+        rows={items}
+        getRowId={(e) => e.id}
+        rowTestId={() => "audit-row"}
+        loading={events.isLoading}
+        error={events.error ? errorMessage(events.error) : null}
+        emptyMessage="No events match."
+        hasMore={events.hasNextPage}
+        loadingMore={events.isFetchingNextPage}
+        onLoadMore={() => void events.fetchNextPage()}
+      />
     </div>
   );
 }

@@ -91,7 +91,7 @@ export function NotificationBell() {
             <span
               data-testid="bell-count"
               aria-hidden="true"
-              className="absolute -right-2 -top-2 min-w-4 rounded-full bg-destructive px-1 text-center text-[10px] font-semibold leading-4 text-white"
+              className="absolute -right-2 -top-2 min-w-4 rounded-full bg-destructive px-1 text-center text-[10px] font-semibold leading-4 text-destructive-foreground"
             >
               {unread > 99 ? "99+" : unread}
             </span>

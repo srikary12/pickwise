@@ -30,6 +30,7 @@ from pickwise.platform.jobs import set_job_queue
 from pickwise.platform.notifications.email import QueuedEmail, set_dispatcher
 from pickwise.platform.notifications.router import router as notifications_router
 from pickwise.platform.provisioning.router import router as signup_router
+from pickwise.platform.reveal.router import router as reveal_router
 from pickwise.platform.scanning import StubScanner
 from pickwise.platform.scanning.stub import STUB_WARNING
 from pickwise.platform.search.router import router as search_router
@@ -129,4 +130,5 @@ def create_app(settings: Settings | None = None, *, enqueue_jobs: bool = True) -
     app.include_router(search_router)
     app.include_router(branding_router)
     app.include_router(dashboard_router)
+    app.include_router(reveal_router)
     return app

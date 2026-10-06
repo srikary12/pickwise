@@ -16,6 +16,9 @@ export interface UploadOptions {
   classification?: "public" | "internal" | "confidential" | "restricted";
   /** Attach the file to a record so the owning module can decide who may read it. */
   owner?: { type: string; id: string };
+  /** Reports "uploading" then "scanning". */
+  onStage?: (stage: "uploading" | "scanning") => void;
+  signal?: AbortSignal;
 }
 
 /** Uploads `file` and resolves with the file id once it has passed the virus scan. */
@@ -33,15 +36,22 @@ export async function uploadAndScan(file: File, options: UploadOptions = {}): Pr
       },
     }),
   );
+  options.onStage?.("uploading");
   const form = new FormData();
   for (const [key, value] of Object.entries(slot.upload_fields)) form.append(key, value);
   form.append("file", file);
-  const stored = await fetch(slot.upload_url, { method: "POST", body: form });
+  const stored = await fetch(slot.upload_url, {
+    method: "POST",
+    body: form,
+    ...(options.signal ? { signal: options.signal } : {}),
+  });
   if (!stored.ok)
     throw new ApiError(stored.status, "upload_failed", "The upload didn't go through.");
   const fileId = slot.file.id;
   await call(api().POST("/v1/files/{file_id}/complete", { params: { path: { file_id: fileId } } }));
+  options.onStage?.("scanning");
   for (let attempt = 0; attempt < 60; attempt++) {
+    options.signal?.throwIfAborted();
     const status = await call(
       api().GET("/v1/files/{file_id}", { params: { path: { file_id: fileId } } }),
     );
