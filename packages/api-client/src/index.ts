@@ -24,6 +24,13 @@ export type InboxItem = components["schemas"]["InboxItem"];
 export type RequestedItem = components["schemas"]["RequestedItem"];
 export type SearchOut = components["schemas"]["SearchOut"];
 export type BrandingOut = components["schemas"]["BrandingOut"];
+export type LegalEntityOut = components["schemas"]["LegalEntityOut"];
+export type RegistrationOut = components["schemas"]["RegistrationOut"];
+export type LocationOut = components["schemas"]["LocationOut"];
+export type CostCenterOut = components["schemas"]["CostCenterOut"];
+export type DesignationOut = components["schemas"]["DesignationOut"];
+export type GradeOut = components["schemas"]["GradeOut"];
+export type DepartmentOut = components["schemas"]["DepartmentOut"];
 
 export function createApiClient(
   baseUrl: string,

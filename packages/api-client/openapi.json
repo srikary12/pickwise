@@ -510,6 +510,126 @@
         "title": "ColumnOut",
         "type": "object"
       },
+      "CostCenterCreate": {
+        "properties": {
+          "code": {
+            "examples": [
+              "BLR-HQ"
+            ],
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,29}$",
+            "title": "Code",
+            "type": "string"
+          },
+          "legal_entity_id": {
+            "format": "uuid",
+            "title": "Legal Entity Id",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "legal_entity_id",
+          "code",
+          "name"
+        ],
+        "title": "CostCenterCreate",
+        "type": "object"
+      },
+      "CostCenterOut": {
+        "properties": {
+          "archived_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Archived At"
+          },
+          "code": {
+            "examples": [
+              "BLR-HQ"
+            ],
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,29}$",
+            "title": "Code",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "legal_entity_id": {
+            "format": "uuid",
+            "title": "Legal Entity Id",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "row_version": {
+            "title": "Row Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "legal_entity_id",
+          "code",
+          "name",
+          "id",
+          "archived_at",
+          "row_version"
+        ],
+        "title": "CostCenterOut",
+        "type": "object"
+      },
+      "CostCenterUpdate": {
+        "properties": {
+          "code": {
+            "examples": [
+              "BLR-HQ"
+            ],
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,29}$",
+            "title": "Code",
+            "type": "string"
+          },
+          "legal_entity_id": {
+            "format": "uuid",
+            "title": "Legal Entity Id",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "row_version": {
+            "minimum": 1.0,
+            "title": "Row Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "row_version",
+          "legal_entity_id",
+          "code",
+          "name"
+        ],
+        "title": "CostCenterUpdate",
+        "type": "object"
+      },
       "CsrfToken": {
         "examples": [
           {
@@ -800,6 +920,210 @@
         "title": "DeliveryPage",
         "type": "object"
       },
+      "DepartmentCreate": {
+        "properties": {
+          "code": {
+            "examples": [
+              "BLR-HQ"
+            ],
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,29}$",
+            "title": "Code",
+            "type": "string"
+          },
+          "cost_center_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cost Center Id"
+          },
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "parent_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Id"
+          }
+        },
+        "required": [
+          "code",
+          "name"
+        ],
+        "title": "DepartmentCreate",
+        "type": "object"
+      },
+      "DepartmentMove": {
+        "properties": {
+          "parent_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The new parent, or null for the top level.",
+            "title": "Parent Id"
+          },
+          "row_version": {
+            "minimum": 1.0,
+            "title": "Row Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "row_version",
+          "parent_id"
+        ],
+        "title": "DepartmentMove",
+        "type": "object"
+      },
+      "DepartmentOut": {
+        "properties": {
+          "archived_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Archived At"
+          },
+          "code": {
+            "examples": [
+              "BLR-HQ"
+            ],
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,29}$",
+            "title": "Code",
+            "type": "string"
+          },
+          "cost_center_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cost Center Id"
+          },
+          "depth": {
+            "description": "0 for a top-level department.",
+            "title": "Depth",
+            "type": "integer"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "parent_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Id"
+          },
+          "path": {
+            "description": "Ancestor ids joined by '.', without hyphens (ltree).",
+            "title": "Path",
+            "type": "string"
+          },
+          "row_version": {
+            "title": "Row Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "id",
+          "parent_id",
+          "path",
+          "depth",
+          "archived_at",
+          "row_version"
+        ],
+        "title": "DepartmentOut",
+        "type": "object"
+      },
+      "DepartmentUpdate": {
+        "description": "Moving a department is a separate call; its place in the tree isn't edited here.",
+        "properties": {
+          "code": {
+            "examples": [
+              "BLR-HQ"
+            ],
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,29}$",
+            "title": "Code",
+            "type": "string"
+          },
+          "cost_center_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cost Center Id"
+          },
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "row_version": {
+            "minimum": 1.0,
+            "title": "Row Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "row_version",
+          "code",
+          "name"
+        ],
+        "title": "DepartmentUpdate",
+        "type": "object"
+      },
       "DependencyCheck": {
         "properties": {
           "latency_ms": {
@@ -816,6 +1140,144 @@
           "latency_ms"
         ],
         "title": "DependencyCheck",
+        "type": "object"
+      },
+      "DesignationCreate": {
+        "properties": {
+          "code": {
+            "examples": [
+              "BLR-HQ"
+            ],
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,29}$",
+            "title": "Code",
+            "type": "string"
+          },
+          "job_family": {
+            "anyOf": [
+              {
+                "maxLength": 100,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Job Family"
+          },
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "name"
+        ],
+        "title": "DesignationCreate",
+        "type": "object"
+      },
+      "DesignationOut": {
+        "properties": {
+          "archived_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Archived At"
+          },
+          "code": {
+            "examples": [
+              "BLR-HQ"
+            ],
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,29}$",
+            "title": "Code",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "job_family": {
+            "anyOf": [
+              {
+                "maxLength": 100,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Job Family"
+          },
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "row_version": {
+            "title": "Row Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "id",
+          "archived_at",
+          "row_version"
+        ],
+        "title": "DesignationOut",
+        "type": "object"
+      },
+      "DesignationUpdate": {
+        "properties": {
+          "code": {
+            "examples": [
+              "BLR-HQ"
+            ],
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,29}$",
+            "title": "Code",
+            "type": "string"
+          },
+          "job_family": {
+            "anyOf": [
+              {
+                "maxLength": 100,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Job Family"
+          },
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "row_version": {
+            "minimum": 1.0,
+            "title": "Row Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "row_version",
+          "code",
+          "name"
+        ],
+        "title": "DesignationUpdate",
         "type": "object"
       },
       "DownloadOut": {
@@ -1397,6 +1859,220 @@
         "title": "ForgotPasswordRequest",
         "type": "object"
       },
+      "GradeCreate": {
+        "properties": {
+          "code": {
+            "examples": [
+              "BLR-HQ"
+            ],
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,29}$",
+            "title": "Code",
+            "type": "string"
+          },
+          "ctc_max": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,12}|(?=[\\d.]{1,15}0*$)\\d{0,12}\\.\\d{0,2}0*$)",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ctc Max"
+          },
+          "ctc_min": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,12}|(?=[\\d.]{1,15}0*$)\\d{0,12}\\.\\d{0,2}0*$)",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ctc Min"
+          },
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "rank": {
+            "description": "Higher is more senior.",
+            "maximum": 10000.0,
+            "minimum": 0.0,
+            "title": "Rank",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "rank"
+        ],
+        "title": "GradeCreate",
+        "type": "object"
+      },
+      "GradeOut": {
+        "properties": {
+          "archived_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Archived At"
+          },
+          "code": {
+            "examples": [
+              "BLR-HQ"
+            ],
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,29}$",
+            "title": "Code",
+            "type": "string"
+          },
+          "ctc_max": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,12}|(?=[\\d.]{1,15}0*$)\\d{0,12}\\.\\d{0,2}0*$)",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ctc Max"
+          },
+          "ctc_min": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,12}|(?=[\\d.]{1,15}0*$)\\d{0,12}\\.\\d{0,2}0*$)",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ctc Min"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "rank": {
+            "description": "Higher is more senior.",
+            "maximum": 10000.0,
+            "minimum": 0.0,
+            "title": "Rank",
+            "type": "integer"
+          },
+          "row_version": {
+            "title": "Row Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "rank",
+          "id",
+          "archived_at",
+          "row_version"
+        ],
+        "title": "GradeOut",
+        "type": "object"
+      },
+      "GradeUpdate": {
+        "properties": {
+          "code": {
+            "examples": [
+              "BLR-HQ"
+            ],
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,29}$",
+            "title": "Code",
+            "type": "string"
+          },
+          "ctc_max": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,12}|(?=[\\d.]{1,15}0*$)\\d{0,12}\\.\\d{0,2}0*$)",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ctc Max"
+          },
+          "ctc_min": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,12}|(?=[\\d.]{1,15}0*$)\\d{0,12}\\.\\d{0,2}0*$)",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ctc Min"
+          },
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "rank": {
+            "description": "Higher is more senior.",
+            "maximum": 10000.0,
+            "minimum": 0.0,
+            "title": "Rank",
+            "type": "integer"
+          },
+          "row_version": {
+            "minimum": 1.0,
+            "title": "Row Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "row_version",
+          "code",
+          "name",
+          "rank"
+        ],
+        "title": "GradeUpdate",
+        "type": "object"
+      },
       "GroupOut": {
         "properties": {
           "hits": {
@@ -1874,6 +2550,364 @@
         "title": "InviteStatusResponse",
         "type": "object"
       },
+      "LegalEntityCreate": {
+        "examples": [
+          {
+            "gstin": "29AABCA1234F1Z5",
+            "legal_name": "Acme Technologies India Private Limited",
+            "name": "Acme India",
+            "pan": "AABCA1234F",
+            "registered_address": {
+              "city": "Bengaluru",
+              "line1": "12 MG Road"
+            },
+            "tan": "BLRA12345B"
+          }
+        ],
+        "properties": {
+          "cin": {
+            "anyOf": [
+              {
+                "pattern": "^[LU][0-9]{5}[A-Z]{2}[0-9]{4}[A-Z]{3}[0-9]{6}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cin"
+          },
+          "country_code": {
+            "default": "IN",
+            "pattern": "^[A-Z]{2}$",
+            "title": "Country Code",
+            "type": "string"
+          },
+          "esi_employer_code": {
+            "anyOf": [
+              {
+                "maxLength": 40,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Esi Employer Code"
+          },
+          "gstin": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gstin"
+          },
+          "legal_name": {
+            "maxLength": 300,
+            "minLength": 1,
+            "title": "Legal Name",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "pan": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Z]{5}[0-9]{4}[A-Z]$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pan"
+          },
+          "pf_establishment_code": {
+            "anyOf": [
+              {
+                "maxLength": 40,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pf Establishment Code"
+          },
+          "registered_address": {
+            "additionalProperties": true,
+            "title": "Registered Address",
+            "type": "object"
+          },
+          "tan": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Z]{4}[0-9]{5}[A-Z]$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tan"
+          }
+        },
+        "required": [
+          "name",
+          "legal_name"
+        ],
+        "title": "LegalEntityCreate",
+        "type": "object"
+      },
+      "LegalEntityOut": {
+        "properties": {
+          "archived_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Archived At"
+          },
+          "cin": {
+            "anyOf": [
+              {
+                "pattern": "^[LU][0-9]{5}[A-Z]{2}[0-9]{4}[A-Z]{3}[0-9]{6}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cin"
+          },
+          "country_code": {
+            "default": "IN",
+            "pattern": "^[A-Z]{2}$",
+            "title": "Country Code",
+            "type": "string"
+          },
+          "esi_employer_code": {
+            "anyOf": [
+              {
+                "maxLength": 40,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Esi Employer Code"
+          },
+          "gstin": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gstin"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "legal_name": {
+            "maxLength": 300,
+            "minLength": 1,
+            "title": "Legal Name",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "pan": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Z]{5}[0-9]{4}[A-Z]$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pan"
+          },
+          "pf_establishment_code": {
+            "anyOf": [
+              {
+                "maxLength": 40,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pf Establishment Code"
+          },
+          "registered_address": {
+            "additionalProperties": true,
+            "title": "Registered Address",
+            "type": "object"
+          },
+          "row_version": {
+            "title": "Row Version",
+            "type": "integer"
+          },
+          "tan": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Z]{4}[0-9]{5}[A-Z]$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tan"
+          }
+        },
+        "required": [
+          "name",
+          "legal_name",
+          "id",
+          "archived_at",
+          "row_version"
+        ],
+        "title": "LegalEntityOut",
+        "type": "object"
+      },
+      "LegalEntityUpdate": {
+        "properties": {
+          "cin": {
+            "anyOf": [
+              {
+                "pattern": "^[LU][0-9]{5}[A-Z]{2}[0-9]{4}[A-Z]{3}[0-9]{6}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cin"
+          },
+          "country_code": {
+            "default": "IN",
+            "pattern": "^[A-Z]{2}$",
+            "title": "Country Code",
+            "type": "string"
+          },
+          "esi_employer_code": {
+            "anyOf": [
+              {
+                "maxLength": 40,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Esi Employer Code"
+          },
+          "gstin": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gstin"
+          },
+          "legal_name": {
+            "maxLength": 300,
+            "minLength": 1,
+            "title": "Legal Name",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "pan": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Z]{5}[0-9]{4}[A-Z]$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pan"
+          },
+          "pf_establishment_code": {
+            "anyOf": [
+              {
+                "maxLength": 40,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pf Establishment Code"
+          },
+          "registered_address": {
+            "additionalProperties": true,
+            "title": "Registered Address",
+            "type": "object"
+          },
+          "row_version": {
+            "minimum": 1.0,
+            "title": "Row Version",
+            "type": "integer"
+          },
+          "tan": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Z]{4}[0-9]{5}[A-Z]$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tan"
+          }
+        },
+        "required": [
+          "row_version",
+          "name",
+          "legal_name"
+        ],
+        "title": "LegalEntityUpdate",
+        "type": "object"
+      },
       "Liveness": {
         "examples": [
           {
@@ -1889,6 +2923,416 @@
           }
         },
         "title": "Liveness",
+        "type": "object"
+      },
+      "LocationCreate": {
+        "properties": {
+          "address": {
+            "additionalProperties": true,
+            "title": "Address",
+            "type": "object"
+          },
+          "city": {
+            "anyOf": [
+              {
+                "maxLength": 100,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "code": {
+            "examples": [
+              "BLR-HQ"
+            ],
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,29}$",
+            "title": "Code",
+            "type": "string"
+          },
+          "geofence_radius_m": {
+            "anyOf": [
+              {
+                "maximum": 100000.0,
+                "minimum": 10.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Geofence Radius M"
+          },
+          "latitude": {
+            "anyOf": [
+              {
+                "maximum": 90.0,
+                "minimum": -90.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d{0,6}0*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latitude"
+          },
+          "legal_entity_id": {
+            "format": "uuid",
+            "title": "Legal Entity Id",
+            "type": "string"
+          },
+          "longitude": {
+            "anyOf": [
+              {
+                "maximum": 180.0,
+                "minimum": -180.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d{0,6}0*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Longitude"
+          },
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "pincode": {
+            "anyOf": [
+              {
+                "pattern": "^[1-9][0-9]{5}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pincode"
+          },
+          "state_code": {
+            "examples": [
+              "IN-KA"
+            ],
+            "pattern": "^IN-[A-Z]{2}$",
+            "title": "State Code",
+            "type": "string"
+          },
+          "timezone": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "examples": [
+              "Asia/Kolkata"
+            ],
+            "title": "Timezone"
+          }
+        },
+        "required": [
+          "legal_entity_id",
+          "code",
+          "name",
+          "state_code"
+        ],
+        "title": "LocationCreate",
+        "type": "object"
+      },
+      "LocationOut": {
+        "properties": {
+          "address": {
+            "additionalProperties": true,
+            "title": "Address",
+            "type": "object"
+          },
+          "archived_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Archived At"
+          },
+          "city": {
+            "anyOf": [
+              {
+                "maxLength": 100,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "code": {
+            "examples": [
+              "BLR-HQ"
+            ],
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,29}$",
+            "title": "Code",
+            "type": "string"
+          },
+          "geofence_radius_m": {
+            "anyOf": [
+              {
+                "maximum": 100000.0,
+                "minimum": 10.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Geofence Radius M"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "latitude": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d{0,6}0*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latitude"
+          },
+          "legal_entity_id": {
+            "format": "uuid",
+            "title": "Legal Entity Id",
+            "type": "string"
+          },
+          "longitude": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d{0,6}0*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Longitude"
+          },
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "pincode": {
+            "anyOf": [
+              {
+                "pattern": "^[1-9][0-9]{5}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pincode"
+          },
+          "row_version": {
+            "title": "Row Version",
+            "type": "integer"
+          },
+          "state_code": {
+            "examples": [
+              "IN-KA"
+            ],
+            "pattern": "^IN-[A-Z]{2}$",
+            "title": "State Code",
+            "type": "string"
+          },
+          "timezone": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "examples": [
+              "Asia/Kolkata"
+            ],
+            "title": "Timezone"
+          }
+        },
+        "required": [
+          "legal_entity_id",
+          "code",
+          "name",
+          "state_code",
+          "id",
+          "archived_at",
+          "row_version"
+        ],
+        "title": "LocationOut",
+        "type": "object"
+      },
+      "LocationUpdate": {
+        "properties": {
+          "address": {
+            "additionalProperties": true,
+            "title": "Address",
+            "type": "object"
+          },
+          "city": {
+            "anyOf": [
+              {
+                "maxLength": 100,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "code": {
+            "examples": [
+              "BLR-HQ"
+            ],
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,29}$",
+            "title": "Code",
+            "type": "string"
+          },
+          "geofence_radius_m": {
+            "anyOf": [
+              {
+                "maximum": 100000.0,
+                "minimum": 10.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Geofence Radius M"
+          },
+          "latitude": {
+            "anyOf": [
+              {
+                "maximum": 90.0,
+                "minimum": -90.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d{0,6}0*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latitude"
+          },
+          "legal_entity_id": {
+            "format": "uuid",
+            "title": "Legal Entity Id",
+            "type": "string"
+          },
+          "longitude": {
+            "anyOf": [
+              {
+                "maximum": 180.0,
+                "minimum": -180.0,
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d{0,6}0*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Longitude"
+          },
+          "name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "pincode": {
+            "anyOf": [
+              {
+                "pattern": "^[1-9][0-9]{5}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pincode"
+          },
+          "row_version": {
+            "minimum": 1.0,
+            "title": "Row Version",
+            "type": "integer"
+          },
+          "state_code": {
+            "examples": [
+              "IN-KA"
+            ],
+            "pattern": "^IN-[A-Z]{2}$",
+            "title": "State Code",
+            "type": "string"
+          },
+          "timezone": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "examples": [
+              "Asia/Kolkata"
+            ],
+            "title": "Timezone"
+          }
+        },
+        "required": [
+          "row_version",
+          "legal_entity_id",
+          "code",
+          "name",
+          "state_code"
+        ],
+        "title": "LocationUpdate",
         "type": "object"
       },
       "LoginRequest": {
@@ -2673,6 +4117,191 @@
           "recovery_codes"
         ],
         "title": "RecoveryCodes",
+        "type": "object"
+      },
+      "RegistrationCreate": {
+        "properties": {
+          "registration_no": {
+            "maxLength": 60,
+            "minLength": 1,
+            "title": "Registration No",
+            "type": "string"
+          },
+          "registration_type": {
+            "enum": [
+              "PT",
+              "LWF",
+              "SHOPS_ESTABLISHMENT",
+              "FACTORY"
+            ],
+            "title": "Registration Type",
+            "type": "string"
+          },
+          "state_code": {
+            "examples": [
+              "IN-KA"
+            ],
+            "pattern": "^IN-[A-Z]{2}$",
+            "title": "State Code",
+            "type": "string"
+          },
+          "valid_from": {
+            "format": "date",
+            "title": "Valid From",
+            "type": "string"
+          },
+          "valid_to": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Last day it applies; open if empty.",
+            "title": "Valid To"
+          }
+        },
+        "required": [
+          "registration_type",
+          "state_code",
+          "registration_no",
+          "valid_from"
+        ],
+        "title": "RegistrationCreate",
+        "type": "object"
+      },
+      "RegistrationOut": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "legal_entity_id": {
+            "format": "uuid",
+            "title": "Legal Entity Id",
+            "type": "string"
+          },
+          "registration_no": {
+            "maxLength": 60,
+            "minLength": 1,
+            "title": "Registration No",
+            "type": "string"
+          },
+          "registration_type": {
+            "enum": [
+              "PT",
+              "LWF",
+              "SHOPS_ESTABLISHMENT",
+              "FACTORY"
+            ],
+            "title": "Registration Type",
+            "type": "string"
+          },
+          "row_version": {
+            "title": "Row Version",
+            "type": "integer"
+          },
+          "state_code": {
+            "examples": [
+              "IN-KA"
+            ],
+            "pattern": "^IN-[A-Z]{2}$",
+            "title": "State Code",
+            "type": "string"
+          },
+          "valid_from": {
+            "format": "date",
+            "title": "Valid From",
+            "type": "string"
+          },
+          "valid_to": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Last day it applies; open if empty.",
+            "title": "Valid To"
+          }
+        },
+        "required": [
+          "registration_type",
+          "state_code",
+          "registration_no",
+          "valid_from",
+          "id",
+          "legal_entity_id",
+          "row_version"
+        ],
+        "title": "RegistrationOut",
+        "type": "object"
+      },
+      "RegistrationUpdate": {
+        "properties": {
+          "registration_no": {
+            "maxLength": 60,
+            "minLength": 1,
+            "title": "Registration No",
+            "type": "string"
+          },
+          "registration_type": {
+            "enum": [
+              "PT",
+              "LWF",
+              "SHOPS_ESTABLISHMENT",
+              "FACTORY"
+            ],
+            "title": "Registration Type",
+            "type": "string"
+          },
+          "row_version": {
+            "minimum": 1.0,
+            "title": "Row Version",
+            "type": "integer"
+          },
+          "state_code": {
+            "examples": [
+              "IN-KA"
+            ],
+            "pattern": "^IN-[A-Z]{2}$",
+            "title": "State Code",
+            "type": "string"
+          },
+          "valid_from": {
+            "format": "date",
+            "title": "Valid From",
+            "type": "string"
+          },
+          "valid_to": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Last day it applies; open if empty.",
+            "title": "Valid To"
+          }
+        },
+        "required": [
+          "row_version",
+          "registration_type",
+          "state_code",
+          "registration_no",
+          "valid_from"
+        ],
+        "title": "RegistrationUpdate",
         "type": "object"
       },
       "RequestOut": {
@@ -7676,6 +9305,1628 @@
         "summary": "Mark Read",
         "tags": [
           "notifications"
+        ]
+      }
+    },
+    "/v1/org/cost-centers": {
+      "get": {
+        "operationId": "list_cost_centers_v1_org_cost_centers_get",
+        "parameters": [
+          {
+            "description": "Also list archived rows.",
+            "in": "query",
+            "name": "include_archived",
+            "required": false,
+            "schema": {
+              "default": false,
+              "description": "Also list archived rows.",
+              "title": "Include Archived",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CostCenterOut"
+                  },
+                  "title": "Response List Cost Centers V1 Org Cost Centers Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Cost Centers",
+        "tags": [
+          "org"
+        ]
+      },
+      "post": {
+        "operationId": "create_cost_center_v1_org_cost_centers_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CostCenterCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CostCenterOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Cost Center",
+        "tags": [
+          "org"
+        ]
+      }
+    },
+    "/v1/org/cost-centers/{cost_center_id}": {
+      "put": {
+        "operationId": "update_cost_center_v1_org_cost_centers__cost_center_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cost_center_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Cost Center Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CostCenterUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CostCenterOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Update Cost Center",
+        "tags": [
+          "org"
+        ]
+      }
+    },
+    "/v1/org/cost-centers/{cost_center_id}/archive": {
+      "post": {
+        "operationId": "archive_cost_center_v1_org_cost_centers__cost_center_id__archive_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cost_center_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Cost Center Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CostCenterOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Archive Cost Center",
+        "tags": [
+          "org"
+        ]
+      }
+    },
+    "/v1/org/cost-centers/{cost_center_id}/unarchive": {
+      "post": {
+        "operationId": "unarchive_cost_center_v1_org_cost_centers__cost_center_id__unarchive_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cost_center_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Cost Center Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CostCenterOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Unarchive Cost Center",
+        "tags": [
+          "org"
+        ]
+      }
+    },
+    "/v1/org/departments": {
+      "get": {
+        "description": "Every department in tree order (parents before their children); `depth` and `parent_id`\nare enough to draw the tree.",
+        "operationId": "list_departments_v1_org_departments_get",
+        "parameters": [
+          {
+            "description": "Also list archived rows.",
+            "in": "query",
+            "name": "include_archived",
+            "required": false,
+            "schema": {
+              "default": false,
+              "description": "Also list archived rows.",
+              "title": "Include Archived",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DepartmentOut"
+                  },
+                  "title": "Response List Departments V1 Org Departments Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Departments",
+        "tags": [
+          "org"
+        ]
+      },
+      "post": {
+        "operationId": "create_department_v1_org_departments_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DepartmentCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DepartmentOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Department",
+        "tags": [
+          "org"
+        ]
+      }
+    },
+    "/v1/org/departments/{department_id}": {
+      "put": {
+        "operationId": "update_department_v1_org_departments__department_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "department_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Department Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DepartmentUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DepartmentOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Update Department",
+        "tags": [
+          "org"
+        ]
+      }
+    },
+    "/v1/org/departments/{department_id}/archive": {
+      "post": {
+        "operationId": "archive_department_v1_org_departments__department_id__archive_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "department_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Department Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DepartmentOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Archive Department",
+        "tags": [
+          "org"
+        ]
+      }
+    },
+    "/v1/org/departments/{department_id}/move": {
+      "post": {
+        "description": "Re-parent a department with its whole subtree. Moving it under itself or one of its own\nsub-departments is refused (422 `department_cycle`).",
+        "operationId": "move_department_v1_org_departments__department_id__move_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "department_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Department Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DepartmentMove"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DepartmentOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Move Department",
+        "tags": [
+          "org"
+        ]
+      }
+    },
+    "/v1/org/departments/{department_id}/unarchive": {
+      "post": {
+        "operationId": "unarchive_department_v1_org_departments__department_id__unarchive_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "department_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Department Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DepartmentOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Unarchive Department",
+        "tags": [
+          "org"
+        ]
+      }
+    },
+    "/v1/org/designations": {
+      "get": {
+        "operationId": "list_designations_v1_org_designations_get",
+        "parameters": [
+          {
+            "description": "Also list archived rows.",
+            "in": "query",
+            "name": "include_archived",
+            "required": false,
+            "schema": {
+              "default": false,
+              "description": "Also list archived rows.",
+              "title": "Include Archived",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DesignationOut"
+                  },
+                  "title": "Response List Designations V1 Org Designations Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Designations",
+        "tags": [
+          "org"
+        ]
+      },
+      "post": {
+        "operationId": "create_designation_v1_org_designations_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DesignationCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DesignationOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Designation",
+        "tags": [
+          "org"
+        ]
+      }
+    },
+    "/v1/org/designations/{designation_id}": {
+      "put": {
+        "operationId": "update_designation_v1_org_designations__designation_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "designation_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Designation Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DesignationUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DesignationOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Update Designation",
+        "tags": [
+          "org"
+        ]
+      }
+    },
+    "/v1/org/designations/{designation_id}/archive": {
+      "post": {
+        "operationId": "archive_designation_v1_org_designations__designation_id__archive_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "designation_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Designation Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DesignationOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Archive Designation",
+        "tags": [
+          "org"
+        ]
+      }
+    },
+    "/v1/org/designations/{designation_id}/unarchive": {
+      "post": {
+        "operationId": "unarchive_designation_v1_org_designations__designation_id__unarchive_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "designation_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Designation Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DesignationOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Unarchive Designation",
+        "tags": [
+          "org"
+        ]
+      }
+    },
+    "/v1/org/grades": {
+      "get": {
+        "operationId": "list_grades_v1_org_grades_get",
+        "parameters": [
+          {
+            "description": "Also list archived rows.",
+            "in": "query",
+            "name": "include_archived",
+            "required": false,
+            "schema": {
+              "default": false,
+              "description": "Also list archived rows.",
+              "title": "Include Archived",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/GradeOut"
+                  },
+                  "title": "Response List Grades V1 Org Grades Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Grades",
+        "tags": [
+          "org"
+        ]
+      },
+      "post": {
+        "operationId": "create_grade_v1_org_grades_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GradeCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GradeOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Grade",
+        "tags": [
+          "org"
+        ]
+      }
+    },
+    "/v1/org/grades/{grade_id}": {
+      "put": {
+        "operationId": "update_grade_v1_org_grades__grade_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "grade_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Grade Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GradeUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GradeOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Update Grade",
+        "tags": [
+          "org"
+        ]
+      }
+    },
+    "/v1/org/grades/{grade_id}/archive": {
+      "post": {
+        "operationId": "archive_grade_v1_org_grades__grade_id__archive_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "grade_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Grade Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GradeOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Archive Grade",
+        "tags": [
+          "org"
+        ]
+      }
+    },
+    "/v1/org/grades/{grade_id}/unarchive": {
+      "post": {
+        "operationId": "unarchive_grade_v1_org_grades__grade_id__unarchive_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "grade_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Grade Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GradeOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Unarchive Grade",
+        "tags": [
+          "org"
+        ]
+      }
+    },
+    "/v1/org/legal-entities": {
+      "get": {
+        "operationId": "list_legal_entities_v1_org_legal_entities_get",
+        "parameters": [
+          {
+            "description": "Also list archived rows.",
+            "in": "query",
+            "name": "include_archived",
+            "required": false,
+            "schema": {
+              "default": false,
+              "description": "Also list archived rows.",
+              "title": "Include Archived",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/LegalEntityOut"
+                  },
+                  "title": "Response List Legal Entities V1 Org Legal Entities Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Legal Entities",
+        "tags": [
+          "org"
+        ]
+      },
+      "post": {
+        "operationId": "create_legal_entity_v1_org_legal_entities_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LegalEntityCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LegalEntityOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Legal Entity",
+        "tags": [
+          "org"
+        ]
+      }
+    },
+    "/v1/org/legal-entities/{entity_id}": {
+      "put": {
+        "operationId": "update_legal_entity_v1_org_legal_entities__entity_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entity_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Entity Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LegalEntityUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LegalEntityOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Update Legal Entity",
+        "tags": [
+          "org"
+        ]
+      }
+    },
+    "/v1/org/legal-entities/{entity_id}/archive": {
+      "post": {
+        "operationId": "archive_legal_entity_v1_org_legal_entities__entity_id__archive_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entity_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Entity Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LegalEntityOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Archive Legal Entity",
+        "tags": [
+          "org"
+        ]
+      }
+    },
+    "/v1/org/legal-entities/{entity_id}/registrations": {
+      "get": {
+        "operationId": "list_registrations_v1_org_legal_entities__entity_id__registrations_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entity_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Entity Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RegistrationOut"
+                  },
+                  "title": "Response List Registrations V1 Org Legal Entities  Entity Id  Registrations Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Registrations",
+        "tags": [
+          "org"
+        ]
+      },
+      "post": {
+        "operationId": "create_registration_v1_org_legal_entities__entity_id__registrations_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entity_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Entity Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrationCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Registration",
+        "tags": [
+          "org"
+        ]
+      }
+    },
+    "/v1/org/legal-entities/{entity_id}/registrations/{registration_id}": {
+      "delete": {
+        "operationId": "delete_registration_v1_org_legal_entities__entity_id__registrations__registration_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entity_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Entity Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "registration_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Registration Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Delete Registration",
+        "tags": [
+          "org"
+        ]
+      },
+      "put": {
+        "operationId": "update_registration_v1_org_legal_entities__entity_id__registrations__registration_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entity_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Entity Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "registration_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Registration Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrationUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Update Registration",
+        "tags": [
+          "org"
+        ]
+      }
+    },
+    "/v1/org/legal-entities/{entity_id}/unarchive": {
+      "post": {
+        "operationId": "unarchive_legal_entity_v1_org_legal_entities__entity_id__unarchive_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "entity_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Entity Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LegalEntityOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Unarchive Legal Entity",
+        "tags": [
+          "org"
+        ]
+      }
+    },
+    "/v1/org/locations": {
+      "get": {
+        "operationId": "list_locations_v1_org_locations_get",
+        "parameters": [
+          {
+            "description": "Also list archived rows.",
+            "in": "query",
+            "name": "include_archived",
+            "required": false,
+            "schema": {
+              "default": false,
+              "description": "Also list archived rows.",
+              "title": "Include Archived",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/LocationOut"
+                  },
+                  "title": "Response List Locations V1 Org Locations Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Locations",
+        "tags": [
+          "org"
+        ]
+      },
+      "post": {
+        "operationId": "create_location_v1_org_locations_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LocationCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocationOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Location",
+        "tags": [
+          "org"
+        ]
+      }
+    },
+    "/v1/org/locations/{location_id}": {
+      "put": {
+        "operationId": "update_location_v1_org_locations__location_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "location_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Location Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LocationUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocationOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Update Location",
+        "tags": [
+          "org"
+        ]
+      }
+    },
+    "/v1/org/locations/{location_id}/archive": {
+      "post": {
+        "operationId": "archive_location_v1_org_locations__location_id__archive_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "location_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Location Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocationOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Archive Location",
+        "tags": [
+          "org"
+        ]
+      }
+    },
+    "/v1/org/locations/{location_id}/unarchive": {
+      "post": {
+        "operationId": "unarchive_location_v1_org_locations__location_id__unarchive_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "location_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Location Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocationOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Unarchive Location",
+        "tags": [
+          "org"
         ]
       }
     },

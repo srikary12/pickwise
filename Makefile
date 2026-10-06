@@ -151,7 +151,7 @@ e2e: env ## Playwright against the running dev stack (run make dev first)
 		-e DEMO_PASSWORD="$$(sed -n 's/^DEMO_PASSWORD=//p' .env)" -e pnpm_config_store_dir=/repo/.cache/pnpm-store \
 		-v "$(CURDIR)":/repo -w /repo \
 		mcr.microsoft.com/playwright:v1.63.0-noble@sha256:eff16c30e6f3f4af0a03fa4b706120d5e9b0891c344a27d64559aff5900a4a27 \
-		sh -c 'npx --yes pnpm@12.6.0 --filter @pickwise/web exec playwright test'
+		sh -c 'npx --yes pnpm@12.6.0 --filter @pickwise/web exec playwright test $(E2E_ARGS)'
 
 .PHONY: lighthouse
 lighthouse: ## Lighthouse performance (>= 90) on the dashboard of a production build (run make dev first)

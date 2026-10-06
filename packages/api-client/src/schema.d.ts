@@ -1273,6 +1273,481 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/org/cost-centers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Cost Centers */
+        get: operations["list_cost_centers_v1_org_cost_centers_get"];
+        put?: never;
+        /** Create Cost Center */
+        post: operations["create_cost_center_v1_org_cost_centers_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/org/cost-centers/{cost_center_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update Cost Center */
+        put: operations["update_cost_center_v1_org_cost_centers__cost_center_id__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/org/cost-centers/{cost_center_id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Archive Cost Center */
+        post: operations["archive_cost_center_v1_org_cost_centers__cost_center_id__archive_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/org/cost-centers/{cost_center_id}/unarchive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Unarchive Cost Center */
+        post: operations["unarchive_cost_center_v1_org_cost_centers__cost_center_id__unarchive_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/org/departments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Departments
+         * @description Every department in tree order (parents before their children); `depth` and `parent_id`
+         *     are enough to draw the tree.
+         */
+        get: operations["list_departments_v1_org_departments_get"];
+        put?: never;
+        /** Create Department */
+        post: operations["create_department_v1_org_departments_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/org/departments/{department_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update Department */
+        put: operations["update_department_v1_org_departments__department_id__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/org/departments/{department_id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Archive Department */
+        post: operations["archive_department_v1_org_departments__department_id__archive_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/org/departments/{department_id}/move": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Move Department
+         * @description Re-parent a department with its whole subtree. Moving it under itself or one of its own
+         *     sub-departments is refused (422 `department_cycle`).
+         */
+        post: operations["move_department_v1_org_departments__department_id__move_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/org/departments/{department_id}/unarchive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Unarchive Department */
+        post: operations["unarchive_department_v1_org_departments__department_id__unarchive_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/org/designations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Designations */
+        get: operations["list_designations_v1_org_designations_get"];
+        put?: never;
+        /** Create Designation */
+        post: operations["create_designation_v1_org_designations_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/org/designations/{designation_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update Designation */
+        put: operations["update_designation_v1_org_designations__designation_id__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/org/designations/{designation_id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Archive Designation */
+        post: operations["archive_designation_v1_org_designations__designation_id__archive_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/org/designations/{designation_id}/unarchive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Unarchive Designation */
+        post: operations["unarchive_designation_v1_org_designations__designation_id__unarchive_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/org/grades": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Grades */
+        get: operations["list_grades_v1_org_grades_get"];
+        put?: never;
+        /** Create Grade */
+        post: operations["create_grade_v1_org_grades_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/org/grades/{grade_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update Grade */
+        put: operations["update_grade_v1_org_grades__grade_id__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/org/grades/{grade_id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Archive Grade */
+        post: operations["archive_grade_v1_org_grades__grade_id__archive_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/org/grades/{grade_id}/unarchive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Unarchive Grade */
+        post: operations["unarchive_grade_v1_org_grades__grade_id__unarchive_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/org/legal-entities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Legal Entities */
+        get: operations["list_legal_entities_v1_org_legal_entities_get"];
+        put?: never;
+        /** Create Legal Entity */
+        post: operations["create_legal_entity_v1_org_legal_entities_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/org/legal-entities/{entity_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update Legal Entity */
+        put: operations["update_legal_entity_v1_org_legal_entities__entity_id__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/org/legal-entities/{entity_id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Archive Legal Entity */
+        post: operations["archive_legal_entity_v1_org_legal_entities__entity_id__archive_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/org/legal-entities/{entity_id}/registrations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Registrations */
+        get: operations["list_registrations_v1_org_legal_entities__entity_id__registrations_get"];
+        put?: never;
+        /** Create Registration */
+        post: operations["create_registration_v1_org_legal_entities__entity_id__registrations_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/org/legal-entities/{entity_id}/registrations/{registration_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update Registration */
+        put: operations["update_registration_v1_org_legal_entities__entity_id__registrations__registration_id__put"];
+        post?: never;
+        /** Delete Registration */
+        delete: operations["delete_registration_v1_org_legal_entities__entity_id__registrations__registration_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/org/legal-entities/{entity_id}/unarchive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Unarchive Legal Entity */
+        post: operations["unarchive_legal_entity_v1_org_legal_entities__entity_id__unarchive_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/org/locations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Locations */
+        get: operations["list_locations_v1_org_locations_get"];
+        put?: never;
+        /** Create Location */
+        post: operations["create_location_v1_org_locations_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/org/locations/{location_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update Location */
+        put: operations["update_location_v1_org_locations__location_id__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/org/locations/{location_id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Archive Location */
+        post: operations["archive_location_v1_org_locations__location_id__archive_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/org/locations/{location_id}/unarchive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Unarchive Location */
+        post: operations["unarchive_location_v1_org_locations__location_id__unarchive_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/permissions": {
         parameters: {
             query?: never;
@@ -1724,6 +2199,62 @@ export interface components {
             /** Required */
             required: boolean;
         };
+        /** CostCenterCreate */
+        CostCenterCreate: {
+            /**
+             * Code
+             * @example BLR-HQ
+             */
+            code: string;
+            /**
+             * Legal Entity Id
+             * Format: uuid
+             */
+            legal_entity_id: string;
+            /** Name */
+            name: string;
+        };
+        /** CostCenterOut */
+        CostCenterOut: {
+            /** Archived At */
+            archived_at: string | null;
+            /**
+             * Code
+             * @example BLR-HQ
+             */
+            code: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Legal Entity Id
+             * Format: uuid
+             */
+            legal_entity_id: string;
+            /** Name */
+            name: string;
+            /** Row Version */
+            row_version: number;
+        };
+        /** CostCenterUpdate */
+        CostCenterUpdate: {
+            /**
+             * Code
+             * @example BLR-HQ
+             */
+            code: string;
+            /**
+             * Legal Entity Id
+             * Format: uuid
+             */
+            legal_entity_id: string;
+            /** Name */
+            name: string;
+            /** Row Version */
+            row_version: number;
+        };
         /**
          * CsrfToken
          * @example {
@@ -1864,6 +2395,80 @@ export interface components {
             /** Next Cursor */
             next_cursor: string | null;
         };
+        /** DepartmentCreate */
+        DepartmentCreate: {
+            /**
+             * Code
+             * @example BLR-HQ
+             */
+            code: string;
+            /** Cost Center Id */
+            cost_center_id?: string | null;
+            /** Name */
+            name: string;
+            /** Parent Id */
+            parent_id?: string | null;
+        };
+        /** DepartmentMove */
+        DepartmentMove: {
+            /**
+             * Parent Id
+             * @description The new parent, or null for the top level.
+             */
+            parent_id: string | null;
+            /** Row Version */
+            row_version: number;
+        };
+        /** DepartmentOut */
+        DepartmentOut: {
+            /** Archived At */
+            archived_at: string | null;
+            /**
+             * Code
+             * @example BLR-HQ
+             */
+            code: string;
+            /** Cost Center Id */
+            cost_center_id?: string | null;
+            /**
+             * Depth
+             * @description 0 for a top-level department.
+             */
+            depth: number;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Name */
+            name: string;
+            /** Parent Id */
+            parent_id: string | null;
+            /**
+             * Path
+             * @description Ancestor ids joined by '.', without hyphens (ltree).
+             */
+            path: string;
+            /** Row Version */
+            row_version: number;
+        };
+        /**
+         * DepartmentUpdate
+         * @description Moving a department is a separate call; its place in the tree isn't edited here.
+         */
+        DepartmentUpdate: {
+            /**
+             * Code
+             * @example BLR-HQ
+             */
+            code: string;
+            /** Cost Center Id */
+            cost_center_id?: string | null;
+            /** Name */
+            name: string;
+            /** Row Version */
+            row_version: number;
+        };
         /** DependencyCheck */
         DependencyCheck: {
             /**
@@ -1872,6 +2477,53 @@ export interface components {
              */
             latency_ms: number;
             status: components["schemas"]["CheckStatus"];
+        };
+        /** DesignationCreate */
+        DesignationCreate: {
+            /**
+             * Code
+             * @example BLR-HQ
+             */
+            code: string;
+            /** Job Family */
+            job_family?: string | null;
+            /** Name */
+            name: string;
+        };
+        /** DesignationOut */
+        DesignationOut: {
+            /** Archived At */
+            archived_at: string | null;
+            /**
+             * Code
+             * @example BLR-HQ
+             */
+            code: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Job Family */
+            job_family?: string | null;
+            /** Name */
+            name: string;
+            /** Row Version */
+            row_version: number;
+        };
+        /** DesignationUpdate */
+        DesignationUpdate: {
+            /**
+             * Code
+             * @example BLR-HQ
+             */
+            code: string;
+            /** Job Family */
+            job_family?: string | null;
+            /** Name */
+            name: string;
+            /** Row Version */
+            row_version: number;
         };
         /** DownloadOut */
         DownloadOut: {
@@ -2144,6 +2796,74 @@ export interface components {
             /** Email */
             email: string;
         };
+        /** GradeCreate */
+        GradeCreate: {
+            /**
+             * Code
+             * @example BLR-HQ
+             */
+            code: string;
+            /** Ctc Max */
+            ctc_max?: number | string | null;
+            /** Ctc Min */
+            ctc_min?: number | string | null;
+            /** Name */
+            name: string;
+            /**
+             * Rank
+             * @description Higher is more senior.
+             */
+            rank: number;
+        };
+        /** GradeOut */
+        GradeOut: {
+            /** Archived At */
+            archived_at: string | null;
+            /**
+             * Code
+             * @example BLR-HQ
+             */
+            code: string;
+            /** Ctc Max */
+            ctc_max?: string | null;
+            /** Ctc Min */
+            ctc_min?: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Name */
+            name: string;
+            /**
+             * Rank
+             * @description Higher is more senior.
+             */
+            rank: number;
+            /** Row Version */
+            row_version: number;
+        };
+        /** GradeUpdate */
+        GradeUpdate: {
+            /**
+             * Code
+             * @example BLR-HQ
+             */
+            code: string;
+            /** Ctc Max */
+            ctc_max?: number | string | null;
+            /** Ctc Min */
+            ctc_min?: number | string | null;
+            /** Name */
+            name: string;
+            /**
+             * Rank
+             * @description Higher is more senior.
+             */
+            rank: number;
+            /** Row Version */
+            row_version: number;
+        };
         /** GroupOut */
         GroupOut: {
             /** Hits */
@@ -2351,6 +3071,114 @@ export interface components {
             valid: boolean;
         };
         /**
+         * LegalEntityCreate
+         * @example {
+         *       "gstin": "29AABCA1234F1Z5",
+         *       "legal_name": "Acme Technologies India Private Limited",
+         *       "name": "Acme India",
+         *       "pan": "AABCA1234F",
+         *       "registered_address": {
+         *         "city": "Bengaluru",
+         *         "line1": "12 MG Road"
+         *       },
+         *       "tan": "BLRA12345B"
+         *     }
+         */
+        LegalEntityCreate: {
+            /** Cin */
+            cin?: string | null;
+            /**
+             * Country Code
+             * @default IN
+             */
+            country_code: string;
+            /** Esi Employer Code */
+            esi_employer_code?: string | null;
+            /** Gstin */
+            gstin?: string | null;
+            /** Legal Name */
+            legal_name: string;
+            /** Name */
+            name: string;
+            /** Pan */
+            pan?: string | null;
+            /** Pf Establishment Code */
+            pf_establishment_code?: string | null;
+            /** Registered Address */
+            registered_address?: {
+                [key: string]: unknown;
+            };
+            /** Tan */
+            tan?: string | null;
+        };
+        /** LegalEntityOut */
+        LegalEntityOut: {
+            /** Archived At */
+            archived_at: string | null;
+            /** Cin */
+            cin?: string | null;
+            /**
+             * Country Code
+             * @default IN
+             */
+            country_code: string;
+            /** Esi Employer Code */
+            esi_employer_code?: string | null;
+            /** Gstin */
+            gstin?: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Legal Name */
+            legal_name: string;
+            /** Name */
+            name: string;
+            /** Pan */
+            pan?: string | null;
+            /** Pf Establishment Code */
+            pf_establishment_code?: string | null;
+            /** Registered Address */
+            registered_address?: {
+                [key: string]: unknown;
+            };
+            /** Row Version */
+            row_version: number;
+            /** Tan */
+            tan?: string | null;
+        };
+        /** LegalEntityUpdate */
+        LegalEntityUpdate: {
+            /** Cin */
+            cin?: string | null;
+            /**
+             * Country Code
+             * @default IN
+             */
+            country_code: string;
+            /** Esi Employer Code */
+            esi_employer_code?: string | null;
+            /** Gstin */
+            gstin?: string | null;
+            /** Legal Name */
+            legal_name: string;
+            /** Name */
+            name: string;
+            /** Pan */
+            pan?: string | null;
+            /** Pf Establishment Code */
+            pf_establishment_code?: string | null;
+            /** Registered Address */
+            registered_address?: {
+                [key: string]: unknown;
+            };
+            /** Row Version */
+            row_version: number;
+            /** Tan */
+            tan?: string | null;
+        };
+        /**
          * Liveness
          * @example {
          *       "status": "ok"
@@ -2363,6 +3191,134 @@ export interface components {
              * @constant
              */
             status: "ok";
+        };
+        /** LocationCreate */
+        LocationCreate: {
+            /** Address */
+            address?: {
+                [key: string]: unknown;
+            };
+            /** City */
+            city?: string | null;
+            /**
+             * Code
+             * @example BLR-HQ
+             */
+            code: string;
+            /** Geofence Radius M */
+            geofence_radius_m?: number | null;
+            /** Latitude */
+            latitude?: number | string | null;
+            /**
+             * Legal Entity Id
+             * Format: uuid
+             */
+            legal_entity_id: string;
+            /** Longitude */
+            longitude?: number | string | null;
+            /** Name */
+            name: string;
+            /** Pincode */
+            pincode?: string | null;
+            /**
+             * State Code
+             * @example IN-KA
+             */
+            state_code: string;
+            /**
+             * Timezone
+             * @example Asia/Kolkata
+             */
+            timezone?: string | null;
+        };
+        /** LocationOut */
+        LocationOut: {
+            /** Address */
+            address?: {
+                [key: string]: unknown;
+            };
+            /** Archived At */
+            archived_at: string | null;
+            /** City */
+            city?: string | null;
+            /**
+             * Code
+             * @example BLR-HQ
+             */
+            code: string;
+            /** Geofence Radius M */
+            geofence_radius_m?: number | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Latitude */
+            latitude?: string | null;
+            /**
+             * Legal Entity Id
+             * Format: uuid
+             */
+            legal_entity_id: string;
+            /** Longitude */
+            longitude?: string | null;
+            /** Name */
+            name: string;
+            /** Pincode */
+            pincode?: string | null;
+            /** Row Version */
+            row_version: number;
+            /**
+             * State Code
+             * @example IN-KA
+             */
+            state_code: string;
+            /**
+             * Timezone
+             * @example Asia/Kolkata
+             */
+            timezone?: string | null;
+        };
+        /** LocationUpdate */
+        LocationUpdate: {
+            /** Address */
+            address?: {
+                [key: string]: unknown;
+            };
+            /** City */
+            city?: string | null;
+            /**
+             * Code
+             * @example BLR-HQ
+             */
+            code: string;
+            /** Geofence Radius M */
+            geofence_radius_m?: number | null;
+            /** Latitude */
+            latitude?: number | string | null;
+            /**
+             * Legal Entity Id
+             * Format: uuid
+             */
+            legal_entity_id: string;
+            /** Longitude */
+            longitude?: number | string | null;
+            /** Name */
+            name: string;
+            /** Pincode */
+            pincode?: string | null;
+            /** Row Version */
+            row_version: number;
+            /**
+             * State Code
+             * @example IN-KA
+             */
+            state_code: string;
+            /**
+             * Timezone
+             * @example Asia/Kolkata
+             */
+            timezone?: string | null;
         };
         /**
          * LoginRequest
@@ -2743,6 +3699,95 @@ export interface components {
              * @description Shown once. Each works one time.
              */
             recovery_codes: string[];
+        };
+        /** RegistrationCreate */
+        RegistrationCreate: {
+            /** Registration No */
+            registration_no: string;
+            /**
+             * Registration Type
+             * @enum {string}
+             */
+            registration_type: "PT" | "LWF" | "SHOPS_ESTABLISHMENT" | "FACTORY";
+            /**
+             * State Code
+             * @example IN-KA
+             */
+            state_code: string;
+            /**
+             * Valid From
+             * Format: date
+             */
+            valid_from: string;
+            /**
+             * Valid To
+             * @description Last day it applies; open if empty.
+             */
+            valid_to?: string | null;
+        };
+        /** RegistrationOut */
+        RegistrationOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Legal Entity Id
+             * Format: uuid
+             */
+            legal_entity_id: string;
+            /** Registration No */
+            registration_no: string;
+            /**
+             * Registration Type
+             * @enum {string}
+             */
+            registration_type: "PT" | "LWF" | "SHOPS_ESTABLISHMENT" | "FACTORY";
+            /** Row Version */
+            row_version: number;
+            /**
+             * State Code
+             * @example IN-KA
+             */
+            state_code: string;
+            /**
+             * Valid From
+             * Format: date
+             */
+            valid_from: string;
+            /**
+             * Valid To
+             * @description Last day it applies; open if empty.
+             */
+            valid_to?: string | null;
+        };
+        /** RegistrationUpdate */
+        RegistrationUpdate: {
+            /** Registration No */
+            registration_no: string;
+            /**
+             * Registration Type
+             * @enum {string}
+             */
+            registration_type: "PT" | "LWF" | "SHOPS_ESTABLISHMENT" | "FACTORY";
+            /** Row Version */
+            row_version: number;
+            /**
+             * State Code
+             * @example IN-KA
+             */
+            state_code: string;
+            /**
+             * Valid From
+             * Format: date
+             */
+            valid_from: string;
+            /**
+             * Valid To
+             * @description Last day it applies; open if empty.
+             */
+            valid_to?: string | null;
         };
         /** RequestOut */
         RequestOut: {
@@ -5774,6 +6819,1145 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_cost_centers_v1_org_cost_centers_get: {
+        parameters: {
+            query?: {
+                /** @description Also list archived rows. */
+                include_archived?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CostCenterOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_cost_center_v1_org_cost_centers_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CostCenterCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CostCenterOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_cost_center_v1_org_cost_centers__cost_center_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                cost_center_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CostCenterUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CostCenterOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    archive_cost_center_v1_org_cost_centers__cost_center_id__archive_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                cost_center_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CostCenterOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    unarchive_cost_center_v1_org_cost_centers__cost_center_id__unarchive_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                cost_center_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CostCenterOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_departments_v1_org_departments_get: {
+        parameters: {
+            query?: {
+                /** @description Also list archived rows. */
+                include_archived?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DepartmentOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_department_v1_org_departments_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DepartmentCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DepartmentOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_department_v1_org_departments__department_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                department_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DepartmentUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DepartmentOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    archive_department_v1_org_departments__department_id__archive_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                department_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DepartmentOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    move_department_v1_org_departments__department_id__move_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                department_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DepartmentMove"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DepartmentOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    unarchive_department_v1_org_departments__department_id__unarchive_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                department_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DepartmentOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_designations_v1_org_designations_get: {
+        parameters: {
+            query?: {
+                /** @description Also list archived rows. */
+                include_archived?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DesignationOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_designation_v1_org_designations_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DesignationCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DesignationOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_designation_v1_org_designations__designation_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                designation_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DesignationUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DesignationOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    archive_designation_v1_org_designations__designation_id__archive_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                designation_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DesignationOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    unarchive_designation_v1_org_designations__designation_id__unarchive_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                designation_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DesignationOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_grades_v1_org_grades_get: {
+        parameters: {
+            query?: {
+                /** @description Also list archived rows. */
+                include_archived?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GradeOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_grade_v1_org_grades_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GradeCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GradeOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_grade_v1_org_grades__grade_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                grade_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GradeUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GradeOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    archive_grade_v1_org_grades__grade_id__archive_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                grade_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GradeOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    unarchive_grade_v1_org_grades__grade_id__unarchive_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                grade_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GradeOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_legal_entities_v1_org_legal_entities_get: {
+        parameters: {
+            query?: {
+                /** @description Also list archived rows. */
+                include_archived?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LegalEntityOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_legal_entity_v1_org_legal_entities_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LegalEntityCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LegalEntityOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_legal_entity_v1_org_legal_entities__entity_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entity_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LegalEntityUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LegalEntityOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    archive_legal_entity_v1_org_legal_entities__entity_id__archive_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entity_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LegalEntityOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_registrations_v1_org_legal_entities__entity_id__registrations_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entity_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RegistrationOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_registration_v1_org_legal_entities__entity_id__registrations_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entity_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RegistrationCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RegistrationOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_registration_v1_org_legal_entities__entity_id__registrations__registration_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entity_id: string;
+                registration_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RegistrationUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RegistrationOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_registration_v1_org_legal_entities__entity_id__registrations__registration_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entity_id: string;
+                registration_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    unarchive_legal_entity_v1_org_legal_entities__entity_id__unarchive_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entity_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LegalEntityOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_locations_v1_org_locations_get: {
+        parameters: {
+            query?: {
+                /** @description Also list archived rows. */
+                include_archived?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LocationOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_location_v1_org_locations_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LocationCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LocationOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_location_v1_org_locations__location_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                location_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LocationUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LocationOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    archive_location_v1_org_locations__location_id__archive_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                location_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LocationOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    unarchive_location_v1_org_locations__location_id__unarchive_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                location_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LocationOut"];
+                };
             };
             /** @description Validation Error */
             422: {
