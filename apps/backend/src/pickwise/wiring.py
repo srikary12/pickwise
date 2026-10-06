@@ -17,6 +17,7 @@ _REGISTRATIONS = (
     "pickwise.platform.provisioning.platform_defaults",
     "pickwise.platform.search.users",
     "pickwise.platform.branding.access",
+    "pickwise.core.permissions",
 )
 
 

@@ -40,6 +40,7 @@ def test_tenant_admin_holds_every_platform_permission() -> None:
     # search (which only returns what each record type's own permission allows); nothing else
     # is a default.
     assert set(default_grants("employee")) == {
+        "core.org.read",
         "platform.approvals.act",
         "platform.custom_fields.read",
         "platform.files.read",
