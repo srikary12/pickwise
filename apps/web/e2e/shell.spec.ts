@@ -158,7 +158,7 @@ test("an admin sets and removes the tenant logo, and a stale save prompts a relo
   const page = await adminPage(browser, ACME);
   await reachObjectStore(page);
   await page.goto("/admin/branding");
-  await expect(page.getByTestId("logo-file")).toBeEnabled();
+  await expect(page.getByLabel("Choose a logo")).toBeEnabled();
 
   await page
     .getByTestId("logo-file")
