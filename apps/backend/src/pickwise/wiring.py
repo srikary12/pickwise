@@ -15,6 +15,8 @@ _REGISTRATIONS = (
     "pickwise.platform.erasure.platform_handler",
     "pickwise.platform.imports.sandbox",
     "pickwise.platform.provisioning.platform_defaults",
+    "pickwise.platform.search.users",
+    "pickwise.platform.branding.access",
 )
 
 

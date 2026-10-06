@@ -401,6 +401,39 @@
         "title": "AuthStage",
         "type": "string"
       },
+      "BrandingOut": {
+        "examples": [
+          {
+            "logo_version": "01928f6e-\u2026",
+            "name": "Acme Industries"
+          }
+        ],
+        "properties": {
+          "logo_version": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Changes whenever the logo does; fetch the image from /v1/branding/logo?v=\u2026",
+            "title": "Logo Version"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "logo_version"
+        ],
+        "title": "BrandingOut",
+        "type": "object"
+      },
       "ChangePasswordRequest": {
         "properties": {
           "current_password": {
@@ -494,6 +527,23 @@
           "csrf_token"
         ],
         "title": "CsrfToken",
+        "type": "object"
+      },
+      "DashboardOut": {
+        "description": "Everything the home page shows, in one request.",
+        "properties": {
+          "notifications": {
+            "$ref": "#/components/schemas/RecentNotifications"
+          },
+          "pending_approvals": {
+            "$ref": "#/components/schemas/PendingApprovals"
+          }
+        },
+        "required": [
+          "pending_approvals",
+          "notifications"
+        ],
+        "title": "DashboardOut",
         "type": "object"
       },
       "Decision": {
@@ -1347,6 +1397,32 @@
         "title": "ForgotPasswordRequest",
         "type": "object"
       },
+      "GroupOut": {
+        "properties": {
+          "hits": {
+            "items": {
+              "$ref": "#/components/schemas/HitOut"
+            },
+            "title": "Hits",
+            "type": "array"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "label",
+          "hits"
+        ],
+        "title": "GroupOut",
+        "type": "object"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -1358,6 +1434,48 @@
           }
         },
         "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "HitOut": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "link": {
+            "description": "An app-relative path",
+            "title": "Link",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subtitle"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "id",
+          "title",
+          "subtitle",
+          "link"
+        ],
+        "title": "HitOut",
         "type": "object"
       },
       "ImportCreate": {
@@ -1801,6 +1919,32 @@
         "title": "LoginRequest",
         "type": "object"
       },
+      "LogoUpdate": {
+        "examples": [
+          {
+            "file_id": "01928f6e-\u2026",
+            "row_version": 3
+          }
+        ],
+        "properties": {
+          "file_id": {
+            "description": "A clean upload with owner_entity_type 'tenant_logo'",
+            "format": "uuid",
+            "title": "File Id",
+            "type": "string"
+          },
+          "row_version": {
+            "title": "Row Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "file_id",
+          "row_version"
+        ],
+        "title": "LogoUpdate",
+        "type": "object"
+      },
       "MemberOut": {
         "examples": [
           {
@@ -2085,6 +2229,27 @@
           "items"
         ],
         "title": "NotificationPage",
+        "type": "object"
+      },
+      "PendingApprovals": {
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/InboxItem"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "count",
+          "items"
+        ],
+        "title": "PendingApprovals",
         "type": "object"
       },
       "PermissionOut": {
@@ -2463,6 +2628,27 @@
           "checks"
         ],
         "title": "Readiness",
+        "type": "object"
+      },
+      "RecentNotifications": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/NotificationOut"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "unread": {
+            "title": "Unread",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "unread",
+          "items"
+        ],
+        "title": "RecentNotifications",
         "type": "object"
       },
       "RecoveryCodes": {
@@ -2961,6 +3147,41 @@
         "title": "ScopeType",
         "type": "string"
       },
+      "SearchOut": {
+        "examples": [
+          {
+            "groups": [
+              {
+                "hits": [
+                  {
+                    "id": "01928f6e-\u2026",
+                    "kind": "user",
+                    "link": "/admin/users",
+                    "subtitle": "asha@acme.test",
+                    "title": "Asha Rao"
+                  }
+                ],
+                "kind": "user",
+                "label": "People with a sign-in"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "groups": {
+            "items": {
+              "$ref": "#/components/schemas/GroupOut"
+            },
+            "title": "Groups",
+            "type": "array"
+          }
+        },
+        "required": [
+          "groups"
+        ],
+        "title": "SearchOut",
+        "type": "object"
+      },
       "SecretOut": {
         "properties": {
           "secret": {
@@ -3015,6 +3236,19 @@
                 "type": "null"
               }
             ]
+          },
+          "logo_version": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The active tenant's logo (fetch /v1/branding/logo?v=\u2026); null when it has none",
+            "title": "Logo Version"
           },
           "permissions": {
             "additionalProperties": {
@@ -4399,6 +4633,90 @@
         "summary": "Update Tenant Settings",
         "tags": [
           "admin"
+        ]
+      }
+    },
+    "/v1/admin/tenant/logo": {
+      "delete": {
+        "operationId": "remove_logo_v1_admin_tenant_logo_delete",
+        "parameters": [
+          {
+            "description": "Tenant row_version",
+            "in": "query",
+            "name": "row_version",
+            "required": true,
+            "schema": {
+              "description": "Tenant row_version",
+              "title": "Row Version",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrandingOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Remove Logo",
+        "tags": [
+          "branding"
+        ]
+      },
+      "put": {
+        "description": "Use an uploaded, clean PNG or JPEG (uploaded with owner_entity_type 'tenant_logo').",
+        "operationId": "set_logo_v1_admin_tenant_logo_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LogoUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrandingOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Set Logo",
+        "tags": [
+          "branding"
         ]
       }
     },
@@ -6244,6 +6562,72 @@
         ]
       }
     },
+    "/v1/branding": {
+      "get": {
+        "operationId": "get_branding_v1_branding_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrandingOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Branding",
+        "tags": [
+          "branding"
+        ]
+      }
+    },
+    "/v1/branding/logo": {
+      "get": {
+        "description": "Redirects to a short-lived presigned URL for the logo image.",
+        "operationId": "get_logo_v1_branding_logo_get",
+        "parameters": [
+          {
+            "description": "Cache-buster: logo_version",
+            "in": "query",
+            "name": "v",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Cache-buster: logo_version",
+              "title": "V"
+            }
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Logo",
+        "tags": [
+          "branding"
+        ]
+      }
+    },
     "/v1/custom-fields": {
       "get": {
         "description": "Definitions for building forms. Sensitive fields are listed only for callers who may\nsee them, and archived ones only on request.",
@@ -6491,6 +6875,28 @@
         "summary": "Unarchive Field",
         "tags": [
           "custom-fields"
+        ]
+      }
+    },
+    "/v1/dashboard": {
+      "get": {
+        "description": "Both lists are strictly the caller's own.",
+        "operationId": "dashboard_v1_dashboard_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Dashboard",
+        "tags": [
+          "dashboard"
         ]
       }
     },
@@ -7237,6 +7643,88 @@
         "summary": "List Permissions",
         "tags": [
           "admin"
+        ]
+      }
+    },
+    "/v1/search": {
+      "get": {
+        "description": "Hits are permission- and scope-filtered by each provider; nothing is cached.",
+        "operationId": "search_v1_search_get",
+        "parameters": [
+          {
+            "description": "At least 2 characters",
+            "in": "query",
+            "name": "q",
+            "required": true,
+            "schema": {
+              "description": "At least 2 characters",
+              "maxLength": 100,
+              "minLength": 2,
+              "title": "Q",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Limit to these kinds",
+            "in": "query",
+            "name": "kinds",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Limit to these kinds",
+              "title": "Kinds"
+            }
+          },
+          {
+            "description": "Hits per kind",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 5,
+              "description": "Hits per kind",
+              "maximum": 10,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Search",
+        "tags": [
+          "search"
         ]
       }
     },

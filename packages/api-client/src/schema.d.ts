@@ -196,6 +196,27 @@ export interface paths {
         patch: operations["update_tenant_settings_v1_admin_tenant_patch"];
         trace?: never;
     };
+    "/v1/admin/tenant/logo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set Logo
+         * @description Use an uploaded, clean PNG or JPEG (uploaded with owner_entity_type 'tenant_logo').
+         */
+        put: operations["set_logo_v1_admin_tenant_logo_put"];
+        post?: never;
+        /** Remove Logo */
+        delete: operations["remove_logo_v1_admin_tenant_logo_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/admin/users": {
         parameters: {
             query?: never;
@@ -823,6 +844,43 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/branding": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Branding */
+        get: operations["get_branding_v1_branding_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/branding/logo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Logo
+         * @description Redirects to a short-lived presigned URL for the logo image.
+         */
+        get: operations["get_logo_v1_branding_logo_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/custom-fields": {
         parameters: {
             query?: never;
@@ -893,6 +951,26 @@ export interface paths {
         put?: never;
         /** Unarchive Field */
         post: operations["unarchive_field_v1_custom_fields__field_id__unarchive_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/dashboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Dashboard
+         * @description Both lists are strictly the caller's own.
+         */
+        get: operations["dashboard_v1_dashboard_get"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1204,6 +1282,26 @@ export interface paths {
         };
         /** List Permissions */
         get: operations["list_permissions_v1_permissions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Search
+         * @description Hits are permission- and scope-filtered by each provider; nothing is cached.
+         */
+        get: operations["search_v1_search_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1559,6 +1657,22 @@ export interface components {
          * @enum {string}
          */
         AuthStage: "mfa_pending" | "tenant_selection" | "mfa_enrolment_required" | "ready";
+        /**
+         * BrandingOut
+         * @example {
+         *       "logo_version": "01928f6e-…",
+         *       "name": "Acme Industries"
+         *     }
+         */
+        BrandingOut: {
+            /**
+             * Logo Version
+             * @description Changes whenever the logo does; fetch the image from /v1/branding/logo?v=…
+             */
+            logo_version: string | null;
+            /** Name */
+            name: string;
+        };
         /** ChangePasswordRequest */
         ChangePasswordRequest: {
             /** Current Password */
@@ -1601,6 +1715,14 @@ export interface components {
              * @description Send back in the X-CSRF-Token header on unsafe requests
              */
             csrf_token: string;
+        };
+        /**
+         * DashboardOut
+         * @description Everything the home page shows, in one request.
+         */
+        DashboardOut: {
+            notifications: components["schemas"]["RecentNotifications"];
+            pending_approvals: components["schemas"]["PendingApprovals"];
         };
         /**
          * Decision
@@ -2001,10 +2123,38 @@ export interface components {
             /** Email */
             email: string;
         };
+        /** GroupOut */
+        GroupOut: {
+            /** Hits */
+            hits: components["schemas"]["HitOut"][];
+            /** Kind */
+            kind: string;
+            /** Label */
+            label: string;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /** HitOut */
+        HitOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Kind */
+            kind: string;
+            /**
+             * Link
+             * @description An app-relative path
+             */
+            link: string;
+            /** Subtitle */
+            subtitle: string | null;
+            /** Title */
+            title: string;
         };
         /**
          * ImportCreate
@@ -2207,6 +2357,23 @@ export interface components {
             password: string;
         };
         /**
+         * LogoUpdate
+         * @example {
+         *       "file_id": "01928f6e-…",
+         *       "row_version": 3
+         *     }
+         */
+        LogoUpdate: {
+            /**
+             * File Id
+             * Format: uuid
+             * @description A clean upload with owner_entity_type 'tenant_logo'
+             */
+            file_id: string;
+            /** Row Version */
+            row_version: number;
+        };
+        /**
          * MemberOut
          * @example {
          *       "display_name": "Acme Admin",
@@ -2329,6 +2496,13 @@ export interface components {
              * @description Pass as `before` to fetch the next (older) page
              */
             next_cursor?: string | null;
+        };
+        /** PendingApprovals */
+        PendingApprovals: {
+            /** Count */
+            count: number;
+            /** Items */
+            items: components["schemas"]["InboxItem"][];
         };
         /** PermissionOut */
         PermissionOut: {
@@ -2527,6 +2701,13 @@ export interface components {
             scanner: string;
             status: components["schemas"]["CheckStatus"];
         };
+        /** RecentNotifications */
+        RecentNotifications: {
+            /** Items */
+            items: components["schemas"]["NotificationOut"][];
+            /** Unread */
+            unread: number;
+        };
         /**
          * RecoveryCodes
          * @example {
@@ -2721,6 +2902,30 @@ export interface components {
          * @enum {string}
          */
         ScopeType: "tenant" | "legal_entity" | "location" | "department" | "department_subtree" | "direct_reports" | "all_reports" | "self";
+        /**
+         * SearchOut
+         * @example {
+         *       "groups": [
+         *         {
+         *           "hits": [
+         *             {
+         *               "id": "01928f6e-…",
+         *               "kind": "user",
+         *               "link": "/admin/users",
+         *               "subtitle": "asha@acme.test",
+         *               "title": "Asha Rao"
+         *             }
+         *           ],
+         *           "kind": "user",
+         *           "label": "People with a sign-in"
+         *         }
+         *       ]
+         *     }
+         */
+        SearchOut: {
+            /** Groups */
+            groups: components["schemas"]["GroupOut"][];
+        };
         /** SecretOut */
         SecretOut: {
             /**
@@ -2761,6 +2966,11 @@ export interface components {
          */
         SessionState: {
             active_tenant: components["schemas"]["TenantSummary"] | null;
+            /**
+             * Logo Version
+             * @description The active tenant's logo (fetch /v1/branding/logo?v=…); null when it has none
+             */
+            logo_version?: string | null;
             /**
              * Permissions
              * @description Effective permissions and the scope types they apply in
@@ -3552,6 +3762,71 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TenantSettingsOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_logo_v1_admin_tenant_logo_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LogoUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BrandingOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    remove_logo_v1_admin_tenant_logo_delete: {
+        parameters: {
+            query: {
+                /** @description Tenant row_version */
+                row_version: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BrandingOut"];
                 };
             };
             /** @description Validation Error */
@@ -4715,6 +4990,56 @@ export interface operations {
             };
         };
     };
+    get_branding_v1_branding_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BrandingOut"];
+                };
+            };
+        };
+    };
+    get_logo_v1_branding_logo_get: {
+        parameters: {
+            query?: {
+                /** @description Cache-buster: logo_version */
+                v?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            302: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_fields_v1_custom_fields_get: {
         parameters: {
             query?: {
@@ -4873,6 +5198,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    dashboard_v1_dashboard_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DashboardOut"];
                 };
             };
         };
@@ -5409,6 +5754,42 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PermissionOut"][];
+                };
+            };
+        };
+    };
+    search_v1_search_get: {
+        parameters: {
+            query: {
+                /** @description At least 2 characters */
+                q: string;
+                /** @description Limit to these kinds */
+                kinds?: string[] | null;
+                /** @description Hits per kind */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SearchOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

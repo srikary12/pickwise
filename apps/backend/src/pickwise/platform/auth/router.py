@@ -46,6 +46,7 @@ from pickwise.platform.auth.schemas import (
 )
 from pickwise.platform.auth.service import AuthStage, Client, SignedIn
 from pickwise.platform.auth.sessions import csrf_cookie_name, revoke, session_cookie_name
+from pickwise.platform.branding.service import logo_file_id
 from pickwise.platform.notifications.email import dispatch
 from pickwise.platform.rbac.grants import load_grants
 from pickwise.shared.errors import UnprocessableError
@@ -105,6 +106,7 @@ async def _state(db: DB, auth: AuthContext) -> SessionState:
     ]
     active = None
     permissions: dict[str, list[str]] = {}
+    logo_version = None
     if auth.membership is not None:
         active = TenantSummary(
             tenant_id=auth.membership.tenant_id,
@@ -116,6 +118,7 @@ async def _state(db: DB, auth: AuthContext) -> SessionState:
             permissions = {
                 code: sorted({s.type.value for s in scopes}) for code, scopes in grants.items()
             }
+            logo_version = await logo_file_id(db, auth.membership.tenant_id)
     return SessionState(
         stage=auth.stage,
         user=UserSummary(
@@ -127,6 +130,7 @@ async def _state(db: DB, auth: AuthContext) -> SessionState:
         active_tenant=active,
         tenants=tenants,
         permissions=permissions,
+        logo_version=logo_version,
     )
 
 

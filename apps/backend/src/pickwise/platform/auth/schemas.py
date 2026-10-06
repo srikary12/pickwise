@@ -74,6 +74,10 @@ class SessionState(BaseModel):
     permissions: dict[str, list[str]] = Field(
         default_factory=dict, description="Effective permissions and the scope types they apply in"
     )
+    logo_version: uuid.UUID | None = Field(
+        default=None,
+        description="The active tenant's logo (fetch /v1/branding/logo?v=…); null when it has none",
+    )
 
 
 class UserSummary(BaseModel):

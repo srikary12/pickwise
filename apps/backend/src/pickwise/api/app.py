@@ -20,8 +20,10 @@ from pickwise.platform.approvals.router import router as approvals_router
 from pickwise.platform.audit_api.router import router as audit_router
 from pickwise.platform.auth.dependencies import csrf_protect
 from pickwise.platform.auth.router import router as auth_router
+from pickwise.platform.branding.router import router as branding_router
 from pickwise.platform.crypto import kek_from_settings
 from pickwise.platform.custom_fields.router import router as custom_fields_router
+from pickwise.platform.dashboard.router import router as dashboard_router
 from pickwise.platform.files.router import router as files_router
 from pickwise.platform.imports.router import router as imports_router
 from pickwise.platform.jobs import set_job_queue
@@ -30,6 +32,7 @@ from pickwise.platform.notifications.router import router as notifications_route
 from pickwise.platform.provisioning.router import router as signup_router
 from pickwise.platform.scanning import StubScanner
 from pickwise.platform.scanning.stub import STUB_WARNING
+from pickwise.platform.search.router import router as search_router
 from pickwise.platform.startup_checks import check_settings, run_startup_checks
 from pickwise.platform.webhooks.router import router as webhooks_router
 from pickwise.shared.db import Database
@@ -123,4 +126,7 @@ def create_app(settings: Settings | None = None, *, enqueue_jobs: bool = True) -
     app.include_router(audit_router)
     app.include_router(imports_router)
     app.include_router(webhooks_router)
+    app.include_router(search_router)
+    app.include_router(branding_router)
+    app.include_router(dashboard_router)
     return app

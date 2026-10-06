@@ -12,15 +12,24 @@ function mimeFor(file: File): string {
   return file.type || "application/octet-stream";
 }
 
+export interface UploadOptions {
+  classification?: "public" | "internal" | "confidential" | "restricted";
+  /** Attach the file to a record so the owning module can decide who may read it. */
+  owner?: { type: string; id: string };
+}
+
 /** Uploads `file` and resolves with the file id once it has passed the virus scan. */
-export async function uploadAndScan(file: File): Promise<string> {
+export async function uploadAndScan(file: File, options: UploadOptions = {}): Promise<string> {
   const slot = await call(
     api().POST("/v1/files", {
       body: {
         filename: file.name,
         mime_type: mimeFor(file),
         size_bytes: file.size,
-        classification: "confidential",
+        classification: options.classification ?? "confidential",
+        ...(options.owner
+          ? { owner_entity_type: options.owner.type, owner_entity_id: options.owner.id }
+          : {}),
       },
     }),
   );
