@@ -48,7 +48,10 @@ export interface Resource<Row extends OrgRow, V extends FieldValues> {
   list: (includeArchived: boolean) => Promise<Row[]>;
   create: (values: V, idempotencyKey: string) => Promise<unknown>;
   update: (row: Row, values: V) => Promise<unknown>;
-  setArchived: (row: Row, archived: boolean) => Promise<unknown>;
+  /** Rows that can be archived and restored. */
+  setArchived?: (row: Row, archived: boolean) => Promise<unknown>;
+  /** Rows that can be deleted outright (a child record, not a referenced one). */
+  remove?: (row: Row) => Promise<unknown>;
   /** Extra per-row buttons (e.g. "Registrations"). */
   rowActions?: (row: Row, canManage: boolean) => ReactNode;
   /** Which other lists this one's form selects from, so they refresh together. */
@@ -125,9 +128,16 @@ export function ResourcePanel<Row extends OrgRow, V extends FieldValues>({
     queryKey: ["org", resource.id, { archived }],
     queryFn: () => resource.list(archived),
   });
+  const deletion = useMutation({
+    mutationFn: (row: Row) => resource.remove?.(row) ?? Promise.resolve(),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["org"] }),
+    onError: (error) => setNotice(errorMessage(error)),
+  });
   const toggle = useMutation({
     mutationFn: ({ row, archive }: { row: Row; archive: boolean }) =>
-      resource.setArchived(row, archive),
+      archive === undefined
+        ? Promise.resolve()
+        : (resource.setArchived?.(row, archive) ?? Promise.resolve()),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["org"] }),
     onError: (error) => {
       if (isStaleVersion(error)) showConflict();
@@ -157,18 +167,34 @@ export function ResourcePanel<Row extends OrgRow, V extends FieldValues>({
                     >
                       Edit
                     </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      aria-label={`${row.archived_at ? "Restore" : "Archive"} ${resource.rowLabel(row)}`}
-                      disabled={toggle.isPending}
-                      onClick={() => {
-                        setNotice(null);
-                        toggle.mutate({ row, archive: !row.archived_at });
-                      }}
-                    >
-                      {row.archived_at ? "Restore" : "Archive"}
-                    </Button>
+                    {resource.remove ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        aria-label={`Delete ${resource.rowLabel(row)}`}
+                        disabled={deletion.isPending}
+                        onClick={() => {
+                          setNotice(null);
+                          deletion.mutate(row);
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    ) : null}
+                    {resource.setArchived ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        aria-label={`${row.archived_at ? "Restore" : "Archive"} ${resource.rowLabel(row)}`}
+                        disabled={toggle.isPending}
+                        onClick={() => {
+                          setNotice(null);
+                          toggle.mutate({ row, archive: !row.archived_at });
+                        }}
+                      >
+                        {row.archived_at ? "Restore" : "Archive"}
+                      </Button>
+                    ) : null}
                   </>
                 ) : null}
               </div>
@@ -181,16 +207,20 @@ export function ResourcePanel<Row extends OrgRow, V extends FieldValues>({
   return (
     <div className="flex flex-col gap-3" data-testid={`org-${resource.id}`}>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <Checkbox
-            id={switchId}
-            checked={archived}
-            onChange={(event) => setArchived(event.target.checked)}
-          />
-          <Label htmlFor={switchId} className="font-normal">
-            Show archived
-          </Label>
-        </div>
+        {resource.setArchived ? (
+          <div className="flex items-center gap-2">
+            <Checkbox
+              id={switchId}
+              checked={archived}
+              onChange={(event) => setArchived(event.target.checked)}
+            />
+            <Label htmlFor={switchId} className="font-normal">
+              Show archived
+            </Label>
+          </div>
+        ) : (
+          <span />
+        )}
         {canManage ? (
           <Button onClick={() => setEditing("new")}>Add {resource.singular}</Button>
         ) : null}

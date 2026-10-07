@@ -31,6 +31,20 @@ export type CostCenterOut = components["schemas"]["CostCenterOut"];
 export type DesignationOut = components["schemas"]["DesignationOut"];
 export type GradeOut = components["schemas"]["GradeOut"];
 export type DepartmentOut = components["schemas"]["DepartmentOut"];
+export type EmployeeOut = components["schemas"]["EmployeeOut"];
+export type EmployeePage = components["schemas"]["EmployeePage"];
+export type JobRecordOut = components["schemas"]["JobRecordOut"];
+export type PersonalOut = components["schemas"]["PersonalOut"];
+export type AddressOut = components["schemas"]["AddressOut"];
+export type IdentityOut = components["schemas"]["IdentityOut"];
+export type BankOut = components["schemas"]["BankOut"];
+export type DirectoryEntry = components["schemas"]["DirectoryEntry"];
+export type DirectoryPage = components["schemas"]["DirectoryPage"];
+export type OrgChart = components["schemas"]["OrgChart"];
+export type OrgChartNode = components["schemas"]["OrgChartNode"];
+export type NominationOut = components["schemas"]["NominationOut"];
+export type DependentOut = components["schemas"]["DependentOut"];
+export type DocumentOut = components["schemas"]["DocumentOut"];
 
 export function createApiClient(
   baseUrl: string,
