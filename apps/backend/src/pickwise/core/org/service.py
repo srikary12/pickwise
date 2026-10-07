@@ -11,8 +11,8 @@ from sqlalchemy.dialects.postgresql import DATERANGE, Range
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from pickwise.core.org import crud
-from pickwise.core.org.crud import Spec
+from pickwise.core import crud
+from pickwise.core.crud import Spec
 from pickwise.shared.errors import ConflictError, NotFoundError, UnprocessableError
 
 

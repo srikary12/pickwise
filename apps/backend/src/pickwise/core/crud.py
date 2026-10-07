@@ -62,11 +62,14 @@ async def list_rows(
     where: str = "true",
     **params: Any,
 ) -> list[dict[str, Any]]:
+    # Tables that can't be archived have no such column to filter on.
+    archivable = "archived_at" in spec.columns
+    archived_filter = "(:archived OR archived_at IS NULL)" if archivable else "true"
     rows = (
         await db.execute(
             text(
                 f"SELECT {_select(spec)} FROM {spec.table} "  # noqa: S608
-                f"WHERE ({where}) AND (:archived OR archived_at IS NULL) ORDER BY {spec.order_by}"
+                f"WHERE ({where}) AND {archived_filter} ORDER BY {spec.order_by}"
             ),
             {"archived": include_archived, **params},
         )

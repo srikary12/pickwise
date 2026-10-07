@@ -15,7 +15,11 @@ from pickwise.api.middleware import (
     RequestContextMiddleware,
     SecurityHeadersMiddleware,
 )
+from pickwise.core.employees.router import router as employees_router
+from pickwise.core.identity.router import router as identity_router
+from pickwise.core.me import router as me_router
 from pickwise.core.org.router import router as org_router
+from pickwise.core.profile.router import router as profile_router
 from pickwise.platform.admin.router import router as admin_router
 from pickwise.platform.approvals.router import router as approvals_router
 from pickwise.platform.audit_api.router import router as audit_router
@@ -133,4 +137,8 @@ def create_app(settings: Settings | None = None, *, enqueue_jobs: bool = True) -
     app.include_router(dashboard_router)
     app.include_router(reveal_router)
     app.include_router(org_router)
+    app.include_router(employees_router)
+    app.include_router(profile_router)
+    app.include_router(identity_router)
+    app.include_router(me_router)
     return app
