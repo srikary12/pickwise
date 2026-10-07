@@ -12,7 +12,8 @@ from typing import Annotated, Any
 from fastapi import APIRouter, Depends, Query, Request, Response, status
 from pydantic import BaseModel
 
-from pickwise.core.org import crud, service
+from pickwise.core import crud
+from pickwise.core.org import service
 from pickwise.core.org.schemas import (
     CostCenterCreate,
     CostCenterOut,

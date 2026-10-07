@@ -27,7 +27,13 @@ export const NAV: readonly NavGroup[] = [
       },
       { href: "/notifications", label: "Notifications", permission: null, badge: "notifications" },
       { href: "/org", label: "Organisation", permission: "core.org.read" },
+      { href: "/directory", label: "Directory", permission: "core.directory.read" },
+      { href: "/me", label: "My profile", permission: "core.me.read" },
     ],
+  },
+  {
+    label: "People",
+    items: [{ href: "/employees", label: "Employees", permission: "core.employees.read" }],
   },
   {
     label: "Administration",

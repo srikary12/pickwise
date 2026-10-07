@@ -977,6 +977,520 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/directory": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Directory
+         * @description Colleagues who are working here, with work details only (never personal data).
+         */
+        get: operations["directory_v1_directory_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/directory/org-chart": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Org Chart
+         * @description Everyone working here with their manager and number of direct reports, for drawing the
+         *     reporting tree. Work details only. Needs the directory at tenant scope: the chart isn't
+         *     filtered by narrower scopes.
+         */
+        get: operations["org_chart_v1_directory_org_chart_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/employees": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Employees
+         * @description Employees within your data scope, by name. Page with `next_cursor`.
+         */
+        get: operations["list_employees_v1_employees_get"];
+        put?: never;
+        /**
+         * Create Employee
+         * @description Add an employee as a draft with their first job record. The code comes from the tenant's
+         *     employee-code sequence.
+         */
+        post: operations["create_employee_v1_employees_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/employees/{employee_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Employee */
+        get: operations["get_employee_v1_employees__employee_id__get"];
+        /** Update Employee */
+        put: operations["update_employee_v1_employees__employee_id__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/employees/{employee_id}/addresses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Addresses
+         * @description Current and past addresses, newest first within each type.
+         */
+        get: operations["list_addresses_v1_employees__employee_id__addresses_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/employees/{employee_id}/addresses/{address_type}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set Address
+         * @description Set the current or permanent address from a date (today by default); the previous one
+         *     ends the day before and stays in the history.
+         */
+        put: operations["set_address_v1_employees__employee_id__addresses__address_type__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/employees/{employee_id}/bank-accounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Bank */
+        get: operations["list_bank_v1_employees__employee_id__bank_accounts_get"];
+        put?: never;
+        /**
+         * Add Bank
+         * @description Add a bank account. A primary one takes over from its start date; the previous primary
+         *     ends the day before. The number is masked afterwards.
+         */
+        post: operations["add_bank_v1_employees__employee_id__bank_accounts_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/employees/{employee_id}/bank-accounts/{account_id}/end": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * End Bank Account
+         * @description Stop using an account from today. Accounts are never deleted: past pay went to them.
+         */
+        post: operations["end_bank_account_v1_employees__employee_id__bank_accounts__account_id__end_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/employees/{employee_id}/dependents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Dependents */
+        get: operations["list_dependents_v1_employees__employee_id__dependents_get"];
+        put?: never;
+        /** Add Dependent */
+        post: operations["add_dependent_v1_employees__employee_id__dependents_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/employees/{employee_id}/dependents/{dependent_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Edit Dependent */
+        put: operations["edit_dependent_v1_employees__employee_id__dependents__dependent_id__put"];
+        post?: never;
+        /**
+         * Delete Dependent
+         * @description A dependent who is nominated can't be removed until the nomination is changed.
+         */
+        delete: operations["delete_dependent_v1_employees__employee_id__dependents__dependent_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/employees/{employee_id}/documents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Documents
+         * @description Files kept on the employee's record. Download one with `GET /v1/files/{file_id}/download`.
+         */
+        get: operations["list_documents_v1_employees__employee_id__documents_get"];
+        put?: never;
+        /** Add Document */
+        post: operations["add_document_v1_employees__employee_id__documents_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/employees/{employee_id}/documents/{document_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Document */
+        delete: operations["delete_document_v1_employees__employee_id__documents__document_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/employees/{employee_id}/education": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Education */
+        get: operations["list_education_v1_employees__employee_id__education_get"];
+        put?: never;
+        /** Add Education */
+        post: operations["add_education_v1_employees__employee_id__education_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/employees/{employee_id}/education/{entry_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Edit Education */
+        put: operations["edit_education_v1_employees__employee_id__education__entry_id__put"];
+        post?: never;
+        /** Delete Education */
+        delete: operations["delete_education_v1_employees__employee_id__education__entry_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/employees/{employee_id}/emergency-contacts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Contacts */
+        get: operations["list_contacts_v1_employees__employee_id__emergency_contacts_get"];
+        put?: never;
+        /** Add Contact */
+        post: operations["add_contact_v1_employees__employee_id__emergency_contacts_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/employees/{employee_id}/emergency-contacts/{contact_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Edit Contact */
+        put: operations["edit_contact_v1_employees__employee_id__emergency_contacts__contact_id__put"];
+        post?: never;
+        /** Delete Contact */
+        delete: operations["delete_contact_v1_employees__employee_id__emergency_contacts__contact_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/employees/{employee_id}/experience": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Experience */
+        get: operations["list_experience_v1_employees__employee_id__experience_get"];
+        put?: never;
+        /** Add Experience */
+        post: operations["add_experience_v1_employees__employee_id__experience_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/employees/{employee_id}/experience/{entry_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Edit Experience */
+        put: operations["edit_experience_v1_employees__employee_id__experience__entry_id__put"];
+        post?: never;
+        /** Delete Experience */
+        delete: operations["delete_experience_v1_employees__employee_id__experience__entry_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/employees/{employee_id}/identity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Identity */
+        get: operations["list_identity_v1_employees__employee_id__identity_get"];
+        put?: never;
+        /**
+         * Add Identity
+         * @description Record an identity document. It replaces the current one of the same type, which stays
+         *     as history. A number already on file for another employee is refused (409), without saying
+         *     whose it is.
+         */
+        post: operations["add_identity_v1_employees__employee_id__identity_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/employees/{employee_id}/identity/{document_id}/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Verify Identity */
+        post: operations["verify_identity_v1_employees__employee_id__identity__document_id__verify_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/employees/{employee_id}/job-records": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Job Records
+         * @description Newest first. The `is_current` one is in force today; later ones are scheduled.
+         */
+        get: operations["list_job_records_v1_employees__employee_id__job_records_get"];
+        put?: never;
+        /**
+         * Change Job
+         * @description Promote, transfer or change the manager from a date. The record in force that day is
+         *     closed the day before; nothing is overwritten. A future date schedules the change.
+         */
+        post: operations["change_job_v1_employees__employee_id__job_records_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/employees/{employee_id}/nominations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Nominations */
+        get: operations["list_nominations_v1_employees__employee_id__nominations_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/employees/{employee_id}/nominations/{scheme}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set Nominations
+         * @description Replace one scheme's nominees. Shares must total 100.
+         */
+        put: operations["set_nominations_v1_employees__employee_id__nominations__scheme__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/employees/{employee_id}/personal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Personal */
+        get: operations["get_personal_v1_employees__employee_id__personal_get"];
+        /** Save Personal */
+        put: operations["save_personal_v1_employees__employee_id__personal_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/employees/{employee_id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Change Status
+         * @description Draft → pre-boarding → active. Leaving and leave of absence come with later features.
+         */
+        post: operations["change_status_v1_employees__employee_id__status_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/employees/{employee_id}/user": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Link User
+         * @description Connect the employee to a person who can sign in (their membership), so the person sees
+         *     their own record. Send null to disconnect.
+         */
+        put: operations["link_user_v1_employees__employee_id__user_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/files": {
         parameters: {
             query?: never;
@@ -1170,6 +1684,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/job-records/{record_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Correct Job Record
+         * @description Fix a mistake in a record in place (the audit trail keeps what it said).
+         */
+        put: operations["correct_job_record_v1_job_records__record_id__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/me": {
         parameters: {
             query?: never;
@@ -1179,6 +1713,207 @@ export interface paths {
         };
         /** Me */
         get: operations["me_v1_me_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/employee": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My Record */
+        get: operations["my_record_v1_me_employee_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/employee/addresses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My Addresses */
+        get: operations["my_addresses_v1_me_employee_addresses_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/employee/addresses/{address_type}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Set My Address */
+        put: operations["set_my_address_v1_me_employee_addresses__address_type__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/employee/bank-accounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My Bank Accounts
+         * @description Your bank accounts, masked.
+         */
+        get: operations["my_bank_accounts_v1_me_employee_bank_accounts_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/employee/contact-details": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Change My Contact Details
+         * @description Change your personal email and phone.
+         */
+        put: operations["change_my_contact_details_v1_me_employee_contact_details_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/employee/documents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My Documents
+         * @description Documents HR has shared with you.
+         */
+        get: operations["my_documents_v1_me_employee_documents_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/employee/emergency-contacts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My Contacts */
+        get: operations["my_contacts_v1_me_employee_emergency_contacts_get"];
+        put?: never;
+        /** Add My Contact */
+        post: operations["add_my_contact_v1_me_employee_emergency_contacts_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/employee/emergency-contacts/{contact_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Edit My Contact */
+        put: operations["edit_my_contact_v1_me_employee_emergency_contacts__contact_id__put"];
+        post?: never;
+        /** Delete My Contact */
+        delete: operations["delete_my_contact_v1_me_employee_emergency_contacts__contact_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/employee/identity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My Identity
+         * @description Your identity documents, masked.
+         */
+        get: operations["my_identity_v1_me_employee_identity_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/employee/job-records": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My Jobs */
+        get: operations["my_jobs_v1_me_employee_job_records_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/employee/personal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My Personal */
+        get: operations["my_personal_v1_me_employee_personal_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -2038,6 +2773,67 @@ export interface components {
             /** Token */
             token: string;
         };
+        /** AddressOut */
+        AddressOut: {
+            /**
+             * Address Type
+             * @enum {string}
+             */
+            address_type: "current" | "permanent";
+            /** City */
+            city: string;
+            /**
+             * Country Code
+             * @default IN
+             */
+            country_code: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Line1 */
+            line1: string;
+            /** Line2 */
+            line2?: string | null;
+            /** Pincode */
+            pincode?: string | null;
+            /** Row Version */
+            row_version: number;
+            /** State Code */
+            state_code?: string | null;
+            /**
+             * Valid From
+             * Format: date
+             */
+            valid_from: string;
+            /** Valid To */
+            valid_to: string | null;
+        };
+        /**
+         * AddressSet
+         * @description A new address of this type from ``valid_from`` (today by default); the one before it ends
+         *     the day before.
+         */
+        AddressSet: {
+            /** City */
+            city: string;
+            /**
+             * Country Code
+             * @default IN
+             */
+            country_code: string;
+            /** Line1 */
+            line1: string;
+            /** Line2 */
+            line2?: string | null;
+            /** Pincode */
+            pincode?: string | null;
+            /** State Code */
+            state_code?: string | null;
+            /** Valid From */
+            valid_from?: string | null;
+        };
         /** ApiKeyCreate */
         ApiKeyCreate: {
             /** Expires At */
@@ -2154,6 +2950,74 @@ export interface components {
          */
         AuthStage: "mfa_pending" | "tenant_selection" | "mfa_enrolment_required" | "ready";
         /**
+         * BankCreate
+         * @description A bank account. The number is encrypted and masked afterwards. A primary account takes
+         *     over salary from ``valid_from``; the previous primary ends the day before.
+         */
+        BankCreate: {
+            /** Account Holder Name */
+            account_holder_name: string;
+            /** Account Number */
+            account_number: string;
+            /**
+             * Account Type
+             * @default savings
+             * @enum {string}
+             */
+            account_type: "savings" | "current" | "salary";
+            /** Bank Name */
+            bank_name: string;
+            /**
+             * Ifsc
+             * @example HDFC0001234
+             */
+            ifsc: string;
+            /**
+             * Is Primary
+             * @default true
+             */
+            is_primary: boolean;
+            /** Valid From */
+            valid_from?: string | null;
+        };
+        /** BankOut */
+        BankOut: {
+            /** Account Holder Name */
+            account_holder_name: string;
+            /**
+             * Account Type
+             * @enum {string}
+             */
+            account_type: "savings" | "current" | "salary";
+            /** Bank Name */
+            bank_name: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Ifsc */
+            ifsc: string;
+            /** Is Primary */
+            is_primary: boolean;
+            /** Last4 */
+            last4: string;
+            /** Row Version */
+            row_version: number;
+            /**
+             * Valid From
+             * Format: date
+             */
+            valid_from: string;
+            /** Valid To */
+            valid_to: string | null;
+            /**
+             * Verification Status
+             * @enum {string}
+             */
+            verification_status: "unverified" | "penny_drop_ok" | "failed";
+        };
+        /**
          * BrandingOut
          * @example {
          *       "logo_version": "01928f6e-…",
@@ -2198,6 +3062,63 @@ export interface components {
             name: string;
             /** Required */
             required: boolean;
+        };
+        /** ContactCreate */
+        ContactCreate: {
+            /** Email */
+            email?: string | null;
+            /**
+             * Is Primary
+             * @default false
+             */
+            is_primary: boolean;
+            /** Name */
+            name: string;
+            /** Phone */
+            phone: string;
+            /** Relationship */
+            relationship: string;
+        };
+        /** ContactOut */
+        ContactOut: {
+            /** Email */
+            email?: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Is Primary
+             * @default false
+             */
+            is_primary: boolean;
+            /** Name */
+            name: string;
+            /** Phone */
+            phone: string;
+            /** Relationship */
+            relationship: string;
+            /** Row Version */
+            row_version: number;
+        };
+        /** ContactUpdate */
+        ContactUpdate: {
+            /** Email */
+            email?: string | null;
+            /**
+             * Is Primary
+             * @default false
+             */
+            is_primary: boolean;
+            /** Name */
+            name: string;
+            /** Phone */
+            phone: string;
+            /** Relationship */
+            relationship: string;
+            /** Row Version */
+            row_version: number;
         };
         /** CostCenterCreate */
         CostCenterCreate: {
@@ -2478,6 +3399,57 @@ export interface components {
             latency_ms: number;
             status: components["schemas"]["CheckStatus"];
         };
+        /** DependentCreate */
+        DependentCreate: {
+            /** Date Of Birth */
+            date_of_birth?: string | null;
+            /** Gender */
+            gender?: ("female" | "male" | "non_binary" | "undisclosed") | null;
+            /** Name */
+            name: string;
+            /**
+             * Relationship
+             * @enum {string}
+             */
+            relationship: "spouse" | "child" | "father" | "mother" | "sibling" | "other";
+        };
+        /** DependentOut */
+        DependentOut: {
+            /** Date Of Birth */
+            date_of_birth?: string | null;
+            /** Gender */
+            gender?: ("female" | "male" | "non_binary" | "undisclosed") | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Name */
+            name: string;
+            /**
+             * Relationship
+             * @enum {string}
+             */
+            relationship: "spouse" | "child" | "father" | "mother" | "sibling" | "other";
+            /** Row Version */
+            row_version: number;
+        };
+        /** DependentUpdate */
+        DependentUpdate: {
+            /** Date Of Birth */
+            date_of_birth?: string | null;
+            /** Gender */
+            gender?: ("female" | "male" | "non_binary" | "undisclosed") | null;
+            /** Name */
+            name: string;
+            /**
+             * Relationship
+             * @enum {string}
+             */
+            relationship: "spouse" | "child" | "father" | "mother" | "sibling" | "other";
+            /** Row Version */
+            row_version: number;
+        };
         /** DesignationCreate */
         DesignationCreate: {
             /**
@@ -2525,6 +3497,95 @@ export interface components {
             /** Row Version */
             row_version: number;
         };
+        /**
+         * DirectoryEntry
+         * @description What colleagues see: work details only.
+         */
+        DirectoryEntry: {
+            /** Department Id */
+            department_id: string | null;
+            /** Department Name */
+            department_name: string | null;
+            /** Designation Name */
+            designation_name: string | null;
+            /** Display Name */
+            display_name: string;
+            /** Employee Code */
+            employee_code: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Location Name */
+            location_name: string | null;
+            /** Manager Employee Id */
+            manager_employee_id: string | null;
+            /** Manager Name */
+            manager_name: string | null;
+            /** Photo File Id */
+            photo_file_id: string | null;
+            /** Work Email */
+            work_email: string | null;
+            /** Work Phone */
+            work_phone: string | null;
+        };
+        /** DirectoryPage */
+        DirectoryPage: {
+            /** Items */
+            items: components["schemas"]["DirectoryEntry"][];
+            /** Next Cursor */
+            next_cursor?: string | null;
+        };
+        /** DocumentCreate */
+        DocumentCreate: {
+            /**
+             * Category
+             * @enum {string}
+             */
+            category: "offer_letter" | "appointment_letter" | "id_proof" | "address_proof" | "education" | "experience" | "policy_ack" | "other";
+            /** Expires On */
+            expires_on?: string | null;
+            /**
+             * File Id
+             * Format: uuid
+             * @description A file uploaded with owner_entity_type employee_document.
+             */
+            file_id: string;
+            /** Title */
+            title: string;
+            /**
+             * Visible To Employee
+             * @default false
+             */
+            visible_to_employee: boolean;
+        };
+        /** DocumentOut */
+        DocumentOut: {
+            /**
+             * Category
+             * @enum {string}
+             */
+            category: "offer_letter" | "appointment_letter" | "id_proof" | "address_proof" | "education" | "experience" | "policy_ack" | "other";
+            /** Expires On */
+            expires_on: string | null;
+            /**
+             * File Id
+             * Format: uuid
+             */
+            file_id: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Row Version */
+            row_version: number;
+            /** Title */
+            title: string;
+            /** Visible To Employee */
+            visible_to_employee: boolean;
+        };
         /** DownloadOut */
         DownloadOut: {
             /** Expires In */
@@ -2534,6 +3595,175 @@ export interface components {
              * @description Short-lived; forces a download
              */
             url: string;
+        };
+        /** EducationCreate */
+        EducationCreate: {
+            /** Degree */
+            degree: string;
+            /** End Year */
+            end_year?: number | null;
+            /** Field Of Study */
+            field_of_study?: string | null;
+            /** Institution */
+            institution: string;
+            /** Start Year */
+            start_year?: number | null;
+        };
+        /** EducationOut */
+        EducationOut: {
+            /** Degree */
+            degree: string;
+            /** End Year */
+            end_year?: number | null;
+            /** Field Of Study */
+            field_of_study?: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Institution */
+            institution: string;
+            /** Row Version */
+            row_version: number;
+            /** Start Year */
+            start_year?: number | null;
+        };
+        /** EducationUpdate */
+        EducationUpdate: {
+            /** Degree */
+            degree: string;
+            /** End Year */
+            end_year?: number | null;
+            /** Field Of Study */
+            field_of_study?: string | null;
+            /** Institution */
+            institution: string;
+            /** Row Version */
+            row_version: number;
+            /** Start Year */
+            start_year?: number | null;
+        };
+        /** EmployeeCreate */
+        EmployeeCreate: {
+            /** Confirmation Date */
+            confirmation_date?: string | null;
+            /** Custom Fields */
+            custom_fields?: {
+                [key: string]: unknown;
+            };
+            /**
+             * Date Of Joining
+             * Format: date
+             */
+            date_of_joining: string;
+            /** First Name */
+            first_name: string;
+            job: components["schemas"]["JobFields"];
+            /** Last Name */
+            last_name?: string | null;
+            /** Middle Name */
+            middle_name?: string | null;
+            /** Original Hire Date */
+            original_hire_date?: string | null;
+            /** Preferred Name */
+            preferred_name?: string | null;
+            /** Probation End Date */
+            probation_end_date?: string | null;
+            /** Work Email */
+            work_email?: string | null;
+            /** Work Phone */
+            work_phone?: string | null;
+        };
+        /** EmployeeOut */
+        EmployeeOut: {
+            /** Confirmation Date */
+            confirmation_date: string | null;
+            /** Custom Fields */
+            custom_fields: {
+                [key: string]: unknown;
+            };
+            /** Date Of Exit */
+            date_of_exit: string | null;
+            /**
+             * Date Of Joining
+             * Format: date
+             */
+            date_of_joining: string;
+            /** Display Name */
+            display_name: string;
+            /** Employee Code */
+            employee_code: string;
+            /** First Name */
+            first_name: string;
+            /**
+             * Has Login
+             * @description Linked to a person who can sign in.
+             */
+            has_login: boolean;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            job: components["schemas"]["JobSummary"] | null;
+            /** Last Name */
+            last_name: string | null;
+            /** Middle Name */
+            middle_name: string | null;
+            /** Original Hire Date */
+            original_hire_date: string | null;
+            /** Photo File Id */
+            photo_file_id: string | null;
+            /** Preferred Name */
+            preferred_name: string | null;
+            /** Probation End Date */
+            probation_end_date: string | null;
+            /** Row Version */
+            row_version: number;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "draft" | "pre_boarding" | "active" | "notice_period" | "leave_of_absence" | "exited";
+            /** Work Email */
+            work_email: string | null;
+            /** Work Phone */
+            work_phone: string | null;
+        };
+        /** EmployeePage */
+        EmployeePage: {
+            /** Items */
+            items: components["schemas"]["EmployeeOut"][];
+            /** Next Cursor */
+            next_cursor?: string | null;
+        };
+        /** EmployeeUpdate */
+        EmployeeUpdate: {
+            /** Confirmation Date */
+            confirmation_date?: string | null;
+            /** Custom Fields */
+            custom_fields?: {
+                [key: string]: unknown;
+            };
+            /** First Name */
+            first_name: string;
+            /** Last Name */
+            last_name?: string | null;
+            /** Middle Name */
+            middle_name?: string | null;
+            /** Original Hire Date */
+            original_hire_date?: string | null;
+            /** Preferred Name */
+            preferred_name?: string | null;
+            /** Probation End Date */
+            probation_end_date?: string | null;
+            /** Row Version */
+            row_version: number;
+            /** Work Email */
+            work_email?: string | null;
+            /** Work Phone */
+            work_phone?: string | null;
         };
         /**
          * EndpointCreate
@@ -2634,6 +3864,48 @@ export interface components {
              * @description Short-lived download link for the CSV of row errors
              */
             url: string;
+        };
+        /** ExperienceCreate */
+        ExperienceCreate: {
+            /** Employer */
+            employer: string;
+            /** From Date */
+            from_date?: string | null;
+            /** Title */
+            title: string;
+            /** To Date */
+            to_date?: string | null;
+        };
+        /** ExperienceOut */
+        ExperienceOut: {
+            /** Employer */
+            employer: string;
+            /** From Date */
+            from_date?: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Row Version */
+            row_version: number;
+            /** Title */
+            title: string;
+            /** To Date */
+            to_date?: string | null;
+        };
+        /** ExperienceUpdate */
+        ExperienceUpdate: {
+            /** Employer */
+            employer: string;
+            /** From Date */
+            from_date?: string | null;
+            /** Row Version */
+            row_version: number;
+            /** Title */
+            title: string;
+            /** To Date */
+            to_date?: string | null;
         };
         /**
          * FieldCreate
@@ -2898,6 +4170,81 @@ export interface components {
             title: string;
         };
         /**
+         * IdentityCreate
+         * @description A new identity document. The number is encrypted at once and never returned: the API shows
+         *     only the last four characters. Adding one replaces the employee's current document of that
+         *     type (the old one stays as history).
+         */
+        IdentityCreate: {
+            /**
+             * Doc Type
+             * @enum {string}
+             */
+            doc_type: "pan" | "aadhaar" | "passport" | "uan" | "esic_ip" | "voter_id" | "driving_licence" | "visa";
+            /** Expires On */
+            expires_on?: string | null;
+            /** File Id */
+            file_id?: string | null;
+            /** Issued On */
+            issued_on?: string | null;
+            /** Name As Per Doc */
+            name_as_per_doc?: string | null;
+            /**
+             * Value
+             * @description The number as printed.
+             */
+            value: string;
+        };
+        /** IdentityOut */
+        IdentityOut: {
+            /**
+             * Doc Type
+             * @enum {string}
+             */
+            doc_type: "pan" | "aadhaar" | "passport" | "uan" | "esic_ip" | "voter_id" | "driving_licence" | "visa";
+            /** Expires On */
+            expires_on: string | null;
+            /** File Id */
+            file_id: string | null;
+            /**
+             * Has Value
+             * @description False for Aadhaar kept as its last four digits only, which can't be revealed.
+             */
+            has_value: boolean;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Is Current */
+            is_current: boolean;
+            /** Issued On */
+            issued_on: string | null;
+            /** Last4 */
+            last4: string | null;
+            /** Name As Per Doc */
+            name_as_per_doc: string | null;
+            /** Row Version */
+            row_version: number;
+            /**
+             * Verification Status
+             * @enum {string}
+             */
+            verification_status: "unverified" | "verified" | "rejected";
+            /** Verified At */
+            verified_at: string | null;
+        };
+        /** IdentityVerify */
+        IdentityVerify: {
+            /** Row Version */
+            row_version: number;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "verified" | "rejected";
+        };
+        /**
          * ImportCreate
          * @example {
          *       "file_id": "0198f2a0-6c1e-7a52-9d3e-5b1f2c8a4e10",
@@ -3071,6 +4418,209 @@ export interface components {
             valid: boolean;
         };
         /**
+         * JobChange
+         * @description What changes from ``effective_from``. Fields left out keep their value; send null to
+         *     clear an optional one (grade, cost centre, manager).
+         */
+        JobChange: {
+            /** Cost Center Id */
+            cost_center_id?: string | null;
+            /** Department Id */
+            department_id?: string | null;
+            /** Designation Id */
+            designation_id?: string | null;
+            /**
+             * Effective From
+             * Format: date
+             */
+            effective_from: string;
+            /** Employment Type */
+            employment_type?: ("full_time" | "part_time" | "fixed_term" | "contract" | "intern" | "apprentice" | "consultant") | null;
+            /** Grade Id */
+            grade_id?: string | null;
+            /** Legal Entity Id */
+            legal_entity_id?: string | null;
+            /** Location Id */
+            location_id?: string | null;
+            /** Manager Employee Id */
+            manager_employee_id?: string | null;
+            /** Notes */
+            notes?: string | null;
+            /**
+             * Reason
+             * @enum {string}
+             */
+            reason: "promotion" | "transfer" | "redesignation" | "manager_change" | "rehire" | "migration";
+        };
+        /**
+         * JobCorrection
+         * @description Fix a mistake in a record. Fields left out are unchanged; null clears an optional one.
+         */
+        JobCorrection: {
+            /** Cost Center Id */
+            cost_center_id?: string | null;
+            /** Department Id */
+            department_id?: string | null;
+            /** Designation Id */
+            designation_id?: string | null;
+            /** Employment Type */
+            employment_type?: ("full_time" | "part_time" | "fixed_term" | "contract" | "intern" | "apprentice" | "consultant") | null;
+            /** Grade Id */
+            grade_id?: string | null;
+            /** Legal Entity Id */
+            legal_entity_id?: string | null;
+            /** Location Id */
+            location_id?: string | null;
+            /** Manager Employee Id */
+            manager_employee_id?: string | null;
+            /** Notes */
+            notes?: string | null;
+            /** Row Version */
+            row_version: number;
+            /**
+             * Start
+             * @description Move the day this record begins.
+             */
+            start?: string | null;
+        };
+        /** JobFields */
+        JobFields: {
+            /** Cost Center Id */
+            cost_center_id?: string | null;
+            /**
+             * Department Id
+             * Format: uuid
+             */
+            department_id: string;
+            /**
+             * Designation Id
+             * Format: uuid
+             */
+            designation_id: string;
+            /**
+             * Employment Type
+             * @enum {string}
+             */
+            employment_type: "full_time" | "part_time" | "fixed_term" | "contract" | "intern" | "apprentice" | "consultant";
+            /** Grade Id */
+            grade_id?: string | null;
+            /**
+             * Legal Entity Id
+             * Format: uuid
+             */
+            legal_entity_id: string;
+            /**
+             * Location Id
+             * Format: uuid
+             */
+            location_id: string;
+            /** Manager Employee Id */
+            manager_employee_id?: string | null;
+        };
+        /** JobRecordOut */
+        JobRecordOut: {
+            /**
+             * Change Reason
+             * @enum {string}
+             */
+            change_reason: "hire" | "promotion" | "transfer" | "redesignation" | "manager_change" | "correction" | "rehire" | "migration";
+            /** Cost Center Id */
+            cost_center_id?: string | null;
+            /**
+             * Department Id
+             * Format: uuid
+             */
+            department_id: string;
+            /**
+             * Designation Id
+             * Format: uuid
+             */
+            designation_id: string;
+            /**
+             * Employee Id
+             * Format: uuid
+             */
+            employee_id: string;
+            /**
+             * Employment Type
+             * @enum {string}
+             */
+            employment_type: "full_time" | "part_time" | "fixed_term" | "contract" | "intern" | "apprentice" | "consultant";
+            /** Grade Id */
+            grade_id?: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Is Current */
+            is_current: boolean;
+            /**
+             * Legal Entity Id
+             * Format: uuid
+             */
+            legal_entity_id: string;
+            /**
+             * Location Id
+             * Format: uuid
+             */
+            location_id: string;
+            /** Manager Employee Id */
+            manager_employee_id?: string | null;
+            /** Notes */
+            notes: string | null;
+            /** Row Version */
+            row_version: number;
+            /**
+             * Valid From
+             * Format: date
+             */
+            valid_from: string;
+            /**
+             * Valid To
+             * @description Last day it applies; open-ended if empty.
+             */
+            valid_to: string | null;
+        };
+        /**
+         * JobSummary
+         * @description The job in force today, with names for display.
+         */
+        JobSummary: {
+            /**
+             * Department Id
+             * Format: uuid
+             */
+            department_id: string;
+            /** Department Name */
+            department_name: string;
+            /**
+             * Designation Id
+             * Format: uuid
+             */
+            designation_id: string;
+            /** Designation Name */
+            designation_name: string;
+            /** Employment Type */
+            employment_type: string;
+            /**
+             * Legal Entity Id
+             * Format: uuid
+             */
+            legal_entity_id: string;
+            /**
+             * Location Id
+             * Format: uuid
+             */
+            location_id: string;
+            /** Location Name */
+            location_name: string;
+            /** Manager Employee Id */
+            manager_employee_id: string | null;
+            /** Manager Name */
+            manager_name: string | null;
+        };
+        /**
          * LegalEntityCreate
          * @example {
          *       "gstin": "29AABCA1234F1Z5",
@@ -3177,6 +4727,16 @@ export interface components {
             row_version: number;
             /** Tan */
             tan?: string | null;
+        };
+        /** LinkUser */
+        LinkUser: {
+            /**
+             * Membership Id
+             * @description The person's membership, or null to unlink.
+             */
+            membership_id: string | null;
+            /** Row Version */
+            row_version: number;
         };
         /**
          * Liveness
@@ -3437,6 +4997,40 @@ export interface components {
             /** Recovery Code */
             recovery_code?: string | null;
         };
+        /** NominationOut */
+        NominationOut: {
+            /**
+             * Dependent Id
+             * Format: uuid
+             */
+            dependent_id: string;
+            /**
+             * Scheme
+             * @enum {string}
+             */
+            scheme: "pf" | "eps" | "edli" | "gratuity" | "insurance";
+            /** Share Percent */
+            share_percent: string;
+        };
+        /** NominationShare */
+        NominationShare: {
+            /**
+             * Dependent Id
+             * Format: uuid
+             */
+            dependent_id: string;
+            /** Share Percent */
+            share_percent: number | string;
+        };
+        /**
+         * NominationsSet
+         * @description Replace the nominees of one scheme. The shares must total exactly 100; send an empty list
+         *     to remove the scheme's nominations.
+         */
+        NominationsSet: {
+            /** Shares */
+            shares: components["schemas"]["NominationShare"][];
+        };
         /** NotificationOut */
         NotificationOut: {
             /** Body */
@@ -3474,6 +5068,29 @@ export interface components {
              */
             next_cursor?: string | null;
         };
+        /** OrgChart */
+        OrgChart: {
+            /** Nodes */
+            nodes: components["schemas"]["OrgChartNode"][];
+        };
+        /** OrgChartNode */
+        OrgChartNode: {
+            /** Department Name */
+            department_name: string | null;
+            /** Designation Name */
+            designation_name: string | null;
+            /** Display Name */
+            display_name: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Manager Employee Id */
+            manager_employee_id: string | null;
+            /** Report Count */
+            report_count: number;
+        };
         /** PendingApprovals */
         PendingApprovals: {
             /** Count */
@@ -3501,6 +5118,69 @@ export interface components {
             id: string;
             /** Name */
             name: string | null;
+        };
+        /** PersonalOut */
+        PersonalOut: {
+            /** Blood Group */
+            blood_group?: ("A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-") | null;
+            /** Date Of Birth */
+            date_of_birth?: string | null;
+            /**
+             * Employee Id
+             * Format: uuid
+             */
+            employee_id: string;
+            /** Father Or Spouse Name */
+            father_or_spouse_name?: string | null;
+            /** Gender */
+            gender?: ("female" | "male" | "non_binary" | "undisclosed") | null;
+            /**
+             * Is Person With Disability
+             * @default false
+             */
+            is_person_with_disability: boolean;
+            /** Marital Status */
+            marital_status?: ("single" | "married" | "divorced" | "widowed" | "undisclosed") | null;
+            /** Nationality */
+            nationality?: string | null;
+            /** Personal Email */
+            personal_email?: string | null;
+            /** Personal Phone */
+            personal_phone?: string | null;
+            /** Row Version */
+            row_version: number | null;
+        };
+        /**
+         * PersonalUpdate
+         * @description The whole personal record; row_version is the employee's, as in `GET /v1/employees/{id}`.
+         */
+        PersonalUpdate: {
+            /** Blood Group */
+            blood_group?: ("A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-") | null;
+            /** Date Of Birth */
+            date_of_birth?: string | null;
+            /** Father Or Spouse Name */
+            father_or_spouse_name?: string | null;
+            /** Gender */
+            gender?: ("female" | "male" | "non_binary" | "undisclosed") | null;
+            /**
+             * Is Person With Disability
+             * @default false
+             */
+            is_person_with_disability: boolean;
+            /** Marital Status */
+            marital_status?: ("single" | "married" | "divorced" | "widowed" | "undisclosed") | null;
+            /** Nationality */
+            nationality?: string | null;
+            /** Personal Email */
+            personal_email?: string | null;
+            /** Personal Phone */
+            personal_phone?: string | null;
+            /**
+             * Row Version
+             * @description Omit on the first save; send what you loaded after.
+             */
+            row_version?: number | null;
         };
         /**
          * PolicyCreate
@@ -4028,6 +5708,16 @@ export interface components {
             secret: string;
         };
         /**
+         * SelfContactUpdate
+         * @description What a person may change about themselves.
+         */
+        SelfContactUpdate: {
+            /** Personal Email */
+            personal_email?: string | null;
+            /** Personal Phone */
+            personal_phone?: string | null;
+        };
+        /**
          * SessionState
          * @description Where a signed-in session stands; the web app routes on ``stage``.
          * @example {
@@ -4207,6 +5897,16 @@ export interface components {
              * Format: uuid
              */
             tenant_id: string;
+        };
+        /** StatusChange */
+        StatusChange: {
+            /** Row Version */
+            row_version: number;
+            /**
+             * To
+             * @enum {string}
+             */
+            to: "pre_boarding" | "active";
         };
         /** StepOut */
         StepOut: {
@@ -6315,6 +8015,1363 @@ export interface operations {
             };
         };
     };
+    directory_v1_directory_get: {
+        parameters: {
+            query?: {
+                q?: string | null;
+                department_id?: string | null;
+                location_id?: string | null;
+                cursor?: string | null;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DirectoryPage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    org_chart_v1_directory_org_chart_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrgChart"];
+                };
+            };
+        };
+    };
+    list_employees_v1_employees_get: {
+        parameters: {
+            query?: {
+                q?: string | null;
+                status?: ("draft" | "pre_boarding" | "active" | "notice_period" | "leave_of_absence" | "exited") | null;
+                department_id?: string | null;
+                location_id?: string | null;
+                legal_entity_id?: string | null;
+                manager_id?: string | null;
+                cursor?: string | null;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployeePage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_employee_v1_employees_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EmployeeCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployeeOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_employee_v1_employees__employee_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployeeOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_employee_v1_employees__employee_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EmployeeUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployeeOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_addresses_v1_employees__employee_id__addresses_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AddressOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_address_v1_employees__employee_id__addresses__address_type__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+                address_type: "current" | "permanent";
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AddressSet"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AddressOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_bank_v1_employees__employee_id__bank_accounts_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BankOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    add_bank_v1_employees__employee_id__bank_accounts_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BankCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BankOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    end_bank_account_v1_employees__employee_id__bank_accounts__account_id__end_post: {
+        parameters: {
+            query: {
+                row_version: number;
+            };
+            header?: never;
+            path: {
+                employee_id: string;
+                account_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BankOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_dependents_v1_employees__employee_id__dependents_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DependentOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    add_dependent_v1_employees__employee_id__dependents_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DependentCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DependentOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    edit_dependent_v1_employees__employee_id__dependents__dependent_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+                dependent_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DependentUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DependentOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_dependent_v1_employees__employee_id__dependents__dependent_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+                dependent_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_documents_v1_employees__employee_id__documents_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    add_document_v1_employees__employee_id__documents_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DocumentCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_document_v1_employees__employee_id__documents__document_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+                document_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_education_v1_employees__employee_id__education_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EducationOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    add_education_v1_employees__employee_id__education_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EducationCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EducationOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    edit_education_v1_employees__employee_id__education__entry_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+                entry_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EducationUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EducationOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_education_v1_employees__employee_id__education__entry_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+                entry_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_contacts_v1_employees__employee_id__emergency_contacts_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    add_contact_v1_employees__employee_id__emergency_contacts_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ContactCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    edit_contact_v1_employees__employee_id__emergency_contacts__contact_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+                contact_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ContactUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_contact_v1_employees__employee_id__emergency_contacts__contact_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+                contact_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_experience_v1_employees__employee_id__experience_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExperienceOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    add_experience_v1_employees__employee_id__experience_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExperienceCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExperienceOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    edit_experience_v1_employees__employee_id__experience__entry_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+                entry_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExperienceUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExperienceOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_experience_v1_employees__employee_id__experience__entry_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+                entry_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_identity_v1_employees__employee_id__identity_get: {
+        parameters: {
+            query?: {
+                /** @description Include replaced documents. */
+                history?: boolean;
+            };
+            header?: never;
+            path: {
+                employee_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IdentityOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    add_identity_v1_employees__employee_id__identity_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IdentityCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IdentityOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    verify_identity_v1_employees__employee_id__identity__document_id__verify_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+                document_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IdentityVerify"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IdentityOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_job_records_v1_employees__employee_id__job_records_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobRecordOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    change_job_v1_employees__employee_id__job_records_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["JobChange"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobRecordOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_nominations_v1_employees__employee_id__nominations_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NominationOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_nominations_v1_employees__employee_id__nominations__scheme__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+                scheme: "pf" | "eps" | "edli" | "gratuity" | "insurance";
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NominationsSet"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NominationOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_personal_v1_employees__employee_id__personal_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PersonalOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    save_personal_v1_employees__employee_id__personal_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PersonalUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PersonalOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    change_status_v1_employees__employee_id__status_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StatusChange"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployeeOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    link_user_v1_employees__employee_id__user_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employee_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LinkUser"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployeeOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     create_upload_v1_files_post: {
         parameters: {
             query?: never;
@@ -6659,6 +9716,41 @@ export interface operations {
             };
         };
     };
+    correct_job_record_v1_job_records__record_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                record_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["JobCorrection"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobRecordOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     me_v1_me_get: {
         parameters: {
             query?: never;
@@ -6675,6 +9767,331 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SessionState"];
+                };
+            };
+        };
+    };
+    my_record_v1_me_employee_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployeeOut"];
+                };
+            };
+        };
+    };
+    my_addresses_v1_me_employee_addresses_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AddressOut"][];
+                };
+            };
+        };
+    };
+    set_my_address_v1_me_employee_addresses__address_type__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                address_type: "current" | "permanent";
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AddressSet"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AddressOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    my_bank_accounts_v1_me_employee_bank_accounts_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BankOut"][];
+                };
+            };
+        };
+    };
+    change_my_contact_details_v1_me_employee_contact_details_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SelfContactUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PersonalOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    my_documents_v1_me_employee_documents_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentOut"][];
+                };
+            };
+        };
+    };
+    my_contacts_v1_me_employee_emergency_contacts_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactOut"][];
+                };
+            };
+        };
+    };
+    add_my_contact_v1_me_employee_emergency_contacts_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ContactCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    edit_my_contact_v1_me_employee_emergency_contacts__contact_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                contact_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ContactUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_my_contact_v1_me_employee_emergency_contacts__contact_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                contact_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    my_identity_v1_me_employee_identity_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IdentityOut"][];
+                };
+            };
+        };
+    };
+    my_jobs_v1_me_employee_job_records_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobRecordOut"][];
+                };
+            };
+        };
+    };
+    my_personal_v1_me_employee_personal_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PersonalOut"];
                 };
             };
         };

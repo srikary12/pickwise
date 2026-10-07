@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Accessibility: axe over every screen in light and dark. Serious and critical violations fail.
-import AxeBuilder from "@axe-core/playwright";
-import { expect, type Page, test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
+import { violations } from "./support/axe";
 import { ACME, adminPage, DEMO_PASSWORD } from "./support/flows";
 
 test.beforeAll(() => {
@@ -14,6 +14,11 @@ const PAGES = [
   { path: "/notifications", heading: "Notifications" },
   { path: "/approvals", heading: "Approvals" },
   { path: "/org", heading: "Organisation" },
+  { path: "/employees", heading: "Employees" },
+  { path: "/employees/new", heading: "Add employee" },
+  { path: "/directory", heading: "Directory" },
+  { path: "/directory?tab=chart", heading: "Directory" },
+  { path: "/me", heading: "My profile" },
   { path: "/org?tab=entities", heading: "Organisation" },
   { path: "/org?tab=locations", heading: "Organisation" },
   { path: "/org?tab=grades", heading: "Organisation" },
@@ -26,20 +31,6 @@ const PAGES = [
   { path: "/settings/security", heading: "Security" },
   { path: "/dev/components", heading: "Components" },
 ] as const;
-
-const TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
-
-async function violations(page: Page) {
-  const results = await new AxeBuilder({ page }).withTags(TAGS).analyze();
-  return results.violations
-    .filter((v) => v.impact === "serious" || v.impact === "critical")
-    .map((v) => ({
-      rule: v.id,
-      impact: v.impact,
-      help: v.help,
-      targets: v.nodes.slice(0, 3).map((n) => n.target.join(" ")),
-    }));
-}
 
 for (const theme of ["light", "dark"] as const) {
   test(`no serious accessibility violations (${theme})`, async ({ browser }) => {

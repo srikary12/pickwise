@@ -10,11 +10,13 @@ from pickwise.platform.auth.dependencies import (
     DB,
     AuthContext,
     Authorized,
+    KekDep,
     SettingsDep,
     SideDep,
     signed_in,
 )
 from pickwise.platform.auth.service import AuthStage
+from pickwise.platform.crypto import field_crypto, load_tenant_keyring
 from pickwise.platform.rbac.grants import load_grants
 from pickwise.platform.reveal.registry import REVEAL_FIELDS
 from pickwise.platform.reveal.schemas import RevealOut, RevealRequest
@@ -31,6 +33,7 @@ async def reveal(
     response: Response,
     db: DB,
     settings: SettingsDep,
+    kek: KekDep,
     side: SideDep,
     auth: Ready,
 ) -> RevealOut:
@@ -48,7 +51,10 @@ async def reveal(
     async with side() as s:
         await ratelimit.hit(s, settings, ratelimit.REVEAL_PER_USER, str(auth.principal.user_id))
     allowed = Authorized(auth.principal, field.permission, scopes, grants)
-    value = await field.reveal(db, allowed, body.entity_id)
+    # The tenant's keys are available to the module's reveal function through field_crypto.
+    keyring = await load_tenant_keyring(db, kek, allowed.tenant_id)
+    with field_crypto(keyring, allowed.tenant_id):
+        value = await field.reveal(db, allowed, body.entity_id)
     await audit.record(db, "pii.reveal", field.entity, body.entity_id, {"field": body.field})
     response.headers["Cache-Control"] = "no-store"
     return RevealOut(value=value)
