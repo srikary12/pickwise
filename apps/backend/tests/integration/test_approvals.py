@@ -203,14 +203,20 @@ async def org(env: Env, tenant: Tenant, api_db: Database, make_api: MakeApi) -> 
     async def approved(session: AsyncSession, decision: ApprovalDecision) -> None:
         organisation.decisions.append(decision)
 
+    # Core registers the real resolvers; these tests use a table of who reports to whom.
+    real = {kind: APPROVER_RESOLVERS.get(kind) for kind in ("manager", "skip_level")}
+    for kind in real:
+        APPROVER_RESOLVERS.unregister(kind)
     APPROVER_RESOLVERS.register("manager", manager)
     APPROVER_RESOLVERS.register("skip_level", skip_level)
     handler = ApprovalHandler(approved, approved, approved)
     for entity_type in ("leave_request", "offer"):
         APPROVAL_HANDLERS.register(entity_type, handler)
     yield organisation
-    APPROVER_RESOLVERS.unregister("manager")
-    APPROVER_RESOLVERS.unregister("skip_level")
+    for kind, resolver in real.items():
+        APPROVER_RESOLVERS.unregister(kind)
+        if resolver is not None:
+            APPROVER_RESOLVERS.register(kind, resolver)
     for entity_type in ("leave_request", "offer"):
         APPROVAL_HANDLERS.unregister(entity_type)
 

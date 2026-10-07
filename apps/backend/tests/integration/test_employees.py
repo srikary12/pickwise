@@ -6,7 +6,7 @@ import itertools
 
 import pytest
 
-from pickwise.core import hierarchy
+from pickwise.core import hierarchy, maintenance
 from pickwise.shared.context import ActorType, RequestContext
 from pickwise.shared.db import Database
 from tests.integration.conftest import MakeApi
@@ -448,3 +448,39 @@ async def test_the_manager_role_follows_the_reporting_tree(
     )
     assert fixed.status_code == 200
     assert await manager_assignments() == 0
+
+
+async def test_the_nightly_rebuild_applies_a_manager_change_whose_day_came(
+    make_api: MakeApi, env: Env, tenant: Tenant, api_db: Database
+) -> None:
+    api, org = await hr(make_api, tenant)
+    boss = await make_employee(api, org, "Boss")
+    dev = await make_employee(api, org, "Dev")
+    start = today() + datetime.timedelta(days=5)
+    scheduled = await api.post(
+        f"/v1/employees/{dev['id']}/job-records",
+        {
+            "effective_from": start.isoformat(),
+            "reason": "manager_change",
+            "manager_employee_id": boss["id"],
+        },
+    )
+    assert scheduled.status_code == 201
+    before = await closure(env, tenant)
+    assert (boss["id"], dev["id"], 1) not in before
+    # The day arrives: move the record's period back instead of waiting.
+    await env.sql(
+        "UPDATE core.employee_job_records SET valid_during = daterange(lower(valid_during), :d) "
+        "WHERE employee_id = :e AND id <> :id",
+        d=today(),
+        e=dev["id"],
+        id=scheduled.json()["id"],
+    )
+    await env.sql(
+        "UPDATE core.employee_job_records r SET valid_during = daterange(:d, NULL) "
+        "WHERE r.id = :id",
+        d=today(),
+        id=scheduled.json()["id"],
+    )
+    await maintenance.rebuild_tenant_hierarchy(api_db, tenant.id)
+    assert (boss["id"], dev["id"], 1) in await closure(env, tenant)

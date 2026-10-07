@@ -78,10 +78,11 @@ def _all_reports(_s: DataScope, principal: Principal, target: ScopeTarget) -> Co
 
 
 def _self(_s: DataScope, principal: Principal, target: ScopeTarget) -> ColumnElement[bool]:
-    if target.employee_column is not None:
-        return target.employee_column == my_employee_id(principal)
+    # A row owned by a user is "mine" by user id (platform's rule); otherwise by employee.
     if target.user_column is not None and principal.user_id is not None:
         return target.user_column == principal.user_id
+    if target.employee_column is not None:
+        return target.employee_column == my_employee_id(principal)
     return false()
 
 

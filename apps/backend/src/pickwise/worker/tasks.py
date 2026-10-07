@@ -6,6 +6,7 @@ import uuid
 
 import httpx
 
+from pickwise.core import maintenance as core_maintenance
 from pickwise.platform import ratelimit, storage
 from pickwise.platform.approvals import deadlines
 from pickwise.platform.crypto import kek_from_settings
@@ -259,3 +260,16 @@ async def sweep_imports(timestamp: int) -> None:
         await defer("pickwise.validate_import", import_id=str(import_id), tenant_id=str(tenant_id))
     if pending or stuck:
         log.info("imports swept", requeued=len(pending), failed=stuck)
+
+
+@app.periodic(cron="7 1 * * *", periodic_id="refresh_hierarchy")
+@app.task(name="pickwise.refresh_hierarchy", queue="default", queueing_lock="refresh_hierarchy")
+@ops_task
+async def refresh_hierarchy(timestamp: int) -> None:
+    """Daily, just after midnight IST: rebuild every tenant's reporting tree so manager changes
+    scheduled for today take effect, and heal any drift (ADR 0022)."""
+    async with get_database().ops_session() as session:
+        tenants = await core_maintenance.active_tenant_ids(session)
+    for tenant_id in tenants:
+        await core_maintenance.rebuild_tenant_hierarchy(get_database(), tenant_id)
+    log.info("reporting hierarchy refreshed", tenants=len(tenants))
